@@ -43,31 +43,46 @@ Production: serve `frontend/dist` and route `/api` to the Laravel app on the sam
 
 ## 3. Add an endpoint
 
-1. Grant the module to the website key in the CMS (API Keys → edit → modules).
-2. Add a route in `backend/routes/api.php`, inside the `website.access` group.
-3. In the controller, read through `PublicContent`:
+Nothing is copied from the CMS. A model only names its module's slug.
+
+1. In the CMS, grant the module to the website key (API Keys → edit → modules).
+2. Add a model in `backend/app/Models`:
 
 ```php
-public function index(Request $request, PublicContent $content)
+class Faq extends CmsModel
 {
-    $locale = $content->language($request->input('locale'))->code;
-    $rows = $content->published('corporate_pages', $locale)   // CMS module slug
-        ->orderBy('sort_order')->get(['_id', 'slug', 'name', 'translations']);
+    protected string $module = 'faqs';                 // the module's slug in Module Management
 
-    return ['data' => $rows->map(fn ($row) => [
-        'slug' => $row->slug,
-        'title' => $content->text($row, 'name', $locale),    // pick fields deliberately
-    ])];
+    public function category(): BelongsTo               // relations work like any Eloquent model
+    {
+        return $this->belongsTo(FaqCategory::class, 'faq_category');
+    }
 }
 ```
 
-`published()` already applies everything:
-- the site's tenant, project, language and country;
-- the statuses the CMS marks as published;
-- `deleted_at`, `is_active` and `published_at`;
-- the "own records only" limit when the key issuer's role has one.
+3. Add a route in `backend/routes/api.php` (inside the `website.access` group) and query it:
 
-It returns 404 when the key doesn't grant the module. Use `enabled()` for reference lists like countries. Return only public fields, never the whole record.
+```php
+$locale = $content->language($request->input('locale'))->code;
+
+return ['data' => Faq::forWebsite($locale)
+    ->where('faq_category', $categoryId)              // filter on any field
+    ->orderBy('sort_order')->get()
+    ->map(fn (Faq $faq) => [                          // pick public fields deliberately
+        'question' => $faq->text('name', $locale),
+        'answer' => $faq->text('content', $locale),
+    ])];
+```
+
+What every model does for you:
+- **Always:** limits queries to the key's tenant and project, skips deleted records, and reads from the collection the key check names. A module the key doesn't grant is a 404.
+- **`forWebsite($locale)`:** keeps only records in a status marked published (in Statuses), active, and not scheduled for later. It applies the language (one of the key's) and the key's country, plus the "own records only" limit when the key issuer's role has one.
+- **Pieces you can use alone:** `published()`, `inLanguage($locale)` and `inCountry()`.
+- **`$model->text('field', $locale)`:** a translated field, read from the translations sidecar, a locale map or the plain value.
+
+Field names (`name`, `content`, `slug`, `image`…) are the ones on the module's create/edit form in the CMS. Never return the whole record: CMS records also hold private fields.
+
+**Writes** (form submissions) use the same models. `$model->save()` stamps the tenant and project from the key, and `$content->defaultStatus('module_slug')` gives the status marked "Default for new records". See `ContactController::store()`.
 
 ## 4. Tests
 

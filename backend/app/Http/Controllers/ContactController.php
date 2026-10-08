@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactRequest;
 use App\Models\ContactForm;
+use App\Models\ProjectStage;
+use App\Models\ProjectType;
 use App\Services\PublicContent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -14,15 +16,15 @@ class ContactController
     public function options(Request $request, PublicContent $content): array
     {
         $locale = $content->language($request->input('locale'))->code;
-        $options = [];
-        foreach (['project_types', 'project_stages'] as $module) {
-            $options[$module] = $content->published($module, $locale)->orderBy('name')->get()
-                ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $content->text($row, 'name', $locale)])->all();
-        }
-        $options['countries'] = $content->enabled('ref_countries')->orderBy('name')->get()
-            ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $content->text($row, 'name', $locale)])->all();
+        $options = fn (string $model) => $model::forWebsite($locale)->orderBy('name')->get()
+            ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $row->text('name', $locale)])->all();
 
-        return ['data' => $options];
+        return ['data' => [
+            'project_types' => $options(ProjectType::class),
+            'project_stages' => $options(ProjectStage::class),
+            'countries' => $content->enabled('ref_countries')->orderBy('name')->get()
+                ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $content->text($row, 'name', $locale)])->all(),
+        ]];
     }
 
     /** Stores a submission in the CMS's Contact Forms, in that module's default status. */
@@ -30,8 +32,8 @@ class ContactController
     {
         $payload = $request->validated();
         $language = $content->language($payload['locale'] ?? null);
-        foreach (['project_type' => 'project_types', 'project_stage' => 'project_stages'] as $field => $module) {
-            if (! $content->published($module, $language->code)->where('_id', $payload[$field])->exists()) {
+        foreach (['project_type' => ProjectType::class, 'project_stage' => ProjectStage::class] as $field => $model) {
+            if (! $model::forWebsite($language->code)->whereKey($payload[$field])->exists()) {
                 throw ValidationException::withMessages([$field => 'Choose an available option.']);
             }
         }

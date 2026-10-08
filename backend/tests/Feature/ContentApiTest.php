@@ -34,7 +34,7 @@ class ContentApiTest extends TestCase
         $database = DB::connection('mongodb')->getDatabase();
 
         $modules = [];
-        foreach (['articles' => 'articles', 'project_types' => 'project_types', 'project_stages' => 'project_stages', 'contact_forms' => 'contact_forms'] as $slug => $collection) {
+        foreach (['articles' => 'articles', 'article_categories' => 'article_categories', 'project_types' => 'project_types', 'project_stages' => 'project_stages', 'contact_forms' => 'contact_forms'] as $slug => $collection) {
             $modules[] = ['id' => $this->ids[$slug.'_module'] = (string) new ObjectId, 'slug' => $slug, 'collection' => $collection,
                 'record_scope' => 'all', 'owner_column' => 'author_id'];
         }
@@ -94,6 +94,24 @@ class ContentApiTest extends TestCase
         $this->getJson('/api/articles/published')->assertOk()->assertJsonPath('data.body', 'Body');
         $this->getJson('/api/articles/draft')->assertNotFound();
         $this->getJson('/api/articles?locale=fr')->assertUnprocessable();
+    }
+
+    public function test_articles_filter_by_a_category_the_website_may_show(): void
+    {
+        $database = DB::connection('mongodb')->getDatabase();
+        $news = (string) new ObjectId;
+        $hidden = (string) new ObjectId;
+        $database->selectCollection('article_categories')->insertMany([
+            ['_id' => new ObjectId($news), ...$this->scope(), 'slug' => 'news', 'status_id' => $this->ids['published']],
+            ['_id' => new ObjectId($hidden), ...$this->scope(), 'slug' => 'hidden', 'status_id' => $this->ids['draft']],
+        ]);
+        $database->selectCollection('articles')->insertMany([
+            [...$this->scope(), 'slug' => 'in-news', 'article_category' => $news, 'status_id' => $this->ids['published']],
+            [...$this->scope(), 'slug' => 'in-hidden', 'article_category' => $hidden, 'status_id' => $this->ids['published']],
+        ]);
+
+        $this->getJson('/api/articles?category=news')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', 'in-news');
+        $this->getJson('/api/articles?category=hidden')->assertNotFound();
     }
 
     public function test_a_module_the_key_does_not_grant_is_not_served(): void

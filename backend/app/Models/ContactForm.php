@@ -1,3 +1,8 @@
 <?php
+
 namespace App\Models;
-class ContactForm extends ProjectDocument { protected $table = 'contact_forms'; }
+
+class ContactForm extends CmsModel
+{
+    protected string $module = 'contact_forms';
+}
