@@ -1,0 +1,14 @@
+backend/vendor/
+backend/.env
+backend/.env.testing
+backend/bootstrap/cache/*.php
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+!backend/storage/**/.gitkeep
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+.phpunit.result.cache
+*.log
