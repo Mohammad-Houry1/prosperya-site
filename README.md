@@ -41,48 +41,47 @@ npm run dev                  # http://localhost:5173, /api proxied to :8001
 
 Production: serve `frontend/dist` and route `/api` to the Laravel app on the same domain. Run `npm run build` and then `node scripts/verify-public-artifacts.mjs` from the repo root; it fails if a secret leaked into the bundle.
 
-## 3. Add an endpoint
+## 3. Models and endpoints
 
-Nothing is copied from the CMS. A model only names its module's slug.
+**The models are the CMS's own files, copied unchanged.** Refresh them whenever the CMS gains or changes a model:
 
-1. In the CMS, grant the module to the website key (API Keys → edit → modules).
-2. Add a model in `backend/app/Models`:
-
-```php
-class Faq extends CmsModel
-{
-    protected string $module = 'faqs';                 // the module's slug in Module Management
-
-    public function category(): BelongsTo               // relations work like any Eloquent model
-    {
-        return $this->belongsTo(FaqCategory::class, 'faq_category');
-    }
-}
+```bash
+cd backend
+php artisan cms:sync-models ../../cloud-cms-engine123/backend/app/Models   # or set CMS_MODELS_PATH
 ```
 
-3. Add a route in `backend/routes/api.php` (inside the `website.access` group) and query it:
+The copy covers every content and reference model (Article, Faq, Status, Language, Country, Media…). It skips CMS-internal ones: users, API keys, roles, tenants, logs and versions. What the models extend and use stays this site's own, under the CMS names:
+- `app/Models/Base`, `app/Models/Concerns`, `app/Models/Traits` and `app/Traits`;
+- the `CurrentTenant` and `DatabaseIsolationMode` helpers in `app/Support`.
+
+The sync never touches these. They give every query the website key's limits:
+- **Content models** (Article, Faq…): this site's tenant and project only, no deleted records, and a 404 unless the website key grants the module (CMS → API Keys → modules).
+- **Reference models** (Status, Language, Country…): this site's tenant only.
+
+Write endpoints the usual Eloquent way. Add the route in `backend/routes/api.php` inside the `website.access` group:
 
 ```php
-$locale = $content->language($request->input('locale'))->code;
+$published = Status::query()->where('slug', 'published')->first();
 
-return ['data' => Faq::forWebsite($locale)
-    ->where('faq_category', $categoryId)              // filter on any field
-    ->orderBy('sort_order')->get()
-    ->map(fn (Faq $faq) => [                          // pick public fields deliberately
-        'question' => $faq->text('name', $locale),
-        'answer' => $faq->text('content', $locale),
-    ])];
+$articles = Article::query()
+    ->where('status_id', (string) $published->id)
+    ->where('article_category', $categoryId)       // any field
+    ->with('category')                             // the CMS model's relations
+    ->orderBy('created_at', 'desc')
+    ->limit(10)
+    ->get();
 ```
 
-What every model does for you:
-- **Always:** limits queries to the key's tenant and project, skips deleted records, and reads from the collection the key check names. A module the key doesn't grant is a 404.
-- **`forWebsite($locale)`:** keeps only records in a status marked published (in Statuses), active, and not scheduled for later. It applies the language (one of the key's) and the key's country, plus the "own records only" limit when the key issuer's role has one.
-- **Pieces you can use alone:** `published()`, `inLanguage($locale)` and `inCountry()`.
-- **`$model->text('field', $locale)`:** a translated field, read from the translations sidecar, a locale map or the plain value.
+Or let the CMS settings decide with `Article::forWebsite($locale)`. It keeps statuses marked "published on the website" in Statuses, active, not scheduled for later, in an allowed language and the key's country. It also applies the "own records only" limit when the key issuer has one. The pieces work alone: `published()`, `inLanguage($locale)`, `inCountry()`. `$article->text('article_title', $locale)` reads a translated field.
 
-Field names (`name`, `content`, `slug`, `image`…) are the ones on the module's create/edit form in the CMS. Never return the whole record: CMS records also hold private fields.
+**Data shape in the CMS:**
+- `language`, `country` and `project` hold ids, or `{_id}` snapshots.
+- `status_id` holds the status id.
+- Relations use the field names on the CMS model, e.g. Article `article_category`.
 
-**Writes** (form submissions) use the same models. `$model->save()` stamps the tenant and project from the key, and `$content->defaultStatus('module_slug')` gives the status marked "Default for new records". See `ContactController::store()`.
+Return only public fields, never the whole record.
+
+**Writes** (form submissions) use the same models. `save()` stamps the tenant and project from the key, and `$content->defaultStatus('contact_forms')` gives the status marked "Default for new records". See `ContactController::store()`.
 
 ## 4. Tests
 

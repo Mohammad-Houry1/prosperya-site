@@ -53,6 +53,15 @@ final class WebsiteAccess
         return $this->grant = $grant;
     }
 
+    /** The granted module a copied CMS model reads (matched by model name, as the key check reports it); 404 when not granted. */
+    public function moduleFor(string $modelClass): array
+    {
+        $module = collect($this->grant()['modules'])->firstWhere('model', class_basename($modelClass));
+        abort_unless(is_array($module), 404);
+
+        return $module;
+    }
+
     /** A module the key grants, by its slug in the CMS; 404 when it does not. */
     public function module(string $slug): array
     {

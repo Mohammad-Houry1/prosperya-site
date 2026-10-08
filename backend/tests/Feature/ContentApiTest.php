@@ -36,6 +36,7 @@ class ContentApiTest extends TestCase
         $modules = [];
         foreach (['articles' => 'articles', 'article_categories' => 'article_categories', 'project_types' => 'project_types', 'project_stages' => 'project_stages', 'contact_forms' => 'contact_forms'] as $slug => $collection) {
             $modules[] = ['id' => $this->ids[$slug.'_module'] = (string) new ObjectId, 'slug' => $slug, 'collection' => $collection,
+                'model' => \Illuminate\Support\Str::studly(\Illuminate\Support\Str::singular($slug)),
                 'record_scope' => 'all', 'owner_column' => 'author_id'];
         }
         // What an admin set up in the CMS: statuses with their meaning as flags.
@@ -112,6 +113,23 @@ class ContentApiTest extends TestCase
 
         $this->getJson('/api/articles?category=news')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', 'in-news');
         $this->getJson('/api/articles?category=hidden')->assertNotFound();
+    }
+
+    /** The copied CMS models, queried the usual Eloquent way, stay inside the key's tenant and project. */
+    public function test_copied_models_query_like_eloquent_inside_the_key_scope(): void
+    {
+        $articles = DB::connection('mongodb')->getDatabase()->selectCollection('articles');
+        $articles->insertMany([
+            [...$this->scope(), 'slug' => 'mine', 'status_id' => $this->ids['published']],
+            [...$this->scope(), 'slug' => 'my-draft', 'status_id' => $this->ids['draft']],
+            ['tenant_id' => (string) new ObjectId, 'project' => [$this->ids['project']], 'slug' => 'other-tenant', 'status_id' => $this->ids['published']],
+            [...$this->scope(), 'project' => [(string) new ObjectId], 'slug' => 'other-project', 'status_id' => $this->ids['published']],
+        ]);
+
+        $published = \App\Models\Status::query()->where('slug', 'published')->first();
+        $this->assertNotNull($published);
+        $this->assertSame(['mine'], \App\Models\Article::query()->where('status_id', (string) $published->id)->pluck('slug')->all());
+        $this->assertEqualsCanonicalizing(['mine', 'my-draft'], \App\Models\Article::query()->pluck('slug')->all());
     }
 
     public function test_a_module_the_key_does_not_grant_is_not_served(): void

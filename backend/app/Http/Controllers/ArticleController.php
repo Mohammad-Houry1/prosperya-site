@@ -25,7 +25,7 @@ class ArticleController
 
         $page = $query->orderBy('published_at', 'desc')->orderBy('_id')->paginate($perPage);
 
-        return ['data' => $page->getCollection()->map(fn (Article $article) => $article->toWebsite($locale)),
+        return ['data' => $page->getCollection()->map(fn (Article $article) => $this->article($article, $locale)),
             'meta' => ['current_page' => $page->currentPage(), 'last_page' => $page->lastPage(), 'per_page' => $perPage, 'total' => $page->total()]];
     }
 
@@ -33,6 +33,21 @@ class ArticleController
     {
         $locale = $content->language($request->validate(['locale' => ['sometimes', 'string', 'max:20']])['locale'] ?? null)->code;
 
-        return ['data' => Article::forWebsite($locale)->where('slug', $slug)->firstOrFail()->toWebsite($locale, true)];
+        return ['data' => $this->article(Article::forWebsite($locale)->where('slug', $slug)->firstOrFail(), $locale, true)];
+    }
+
+    /** The public shape of an article. Add fields deliberately; never return the whole record. */
+    private function article(Article $article, string $locale, bool $detail = false): array
+    {
+        return [
+            'id' => (string) $article->id,
+            'slug' => $article->slug ?? '',
+            'title' => $article->text('article_title', $locale) ?: $article->text('name', $locale),
+            'excerpt' => $article->text('article_small_description', $locale),
+            'featured' => (bool) ($article->featured ?? false),
+            'category_id' => $article->article_category,
+            'published_at' => $article->published_at?->toISOString(),
+            ...($detail ? ['body' => $article->text('article_description', $locale)] : []),
+        ];
     }
 }
