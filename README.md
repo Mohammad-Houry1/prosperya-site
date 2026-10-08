@@ -9,6 +9,8 @@ Browser ──► frontend ──/api──► backend ──read──► CMS M
                                   └──GET /api/website-key──► CMS (cached 60 s)
 ```
 
+Starting another client site from this repo: see [docs/new-site.md](docs/new-site.md).
+
 ## 1. Set up the CMS (once)
 
 1. **Statuses:** the statuses your content uses must have **Records are published on the website = Yes** (e.g. *Published*). Contact Forms needs a status with **Default for new records = Yes** (e.g. *New*).
