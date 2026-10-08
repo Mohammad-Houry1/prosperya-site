@@ -43,20 +43,13 @@ Production: serve `frontend/dist` and route `/api` to the Laravel app on the sam
 
 ## 3. Models and endpoints
 
-**The models are the CMS's own files, copied unchanged.** Refresh them whenever the CMS gains or changes a model:
+**The models are the CMS's own files, pasted in unchanged.** When the CMS gains or changes a model, copy that file from the CMS's `backend/app/Models/` into `backend/app/Models/` here. That's all: no command, no edits.
 
-```bash
-cd backend
-php artisan cms:sync-models ../../cloud-cms-engine123/backend/app/Models   # or set CMS_MODELS_PATH
-```
-
-The copy covers every content and reference model (Article, Faq, Status, Language, Country, Media…). It skips CMS-internal ones: users, API keys, roles, tenants, logs and versions. What the models extend and use stays this site's own, under the CMS names:
-- `app/Models/Base`, `app/Models/Concerns`, `app/Models/Traits` and `app/Traits`;
-- the `CurrentTenant` and `DatabaseIsolationMode` helpers in `app/Support`.
-
-The sync never touches these. They give every query the website key's limits:
-- **Content models** (Article, Faq…): this site's tenant and project only, no deleted records, and a 404 unless the website key grants the module (CMS → API Keys → modules).
-- **Reference models** (Status, Language, Country…): this site's tenant only.
+- **Copy model files only**: `Article.php`, `Faq.php`, `Status.php`… Never copy the CMS's `Base/`, `Concerns/` or `Traits/` folders over this repo's. Those are this site's own versions under the same names, and they give every query the website key's limits:
+  - **Content models** (Article, Faq…): this site's tenant and project only, no deleted records, and a 404 unless the website key grants the module (CMS → API Keys → modules).
+  - **Reference models** (Status, Language, Country…): this site's tenant only.
+- **Don't copy CMS-internal models**: User, ApiKey, Role, Tenant, Module, Setting, ActivityLog, EditLock, ExportJob or the version/membership models. A website has no business reading them.
+- If the CMS ever adds a new base class or trait for models to extend, the site needs a same-named one in `Base/`, `Concerns/` or `Traits/`. The site errors with "class not found" until then.
 
 Write endpoints the usual Eloquent way. Add the route in `backend/routes/api.php` inside the `website.access` group:
 
