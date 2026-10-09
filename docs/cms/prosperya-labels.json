@@ -1,0 +1,4691 @@
+[
+  {
+    "key": "prosperya.about.cta_description",
+    "group": "pages",
+    "source": "Let’s build the systems that power your next level of growth.",
+    "translations": {
+      "en": "Let’s build the systems that power your next level of growth.",
+      "fr": "Construisons les systèmes qui porteront votre prochaine étape de croissance."
+    }
+  },
+  {
+    "key": "prosperya.about.cta_title",
+    "group": "pages",
+    "source": "Start with a conversation.",
+    "translations": {
+      "en": "Start with a conversation.",
+      "fr": "Commençons par une conversation."
+    }
+  },
+  {
+    "key": "prosperya.about.expertise_eyebrow",
+    "group": "pages",
+    "source": "Our focus",
+    "translations": {
+      "en": "Our focus",
+      "fr": "Nos domaines d’intervention"
+    }
+  },
+  {
+    "key": "prosperya.about.explore_approach",
+    "group": "pages",
+    "source": "Explore our approach",
+    "translations": {
+      "en": "Explore our approach",
+      "fr": "Découvrir notre approche"
+    }
+  },
+  {
+    "key": "prosperya.about.eyebrow",
+    "group": "pages",
+    "source": "About Prosperya",
+    "translations": {
+      "en": "About Prosperya",
+      "fr": "À propos de Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.about.how_eyebrow",
+    "group": "pages",
+    "source": "How we work",
+    "translations": {
+      "en": "How we work",
+      "fr": "Notre façon de travailler"
+    }
+  },
+  {
+    "key": "prosperya.about.leadership_eyebrow",
+    "group": "pages",
+    "source": "Leadership",
+    "translations": {
+      "en": "Leadership",
+      "fr": "Direction"
+    }
+  },
+  {
+    "key": "prosperya.about.our_approach",
+    "group": "pages",
+    "source": "Our approach",
+    "translations": {
+      "en": "Our approach",
+      "fr": "Notre approche"
+    }
+  },
+  {
+    "key": "prosperya.about.page_title",
+    "group": "pages",
+    "source": "About",
+    "translations": {
+      "en": "About",
+      "fr": "À propos"
+    }
+  },
+  {
+    "key": "prosperya.about.platforms_eyebrow",
+    "group": "pages",
+    "source": "Platforms we work with",
+    "translations": {
+      "en": "Platforms we work with",
+      "fr": "Les plateformes que nous accompagnons"
+    }
+  },
+  {
+    "key": "prosperya.about.principles_eyebrow",
+    "group": "pages",
+    "source": "Our principles",
+    "translations": {
+      "en": "Our principles",
+      "fr": "Nos principes"
+    }
+  },
+  {
+    "key": "prosperya.about.start_conversation",
+    "group": "pages",
+    "source": "Start a conversation",
+    "translations": {
+      "en": "Start a conversation",
+      "fr": "Démarrer une conversation"
+    }
+  },
+  {
+    "key": "prosperya.about.story_eyebrow",
+    "group": "pages",
+    "source": "Our story",
+    "translations": {
+      "en": "Our story",
+      "fr": "Notre histoire"
+    }
+  },
+  {
+    "key": "prosperya.about.unavailable_description",
+    "group": "pages",
+    "source": "This page’s published content is currently unavailable.",
+    "translations": {
+      "en": "This page’s published content is currently unavailable.",
+      "fr": "Le contenu publié de cette page est actuellement indisponible."
+    }
+  },
+  {
+    "key": "prosperya.about.unavailable_title",
+    "group": "pages",
+    "source": "About content unavailable",
+    "translations": {
+      "en": "About content unavailable",
+      "fr": "Contenu indisponible"
+    }
+  },
+  {
+    "key": "prosperya.common.back",
+    "group": "ui",
+    "source": "Back",
+    "translations": {
+      "en": "Back",
+      "fr": "Retour"
+    }
+  },
+  {
+    "key": "prosperya.common.breadcrumb",
+    "group": "ui",
+    "source": "Breadcrumb",
+    "translations": {
+      "en": "Breadcrumb",
+      "fr": "Fil d’Ariane"
+    }
+  },
+  {
+    "key": "prosperya.common.company_logo",
+    "group": "ui",
+    "source": "{name} logo",
+    "translations": {
+      "en": "{name} logo",
+      "fr": "Logo {name}"
+    }
+  },
+  {
+    "key": "prosperya.common.explore",
+    "group": "ui",
+    "source": "Explore",
+    "translations": {
+      "en": "Explore",
+      "fr": "Explorer"
+    }
+  },
+  {
+    "key": "prosperya.common.labels_unavailable",
+    "group": "ui",
+    "source": "Some translations could not be loaded.",
+    "translations": {
+      "en": "Some translations could not be loaded.",
+      "fr": "Certaines traductions n’ont pas pu être chargées."
+    }
+  },
+  {
+    "key": "prosperya.common.loading",
+    "group": "ui",
+    "source": "Loading",
+    "translations": {
+      "en": "Loading",
+      "fr": "Chargement"
+    }
+  },
+  {
+    "key": "prosperya.common.noResults",
+    "group": "ui",
+    "source": "Nothing to show yet",
+    "translations": {
+      "en": "Nothing to show yet",
+      "fr": "Aucun contenu pour le moment"
+    }
+  },
+  {
+    "key": "prosperya.common.readInsight",
+    "group": "ui",
+    "source": "Read insight",
+    "translations": {
+      "en": "Read insight",
+      "fr": "Lire l’analyse"
+    }
+  },
+  {
+    "key": "prosperya.common.reading_time",
+    "group": "pages",
+    "source": "{minutes} min read",
+    "translations": {
+      "en": "{minutes} min read",
+      "fr": "{minutes} min de lecture"
+    }
+  },
+  {
+    "key": "prosperya.common.retry",
+    "group": "ui",
+    "source": "Try again",
+    "translations": {
+      "en": "Try again",
+      "fr": "Réessayer"
+    }
+  },
+  {
+    "key": "prosperya.common.skip_content",
+    "group": "ui",
+    "source": "Skip to content",
+    "translations": {
+      "en": "Skip to content",
+      "fr": "Aller au contenu"
+    }
+  },
+  {
+    "key": "prosperya.common.viewCaseStudy",
+    "group": "ui",
+    "source": "View case study",
+    "translations": {
+      "en": "View case study",
+      "fr": "Voir le cas client"
+    }
+  },
+  {
+    "key": "prosperya.components.case-study.case-study-card.view-case-study-2050cc",
+    "group": "ui",
+    "source": "View case study",
+    "translations": {
+      "en": "View case study",
+      "fr": "Voir le cas client"
+    }
+  },
+  {
+    "key": "prosperya.components.case-study.project-feature.capabilities-6251f6",
+    "group": "ui",
+    "source": "Capabilities",
+    "translations": {
+      "en": "Capabilities",
+      "fr": "Expertises"
+    }
+  },
+  {
+    "key": "prosperya.components.case-study.project-feature.industry-b26ab6",
+    "group": "ui",
+    "source": "Industry",
+    "translations": {
+      "en": "Industry",
+      "fr": "Secteur"
+    }
+  },
+  {
+    "key": "prosperya.components.case-study.project-feature.platforms-eb383c",
+    "group": "ui",
+    "source": "Platforms",
+    "translations": {
+      "en": "Platforms",
+      "fr": "Plateformes"
+    }
+  },
+  {
+    "key": "prosperya.components.case-study.project-feature.view-case-study-2050cc",
+    "group": "ui",
+    "source": "View case study",
+    "translations": {
+      "en": "View case study",
+      "fr": "Voir le cas client"
+    }
+  },
+  {
+    "key": "prosperya.components.common.ctasection.explore-our-services-8dc8aa",
+    "group": "ui",
+    "source": "Explore our services",
+    "translations": {
+      "en": "Explore our services",
+      "fr": "Découvrir nos services"
+    }
+  },
+  {
+    "key": "prosperya.components.common.ctasection.partner-with-prosperya-to-turn-complexity-into-83648d",
+    "group": "ui",
+    "source": "Partner with Prosperya to turn complexity into clarity and performance.",
+    "translations": {
+      "en": "Partner with Prosperya to turn complexity into clarity and performance.",
+      "fr": "Transformons la complexité en clarté et en performance."
+    }
+  },
+  {
+    "key": "prosperya.components.common.ctasection.ready-to-orchestrate-what-s-possible-ddda7e",
+    "group": "ui",
+    "source": "Ready to orchestrate what’s possible?",
+    "translations": {
+      "en": "Ready to orchestrate what’s possible?",
+      "fr": "Prêt à orchestrer ce qui est possible ?"
+    }
+  },
+  {
+    "key": "prosperya.components.common.ctasection.start-a-conversation-607ba9",
+    "group": "ui",
+    "source": "Start a conversation",
+    "translations": {
+      "en": "Start a conversation",
+      "fr": "Démarrer une conversation"
+    }
+  },
+  {
+    "key": "prosperya.components.company.client-companies.in-good-company-2fa9e0",
+    "group": "ui",
+    "source": "In good company",
+    "translations": {
+      "en": "In good company",
+      "fr": "À leurs côtés"
+    }
+  },
+  {
+    "key": "prosperya.components.company.client-companies.loading-companies-dd40c1",
+    "group": "ui",
+    "source": "Loading companies",
+    "translations": {
+      "en": "Loading companies",
+      "fr": "Chargement des entreprises"
+    }
+  },
+  {
+    "key": "prosperya.components.company.client-companies.pause",
+    "group": "ui",
+    "source": "Pause",
+    "translations": {
+      "en": "Pause",
+      "fr": "Pause"
+    }
+  },
+  {
+    "key": "prosperya.components.company.client-companies.pause-client-logos-d08e8b",
+    "group": "ui",
+    "source": "Pause client logos",
+    "translations": {
+      "en": "Pause client logos",
+      "fr": "Mettre en pause les logos clients"
+    }
+  },
+  {
+    "key": "prosperya.components.company.client-companies.play-48234e",
+    "group": "ui",
+    "source": "Play",
+    "translations": {
+      "en": "Play",
+      "fr": "Relancer"
+    }
+  },
+  {
+    "key": "prosperya.components.company.client-companies.play-client-logos-3af529",
+    "group": "ui",
+    "source": "Play client logos",
+    "translations": {
+      "en": "Play client logos",
+      "fr": "Relancer les logos clients"
+    }
+  },
+  {
+    "key": "prosperya.components.company.frequently-asked-questions.a-few-answers-to-help-you-move-841b14",
+    "group": "ui",
+    "source": "A few answers to help you move forward with confidence.",
+    "translations": {
+      "en": "A few answers to help you move forward with confidence.",
+      "fr": "Quelques réponses pour avancer en confiance."
+    }
+  },
+  {
+    "key": "prosperya.components.company.frequently-asked-questions.before-we-begin-fc07af",
+    "group": "ui",
+    "source": "Before we begin.",
+    "translations": {
+      "en": "Before we begin.",
+      "fr": "Avant de commencer."
+    }
+  },
+  {
+    "key": "prosperya.components.company.frequently-asked-questions.frequently-asked-questions-3cbfaa",
+    "group": "ui",
+    "source": "Frequently asked questions",
+    "translations": {
+      "en": "Frequently asked questions",
+      "fr": "Questions fréquentes"
+    }
+  },
+  {
+    "key": "prosperya.components.company.frequently-asked-questions.loading-questions-e854d3",
+    "group": "ui",
+    "source": "Loading questions",
+    "translations": {
+      "en": "Loading questions",
+      "fr": "Chargement des questions"
+    }
+  },
+  {
+    "key": "prosperya.components.company.frequently-asked-questions.your-questions-answered-36e33a",
+    "group": "ui",
+    "source": "Your questions, answered.",
+    "translations": {
+      "en": "Your questions, answered.",
+      "fr": "Vos questions, nos réponses."
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.change-is-experienced-81aad7",
+    "group": "ui",
+    "source": "Change is experienced.",
+    "translations": {
+      "en": "Change is experienced.",
+      "fr": "Le changement se vit."
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.choose-a-testimonial-3197d0",
+    "group": "ui",
+    "source": "Choose a testimonial",
+    "translations": {
+      "en": "Choose a testimonial",
+      "fr": "Choisir un témoignage"
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.client-perspectives-457ff0",
+    "group": "ui",
+    "source": "Client perspectives",
+    "translations": {
+      "en": "Client perspectives",
+      "fr": "Regards clients"
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.client-testimonials-46561e",
+    "group": "ui",
+    "source": "Client testimonials",
+    "translations": {
+      "en": "Client testimonials",
+      "fr": "Témoignages clients"
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.loading-testimonials-501f46",
+    "group": "ui",
+    "source": "Loading testimonials",
+    "translations": {
+      "en": "Loading testimonials",
+      "fr": "Chargement des témoignages"
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.next-testimonial-884918",
+    "group": "ui",
+    "source": "Next testimonial",
+    "translations": {
+      "en": "Next testimonial",
+      "fr": "Témoignage suivant"
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.outcomes-that-matter-f87211",
+    "group": "ui",
+    "source": "Outcomes that matter.",
+    "translations": {
+      "en": "Outcomes that matter.",
+      "fr": "Des résultats qui comptent."
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.previous-testimonial-88596e",
+    "group": "ui",
+    "source": "Previous testimonial",
+    "translations": {
+      "en": "Previous testimonial",
+      "fr": "Témoignage précédent"
+    }
+  },
+  {
+    "key": "prosperya.components.company.testimonials.testimonial-from-4f2bd1",
+    "group": "ui",
+    "source": "Testimonial from",
+    "translations": {
+      "en": "Testimonial from",
+      "fr": "Témoignage de"
+    }
+  },
+  {
+    "key": "prosperya.components.expertise.capability-card.learn-more-f2ab41",
+    "group": "ui",
+    "source": "Learn more",
+    "translations": {
+      "en": "Learn more",
+      "fr": "En savoir plus"
+    }
+  },
+  {
+    "key": "prosperya.components.expertise.solution-row.capabilities-912c87",
+    "group": "ui",
+    "source": "Capabilities",
+    "translations": {
+      "en": "Capabilities",
+      "fr": "Capacités"
+    }
+  },
+  {
+    "key": "prosperya.components.expertise.solution-row.explore-82bb18",
+    "group": "ui",
+    "source": "Explore",
+    "translations": {
+      "en": "Explore",
+      "fr": "Découvrir"
+    }
+  },
+  {
+    "key": "prosperya.components.expertise.solution-row.learn-more-f2ab41",
+    "group": "ui",
+    "source": "Learn more",
+    "translations": {
+      "en": "Learn more",
+      "fr": "En savoir plus"
+    }
+  },
+  {
+    "key": "prosperya.components.expertise.solution-row.outcomes-28c664",
+    "group": "ui",
+    "source": "Outcomes",
+    "translations": {
+      "en": "Outcomes",
+      "fr": "Résultats"
+    }
+  },
+  {
+    "key": "prosperya.components.expertise.solution-row.pains-f524cc",
+    "group": "ui",
+    "source": "Pains",
+    "translations": {
+      "en": "Pains",
+      "fr": "Difficultés"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.empty-state.copy.content-will-appear-here-when-it-becomes-fca038",
+    "group": "ui",
+    "source": "Content will appear here when it becomes available.",
+    "translations": {
+      "en": "Content will appear here when it becomes available.",
+      "fr": "Le contenu apparaîtra ici lorsqu’il sera disponible."
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.empty-state.copy.nothing-to-show-yet-c2b9a4",
+    "group": "ui",
+    "source": "Nothing to show yet",
+    "translations": {
+      "en": "Nothing to show yet",
+      "fr": "Aucun contenu pour le moment"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.error-state.copy.something-went-wrong-6ccb92",
+    "group": "ui",
+    "source": "Something went wrong",
+    "translations": {
+      "en": "Something went wrong",
+      "fr": "Une erreur est survenue"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.error-state.copy.the-content-could-not-be-loaded-c44d0a",
+    "group": "ui",
+    "source": "The content could not be loaded.",
+    "translations": {
+      "en": "The content could not be loaded.",
+      "fr": "Le contenu n’a pas pu être chargé."
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.error-state.copy.try-again-170551",
+    "group": "ui",
+    "source": "Try again",
+    "translations": {
+      "en": "Try again",
+      "fr": "Réessayer"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.a-moment-to-reconnect-fbc5d4",
+    "group": "ui",
+    "source": "A moment to reconnect",
+    "translations": {
+      "en": "A moment to reconnect",
+      "fr": "La connexion fait une pause"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.back-home-b335e9",
+    "group": "ui",
+    "source": "Back home",
+    "translations": {
+      "en": "Back home",
+      "fr": "Retour à l’accueil"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.even-good-connections-need-a-little-reset-66e74d",
+    "group": "ui",
+    "source": "Even good connections need a little reset.",
+    "translations": {
+      "en": "Even good connections need a little reset.",
+      "fr": "Les petits détours font aussi partie du chemin."
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.one-small-hiccup-6c862a",
+    "group": "ui",
+    "source": "One small hiccup.",
+    "translations": {
+      "en": "One small hiccup.",
+      "fr": "Un petit contretemps."
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.prosperya-home-233794",
+    "group": "ui",
+    "source": "Prosperya home",
+    "translations": {
+      "en": "Prosperya home",
+      "fr": "Accueil Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.this-page-couldn-t-open-give-it-042d8a",
+    "group": "ui",
+    "source": "This page couldn’t open. Give it another try, or find your way back from home.",
+    "translations": {
+      "en": "This page couldn’t open. Give it another try, or find your way back from home.",
+      "fr": "Cette page n’a pas pu s’ouvrir. Réessayez, ou retrouvez votre chemin depuis l’accueil."
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.failure-screen.try-again-170551",
+    "group": "ui",
+    "source": "Try again",
+    "translations": {
+      "en": "Try again",
+      "fr": "Réessayer"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.page-loader.loading-content-9cfda7",
+    "group": "ui",
+    "source": "Loading content",
+    "translations": {
+      "en": "Loading content",
+      "fr": "Chargement du contenu"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.page-loader.loading-page-59ae89",
+    "group": "ui",
+    "source": "Loading page",
+    "translations": {
+      "en": "Loading page",
+      "fr": "Chargement de la page"
+    }
+  },
+  {
+    "key": "prosperya.components.feedback.section-skeleton.loading",
+    "group": "ui",
+    "source": "Loading content",
+    "translations": {
+      "en": "Loading content",
+      "fr": "Chargement du contenu"
+    }
+  },
+  {
+    "key": "prosperya.components.insight.insight-card.read-the-full-article-9410c4",
+    "group": "ui",
+    "source": "Read the full article",
+    "translations": {
+      "en": "Read the full article",
+      "fr": "Lire l’article"
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.curated-insights-on-erp-netsuite-and-enterprise-eb7688",
+    "group": "ui",
+    "source": "Curated insights on ERP, NetSuite and enterprise transformation, delivered to your inbox.",
+    "translations": {
+      "en": "Curated insights on ERP, NetSuite and enterprise transformation, delivered to your inbox.",
+      "fr": "Des analyses choisies sur l’ERP, NetSuite et la transformation, directement dans votre boîte."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.enter-a-valid-email-address-e89bf5",
+    "group": "ui",
+    "source": "Enter a valid email address.",
+    "translations": {
+      "en": "Enter a valid email address.",
+      "fr": "Saisissez une adresse email valide."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.enter-your-work-email-357a52",
+    "group": "ui",
+    "source": "Enter your work email",
+    "translations": {
+      "en": "Enter your work email",
+      "fr": "Votre email professionnel"
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.newsletter-signup-is-temporarily-unavailable-f93d44",
+    "group": "ui",
+    "source": "Newsletter signup is temporarily unavailable.",
+    "translations": {
+      "en": "Newsletter signup is temporarily unavailable.",
+      "fr": "L’inscription est temporairement indisponible."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.no-spam-unsubscribe-anytime-a93953",
+    "group": "ui",
+    "source": "No spam. Unsubscribe anytime.",
+    "translations": {
+      "en": "No spam. Unsubscribe anytime.",
+      "fr": "Pas de spam. Désinscription à tout moment."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.sending-b7af8e",
+    "group": "ui",
+    "source": "Sending…",
+    "translations": {
+      "en": "Sending…",
+      "fr": "Envoi…"
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.stay-informed-stay-ahead-606b2d",
+    "group": "ui",
+    "source": "Stay informed. Stay ahead.",
+    "translations": {
+      "en": "Stay informed. Stay ahead.",
+      "fr": "Restez informé. Gardez une longueur d’avance."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.subscribe-5e59be",
+    "group": "ui",
+    "source": "Subscribe",
+    "translations": {
+      "en": "Subscribe",
+      "fr": "S’abonner"
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.subscription-failed-check-your-connection-and-try-d1895b",
+    "group": "ui",
+    "source": "Subscription failed. Check your connection and try again.",
+    "translations": {
+      "en": "Subscription failed. Check your connection and try again.",
+      "fr": "L’inscription a échoué. Vérifiez votre connexion et réessayez."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.thank-you-your-subscription-was-received-b81230",
+    "group": "ui",
+    "source": "Thank you. Your subscription was received.",
+    "translations": {
+      "en": "Thank you. Your subscription was received.",
+      "fr": "Merci. Votre inscription a été reçue."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.too-many-requests-please-wait-before-trying-a64b07",
+    "group": "ui",
+    "source": "Too many requests. Please wait before trying again.",
+    "translations": {
+      "en": "Too many requests. Please wait before trying again.",
+      "fr": "Trop de demandes. Réessayez dans un moment."
+    }
+  },
+  {
+    "key": "prosperya.components.insight.newsletter.work-email-67fe32",
+    "group": "ui",
+    "source": "Work email",
+    "translations": {
+      "en": "Work email",
+      "fr": "Email professionnel"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.brand-mark.prosperya-home-233794",
+    "group": "ui",
+    "source": "Prosperya home",
+    "translations": {
+      "en": "Prosperya home",
+      "fr": "Accueil Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.locale-switcher.language-cff648",
+    "group": "ui",
+    "source": "Language",
+    "translations": {
+      "en": "Language",
+      "fr": "Langue"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.site-footer.language-cff648",
+    "group": "ui",
+    "source": "Language",
+    "translations": {
+      "en": "Language",
+      "fr": "Langue"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.site-footer.legal-information-823929",
+    "group": "ui",
+    "source": "Legal information",
+    "translations": {
+      "en": "Legal information",
+      "fr": "Informations légales"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.site-header.close-navigation-6fc864",
+    "group": "ui",
+    "source": "Close navigation",
+    "translations": {
+      "en": "Close navigation",
+      "fr": "Fermer la navigation"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.site-header.open-navigation-147140",
+    "group": "ui",
+    "source": "Open navigation",
+    "translations": {
+      "en": "Open navigation",
+      "fr": "Ouvrir la navigation"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.site-header.primary-navigation-8e5635",
+    "group": "ui",
+    "source": "Primary navigation",
+    "translations": {
+      "en": "Primary navigation",
+      "fr": "Navigation principale"
+    }
+  },
+  {
+    "key": "prosperya.components.layout.theme-switcher.dark-mode-561d94",
+    "group": "ui",
+    "source": "Dark mode",
+    "translations": {
+      "en": "Dark mode",
+      "fr": "Mode sombre"
+    }
+  },
+  {
+    "key": "prosperya.components.legal.corporate-page-links.loading-pages-ae76b2",
+    "group": "ui",
+    "source": "Loading pages",
+    "translations": {
+      "en": "Loading pages",
+      "fr": "Chargement des pages"
+    }
+  },
+  {
+    "key": "prosperya.components.legal.legal-page-layout.corporate-pages-fefb9b",
+    "group": "ui",
+    "source": "Corporate pages",
+    "translations": {
+      "en": "Corporate pages",
+      "fr": "Pages de l’entreprise"
+    }
+  },
+  {
+    "key": "prosperya.components.legal.legal-page-layout.last-updated-095290",
+    "group": "ui",
+    "source": "Last updated",
+    "translations": {
+      "en": "Last updated",
+      "fr": "Mis à jour le"
+    }
+  },
+  {
+    "key": "prosperya.components.legal.legal-page-layout.publication-date-to-be-confirmed-eb48b8",
+    "group": "ui",
+    "source": "Publication date to be confirmed",
+    "translations": {
+      "en": "Publication date to be confirmed",
+      "fr": "Date de publication à confirmer"
+    }
+  },
+  {
+    "key": "prosperya.components.legal.legal-page-layout.website-information-fd3a15",
+    "group": "ui",
+    "source": "Website information",
+    "translations": {
+      "en": "Website information",
+      "fr": "Informations du site"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.analytics-c0af1a",
+    "group": "ui",
+    "source": "Analytics",
+    "translations": {
+      "en": "Analytics",
+      "fr": "Analytique"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.api-management-804ad8",
+    "group": "ui",
+    "source": "API management",
+    "translations": {
+      "en": "API management",
+      "fr": "Gestion des API"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.business-growth-812276",
+    "group": "ui",
+    "source": "Business growth",
+    "translations": {
+      "en": "Business growth",
+      "fr": "Croissance"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.cost-optimization-630e5e",
+    "group": "ui",
+    "source": "Cost optimization",
+    "translations": {
+      "en": "Cost optimization",
+      "fr": "Maîtrise des coûts"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.crm-39069d",
+    "group": "ui",
+    "source": "CRM",
+    "translations": {
+      "en": "CRM",
+      "fr": "CRM"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.data-event-hub-a80e6b",
+    "group": "ui",
+    "source": "Data & event hub",
+    "translations": {
+      "en": "Data & event hub",
+      "fr": "Hub données & événements"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.ecommerce-44414e",
+    "group": "ui",
+    "source": "eCommerce",
+    "translations": {
+      "en": "eCommerce",
+      "fr": "E-commerce"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.enterprise-platform-999f40",
+    "group": "ui",
+    "source": "Enterprise platform",
+    "translations": {
+      "en": "Enterprise platform",
+      "fr": "Plateforme d’entreprise"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.finance-9bee15",
+    "group": "ui",
+    "source": "Finance",
+    "translations": {
+      "en": "Finance",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.financials-918f7b",
+    "group": "ui",
+    "source": "Financials",
+    "translations": {
+      "en": "Financials",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.hcm-aaabcb",
+    "group": "ui",
+    "source": "HCM",
+    "translations": {
+      "en": "HCM",
+      "fr": "SIRH"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.integration-layer-07c34a",
+    "group": "ui",
+    "source": "Integration layer",
+    "translations": {
+      "en": "Integration layer",
+      "fr": "Couche d’intégration"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.legacy-systems-4bc4a0",
+    "group": "ui",
+    "source": "Legacy systems",
+    "translations": {
+      "en": "Legacy systems",
+      "fr": "Systèmes hérités"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.operational-agility-ab06df",
+    "group": "ui",
+    "source": "Operational agility",
+    "translations": {
+      "en": "Operational agility",
+      "fr": "Agilité opérationnelle"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.operations-b5b127",
+    "group": "ui",
+    "source": "Operations",
+    "translations": {
+      "en": "Operations",
+      "fr": "Opérations"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.outcomes-28c664",
+    "group": "ui",
+    "source": "Outcomes",
+    "translations": {
+      "en": "Outcomes",
+      "fr": "Résultats"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.real-time-insights-d41a3b",
+    "group": "ui",
+    "source": "Real-time insights",
+    "translations": {
+      "en": "Real-time insights",
+      "fr": "Pilotage temps réel"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.reporting-576089",
+    "group": "ui",
+    "source": "Reporting",
+    "translations": {
+      "en": "Reporting",
+      "fr": "Reporting"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.risk-reduction-e45519",
+    "group": "ui",
+    "source": "Risk reduction",
+    "translations": {
+      "en": "Risk reduction",
+      "fr": "Réduction des risques"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.source-systems-8baa4f",
+    "group": "ui",
+    "source": "Source systems",
+    "translations": {
+      "en": "Source systems",
+      "fr": "Systèmes sources"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.source-systems-connect-through-an-integration-layer-eca0d6",
+    "group": "ui",
+    "source": "Source systems connect through an integration layer to NetSuite, producing business outcomes",
+    "translations": {
+      "en": "Source systems connect through an integration layer to NetSuite, producing business outcomes",
+      "fr": "Les systèmes sources se connectent à NetSuite via une couche d’intégration, au service des résultats métier"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.architecture-flow-diagram.copy.supply-chain-266c75",
+    "group": "ui",
+    "source": "Supply chain",
+    "translations": {
+      "en": "Supply chain",
+      "fr": "Supply chain"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.approve-a518c8",
+    "group": "ui",
+    "source": "Approve",
+    "translations": {
+      "en": "Approve",
+      "fr": "Approuver"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.capture-f0b078",
+    "group": "ui",
+    "source": "Capture",
+    "translations": {
+      "en": "Capture",
+      "fr": "Saisir"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.inventory-bec5e3",
+    "group": "ui",
+    "source": "Inventory",
+    "translations": {
+      "en": "Inventory",
+      "fr": "Stocks"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.invoices-db57f7",
+    "group": "ui",
+    "source": "Invoices",
+    "translations": {
+      "en": "Invoices",
+      "fr": "Factures"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.orders-9bed10",
+    "group": "ui",
+    "source": "Orders",
+    "translations": {
+      "en": "Orders",
+      "fr": "Commandes"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.payments-807062",
+    "group": "ui",
+    "source": "Payments",
+    "translations": {
+      "en": "Payments",
+      "fr": "Paiements"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.post-9757ab",
+    "group": "ui",
+    "source": "Post",
+    "translations": {
+      "en": "Post",
+      "fr": "Comptabiliser"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.automation-lanes.copy.validate-fae2e8",
+    "group": "ui",
+    "source": "Validate",
+    "translations": {
+      "en": "Validate",
+      "fr": "Valider"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.capability-state-visual.systems-057844",
+    "group": "ui",
+    "source": "Systems",
+    "translations": {
+      "en": "Systems",
+      "fr": "Systèmes"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.cloud-infrastructure-f4cac9",
+    "group": "ui",
+    "source": "Cloud infrastructure",
+    "translations": {
+      "en": "Cloud infrastructure",
+      "fr": "Infrastructure cloud"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.customers-288584",
+    "group": "ui",
+    "source": "Customers",
+    "translations": {
+      "en": "Customers",
+      "fr": "Clients"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.data-analytics-aaa526",
+    "group": "ui",
+    "source": "Data & analytics",
+    "translations": {
+      "en": "Data & analytics",
+      "fr": "Données & analyses"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.data-management-2cc30c",
+    "group": "ui",
+    "source": "Data management",
+    "translations": {
+      "en": "Data management",
+      "fr": "Gestion des données"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.employees-090c5c",
+    "group": "ui",
+    "source": "Employees",
+    "translations": {
+      "en": "Employees",
+      "fr": "Collaborateurs"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.experience-layer-e650a1",
+    "group": "ui",
+    "source": "Experience layer",
+    "translations": {
+      "en": "Experience layer",
+      "fr": "Couche expérience"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.finance-9bee15",
+    "group": "ui",
+    "source": "Finance",
+    "translations": {
+      "en": "Finance",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.foundation-layer-ce83ed",
+    "group": "ui",
+    "source": "Foundation layer",
+    "translations": {
+      "en": "Foundation layer",
+      "fr": "Couche socle"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.integration-apis-3ae2a5",
+    "group": "ui",
+    "source": "Integration & APIs",
+    "translations": {
+      "en": "Integration & APIs",
+      "fr": "Intégration & API"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.netsuite-632fd2",
+    "group": "ui",
+    "source": "NetSuite",
+    "translations": {
+      "en": "NetSuite",
+      "fr": "NetSuite"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.operations-b5b127",
+    "group": "ui",
+    "source": "Operations",
+    "translations": {
+      "en": "Operations",
+      "fr": "Opérations"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.partners-2c98b8",
+    "group": "ui",
+    "source": "Partners",
+    "translations": {
+      "en": "Partners",
+      "fr": "Partenaires"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.platform-layer-5724d1",
+    "group": "ui",
+    "source": "Platform layer",
+    "translations": {
+      "en": "Platform layer",
+      "fr": "Couche plateforme"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.security-compliance-0985e8",
+    "group": "ui",
+    "source": "Security & compliance",
+    "translations": {
+      "en": "Security & compliance",
+      "fr": "Sécurité & conformité"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.solution-layer-c353e3",
+    "group": "ui",
+    "source": "Solution layer",
+    "translations": {
+      "en": "Solution layer",
+      "fr": "Couche solutions"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.suppliers-669453",
+    "group": "ui",
+    "source": "Suppliers",
+    "translations": {
+      "en": "Suppliers",
+      "fr": "Fournisseurs"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.layered-architecture.copy.supply-chain-681468",
+    "group": "ui",
+    "source": "Supply chain",
+    "translations": {
+      "en": "Supply chain",
+      "fr": "Chaîne logistique"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.net-suite-core-diagram.core-erp-7c219d",
+    "group": "ui",
+    "source": "CORE ERP",
+    "translations": {
+      "en": "CORE ERP",
+      "fr": "SOCLE ERP"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.net-suite-core-diagram.core-erp-e561c8",
+    "group": "ui",
+    "source": "Core ERP",
+    "translations": {
+      "en": "Core ERP",
+      "fr": "Socle ERP"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.net-suite-core-diagram.netsuite-at-the-core-of-twelve-business-263582",
+    "group": "ui",
+    "source": "NetSuite at the core of twelve business domains",
+    "translations": {
+      "en": "NetSuite at the core of twelve business domains",
+      "fr": "NetSuite au cœur de douze domaines métier"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.allocate-749f1f",
+    "group": "ui",
+    "source": "Allocate",
+    "translations": {
+      "en": "Allocate",
+      "fr": "Allouer"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.close-ready-524398",
+    "group": "ui",
+    "source": "Close ready",
+    "translations": {
+      "en": "Close ready",
+      "fr": "Clôture prête"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.collect-87c026",
+    "group": "ui",
+    "source": "Collect",
+    "translations": {
+      "en": "Collect",
+      "fr": "Encaisser"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.confirm-8aae42",
+    "group": "ui",
+    "source": "Confirm",
+    "translations": {
+      "en": "Confirm",
+      "fr": "Confirmer"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.consolidated-ledger-858dbc",
+    "group": "ui",
+    "source": "Consolidated ledger",
+    "translations": {
+      "en": "Consolidated ledger",
+      "fr": "Grand livre consolidé"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.finance-9bee15",
+    "group": "ui",
+    "source": "Finance",
+    "translations": {
+      "en": "Finance",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.france-9ef45f",
+    "group": "ui",
+    "source": "France",
+    "translations": {
+      "en": "France",
+      "fr": "France"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.germany-a002ea",
+    "group": "ui",
+    "source": "Germany",
+    "translations": {
+      "en": "Germany",
+      "fr": "Allemagne"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.hub-01b8d3",
+    "group": "ui",
+    "source": "Hub",
+    "translations": {
+      "en": "Hub",
+      "fr": "Hub"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.invoice-6c6043",
+    "group": "ui",
+    "source": "Invoice",
+    "translations": {
+      "en": "Invoice",
+      "fr": "Facturer"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.online-7c82ae",
+    "group": "ui",
+    "source": "Online",
+    "translations": {
+      "en": "Online",
+      "fr": "En ligne"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.operations-b5b127",
+    "group": "ui",
+    "source": "Operations",
+    "translations": {
+      "en": "Operations",
+      "fr": "Opérations"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.order-dd1e36",
+    "group": "ui",
+    "source": "Order",
+    "translations": {
+      "en": "Order",
+      "fr": "Commande"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.sales-c2a0db",
+    "group": "ui",
+    "source": "Sales",
+    "translations": {
+      "en": "Sales",
+      "fr": "Ventes"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.ship-e53832",
+    "group": "ui",
+    "source": "Ship",
+    "translations": {
+      "en": "Ship",
+      "fr": "Expédier"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.signal-795576",
+    "group": "ui",
+    "source": "Signal",
+    "translations": {
+      "en": "Signal",
+      "fr": "Signal"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.singapore-b6e172",
+    "group": "ui",
+    "source": "Singapore",
+    "translations": {
+      "en": "Singapore",
+      "fr": "Singapour"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.stores-15257a",
+    "group": "ui",
+    "source": "Stores",
+    "translations": {
+      "en": "Stores",
+      "fr": "Magasins"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.supplier-a-4e04bc",
+    "group": "ui",
+    "source": "Supplier A",
+    "translations": {
+      "en": "Supplier A",
+      "fr": "Fournisseur A"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.supplier-b-4402ce",
+    "group": "ui",
+    "source": "Supplier B",
+    "translations": {
+      "en": "Supplier B",
+      "fr": "Fournisseur B"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.supplier-c-639489",
+    "group": "ui",
+    "source": "Supplier C",
+    "translations": {
+      "en": "Supplier C",
+      "fr": "Fournisseur C"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.uk-929d4a",
+    "group": "ui",
+    "source": "UK",
+    "translations": {
+      "en": "UK",
+      "fr": "R.-Uni"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.us-394834",
+    "group": "ui",
+    "source": "US",
+    "translations": {
+      "en": "US",
+      "fr": "É.-Unis"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.warehouse-b277cf",
+    "group": "ui",
+    "source": "Warehouse",
+    "translations": {
+      "en": "Warehouse",
+      "fr": "Entrepôt"
+    }
+  },
+  {
+    "key": "prosperya.components.visuals.solution-metaphor.copy.wholesale-c92a92",
+    "group": "ui",
+    "source": "Wholesale",
+    "translations": {
+      "en": "Wholesale",
+      "fr": "Grossistes"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.brief",
+    "group": "pages",
+    "source": "What needs to change?",
+    "translations": {
+      "en": "What needs to change?",
+      "fr": "Qu’est-ce qui doit changer ?"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.company",
+    "group": "pages",
+    "source": "Company",
+    "translations": {
+      "en": "Company",
+      "fr": "Entreprise"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.country",
+    "group": "pages",
+    "source": "Country",
+    "translations": {
+      "en": "Country",
+      "fr": "Pays"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.email",
+    "group": "pages",
+    "source": "Work email",
+    "translations": {
+      "en": "Work email",
+      "fr": "Email professionnel"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.erp",
+    "group": "pages",
+    "source": "Current ERP (optional)",
+    "translations": {
+      "en": "Current ERP (optional)",
+      "fr": "ERP actuel (facultatif)"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.name",
+    "group": "pages",
+    "source": "Name",
+    "translations": {
+      "en": "Name",
+      "fr": "Nom"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.phone",
+    "group": "pages",
+    "source": "Phone (optional)",
+    "translations": {
+      "en": "Phone (optional)",
+      "fr": "Téléphone (facultatif)"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.stage",
+    "group": "pages",
+    "source": "Project stage",
+    "translations": {
+      "en": "Project stage",
+      "fr": "Étape du projet"
+    }
+  },
+  {
+    "key": "prosperya.contact.fields.type",
+    "group": "pages",
+    "source": "Project type",
+    "translations": {
+      "en": "Project type",
+      "fr": "Type de projet"
+    }
+  },
+  {
+    "key": "prosperya.diagram.analytics",
+    "group": "ui",
+    "source": "Analytics",
+    "translations": {
+      "en": "Analytics",
+      "fr": "Analytique"
+    }
+  },
+  {
+    "key": "prosperya.diagram.commerce",
+    "group": "ui",
+    "source": "Commerce",
+    "translations": {
+      "en": "Commerce",
+      "fr": "Commerce"
+    }
+  },
+  {
+    "key": "prosperya.diagram.crm",
+    "group": "ui",
+    "source": "CRM",
+    "translations": {
+      "en": "CRM",
+      "fr": "CRM"
+    }
+  },
+  {
+    "key": "prosperya.diagram.erp",
+    "group": "ui",
+    "source": "ERP",
+    "translations": {
+      "en": "ERP",
+      "fr": "ERP"
+    }
+  },
+  {
+    "key": "prosperya.diagram.finance",
+    "group": "ui",
+    "source": "Finance",
+    "translations": {
+      "en": "Finance",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.diagram.hr",
+    "group": "ui",
+    "source": "HR",
+    "translations": {
+      "en": "HR",
+      "fr": "RH"
+    }
+  },
+  {
+    "key": "prosperya.diagram.legacy_erp",
+    "group": "ui",
+    "source": "Legacy ERP",
+    "translations": {
+      "en": "Legacy ERP",
+      "fr": "ERP historique"
+    }
+  },
+  {
+    "key": "prosperya.diagram.spreadsheets",
+    "group": "ui",
+    "source": "Spreadsheets",
+    "translations": {
+      "en": "Spreadsheets",
+      "fr": "Tableurs"
+    }
+  },
+  {
+    "key": "prosperya.diagram.warehouse",
+    "group": "ui",
+    "source": "Warehouse",
+    "translations": {
+      "en": "Warehouse",
+      "fr": "Entrepôt"
+    }
+  },
+  {
+    "key": "prosperya.footer.about_us",
+    "group": "ui",
+    "source": "About us",
+    "translations": {
+      "en": "About us",
+      "fr": "À propos"
+    }
+  },
+  {
+    "key": "prosperya.footer.case_studies",
+    "group": "ui",
+    "source": "Case studies",
+    "translations": {
+      "en": "Case studies",
+      "fr": "Études de cas"
+    }
+  },
+  {
+    "key": "prosperya.footer.company",
+    "group": "ui",
+    "source": "Company",
+    "translations": {
+      "en": "Company",
+      "fr": "Entreprise"
+    }
+  },
+  {
+    "key": "prosperya.footer.data_analytics",
+    "group": "ui",
+    "source": "Data & analytics",
+    "translations": {
+      "en": "Data & analytics",
+      "fr": "Données et analytique"
+    }
+  },
+  {
+    "key": "prosperya.footer.erp_rescue",
+    "group": "ui",
+    "source": "ERP rescue",
+    "translations": {
+      "en": "ERP rescue",
+      "fr": "Sauvetage ERP"
+    }
+  },
+  {
+    "key": "prosperya.footer.erp_transformation",
+    "group": "ui",
+    "source": "ERP transformation",
+    "translations": {
+      "en": "ERP transformation",
+      "fr": "Transformation ERP"
+    }
+  },
+  {
+    "key": "prosperya.footer.expertise_overview",
+    "group": "ui",
+    "source": "Overview",
+    "translations": {
+      "en": "Overview",
+      "fr": "Vue d’ensemble"
+    }
+  },
+  {
+    "key": "prosperya.footer.finance",
+    "group": "ui",
+    "source": "Finance",
+    "translations": {
+      "en": "Finance",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.footer.insights",
+    "group": "ui",
+    "source": "Insights",
+    "translations": {
+      "en": "Insights",
+      "fr": "Perspectives"
+    }
+  },
+  {
+    "key": "prosperya.footer.location",
+    "group": "ui",
+    "source": "Paris · France",
+    "translations": {
+      "en": "Paris · France",
+      "fr": "Paris · France"
+    }
+  },
+  {
+    "key": "prosperya.footer.netsuite_implementation",
+    "group": "ui",
+    "source": "NetSuite implementation",
+    "translations": {
+      "en": "NetSuite implementation",
+      "fr": "Implémentation NetSuite"
+    }
+  },
+  {
+    "key": "prosperya.footer.operations",
+    "group": "ui",
+    "source": "Operations",
+    "translations": {
+      "en": "Operations",
+      "fr": "Opérations"
+    }
+  },
+  {
+    "key": "prosperya.footer.our_approach",
+    "group": "ui",
+    "source": "Our approach",
+    "translations": {
+      "en": "Our approach",
+      "fr": "Notre approche"
+    }
+  },
+  {
+    "key": "prosperya.footer.resources",
+    "group": "ui",
+    "source": "Resources",
+    "translations": {
+      "en": "Resources",
+      "fr": "Ressources"
+    }
+  },
+  {
+    "key": "prosperya.footer.rights",
+    "group": "ui",
+    "source": "All rights reserved.",
+    "translations": {
+      "en": "All rights reserved.",
+      "fr": "Tous droits réservés."
+    }
+  },
+  {
+    "key": "prosperya.footer.statement",
+    "group": "ui",
+    "source": "Enterprise systems architecture and transformation.",
+    "translations": {
+      "en": "Enterprise systems architecture and transformation.",
+      "fr": "Architecture et transformation des systèmes d’entreprise."
+    }
+  },
+  {
+    "key": "prosperya.footer.supply_chain",
+    "group": "ui",
+    "source": "Supply chain",
+    "translations": {
+      "en": "Supply chain",
+      "fr": "Chaîne logistique"
+    }
+  },
+  {
+    "key": "prosperya.footer.systems_integration",
+    "group": "ui",
+    "source": "Systems integration",
+    "translations": {
+      "en": "Systems integration",
+      "fr": "Intégration des systèmes"
+    }
+  },
+  {
+    "key": "prosperya.insights.count_many",
+    "group": "pages",
+    "source": "{count} articles",
+    "translations": {
+      "en": "{count} articles",
+      "fr": "{count} analyses"
+    }
+  },
+  {
+    "key": "prosperya.insights.count_one",
+    "group": "pages",
+    "source": "{count} article",
+    "translations": {
+      "en": "{count} article",
+      "fr": "{count} analyse"
+    }
+  },
+  {
+    "key": "prosperya.locale.english",
+    "group": "ui",
+    "source": "English",
+    "translations": {
+      "en": "English",
+      "fr": "English"
+    }
+  },
+  {
+    "key": "prosperya.locale.french",
+    "group": "ui",
+    "source": "Français",
+    "translations": {
+      "en": "Français",
+      "fr": "Français"
+    }
+  },
+  {
+    "key": "prosperya.nav.about",
+    "group": "ui",
+    "source": "About",
+    "translations": {
+      "en": "About",
+      "fr": "À propos"
+    }
+  },
+  {
+    "key": "prosperya.nav.approach",
+    "group": "ui",
+    "source": "Approach",
+    "translations": {
+      "en": "Approach",
+      "fr": "Approche"
+    }
+  },
+  {
+    "key": "prosperya.nav.contact",
+    "group": "ui",
+    "source": "Start a project",
+    "translations": {
+      "en": "Start a project",
+      "fr": "Démarrer un projet"
+    }
+  },
+  {
+    "key": "prosperya.nav.expertise",
+    "group": "ui",
+    "source": "Expertise",
+    "translations": {
+      "en": "Expertise",
+      "fr": "Expertise"
+    }
+  },
+  {
+    "key": "prosperya.nav.insights",
+    "group": "ui",
+    "source": "Insights",
+    "translations": {
+      "en": "Insights",
+      "fr": "Analyses"
+    }
+  },
+  {
+    "key": "prosperya.nav.solutions",
+    "group": "ui",
+    "source": "Solutions",
+    "translations": {
+      "en": "Solutions",
+      "fr": "Solutions"
+    }
+  },
+  {
+    "key": "prosperya.nav.work",
+    "group": "ui",
+    "source": "Work",
+    "translations": {
+      "en": "Work",
+      "fr": "Projets"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.a-proven-outcome-driven-approach-that-aligns-f10b9f",
+    "group": "pages",
+    "source": "A proven, outcome-driven approach that aligns people, process and technology to deliver measurable impact — on time, on budget and built to last.",
+    "translations": {
+      "en": "A proven, outcome-driven approach that aligns people, process and technology to deliver measurable impact — on time, on budget and built to last.",
+      "fr": "Une approche éprouvée, guidée par les résultats, qui aligne personnes, processus et technologie pour un impact mesurable — dans les délais, dans le budget, et fait pour durer."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.a-structured-path-from-discovery-and-architecture-2b67d9",
+    "group": "pages",
+    "source": "A structured path from discovery and architecture to launch and continuous improvement.",
+    "translations": {
+      "en": "A structured path from discovery and architecture to launch and continuous improvement.",
+      "fr": "Un parcours structuré, de la découverte au lancement et à l’amélioration continue."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.explore-our-services-8dc8aa",
+    "group": "pages",
+    "source": "Explore our services",
+    "translations": {
+      "en": "Explore our services",
+      "fr": "Découvrir nos services"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.map-your-path-with-us-0a8424",
+    "group": "pages",
+    "source": "Map your path with us.",
+    "translations": {
+      "en": "Map your path with us.",
+      "fr": "Traçons votre parcours ensemble."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.our-approach-9bce36",
+    "group": "pages",
+    "source": "Our approach",
+    "translations": {
+      "en": "Our approach",
+      "fr": "Notre approche"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.share-your-goals-and-we-ll-craft-bb713a",
+    "group": "pages",
+    "source": "Share your goals and we’ll craft a tailored approach to deliver lasting impact.",
+    "translations": {
+      "en": "Share your goals and we’ll craft a tailored approach to deliver lasting impact.",
+      "fr": "Partagez vos objectifs : nous construirons une approche sur mesure pour un impact durable."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.start-a-conversation-607ba9",
+    "group": "pages",
+    "source": "Start a conversation",
+    "translations": {
+      "en": "Start a conversation",
+      "fr": "Démarrer une conversation"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach-page.transformation-without-chaos-6c4c95",
+    "group": "pages",
+    "source": "Transformation without chaos",
+    "translations": {
+      "en": "Transformation without chaos",
+      "fr": "Transformer sans chaos"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.a-disciplined-process-measurable-outcomes-c511aa",
+    "group": "pages",
+    "source": "A disciplined process. Measurable outcomes.",
+    "translations": {
+      "en": "A disciplined process. Measurable outcomes.",
+      "fr": "Un processus rigoureux. Des résultats mesurables."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.a-people-first-approach-to-engagement-capability-2e36b9",
+    "group": "pages",
+    "source": "A people-first approach to engagement, capability and confidence.",
+    "translations": {
+      "en": "A people-first approach to engagement, capability and confidence.",
+      "fr": "Une approche centrée sur les personnes : engagement, compétences, confiance."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.a-structured-go-live-with-hypercare-for-363944",
+    "group": "pages",
+    "source": "A structured go-live with hypercare for a smooth transition.",
+    "translations": {
+      "en": "A structured go-live with hypercare for a smooth transition.",
+      "fr": "Un démarrage structuré, avec hypercare pour une transition sereine."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.adaptability-49579c",
+    "group": "pages",
+    "source": "Adaptability",
+    "translations": {
+      "en": "Adaptability",
+      "fr": "Adaptabilité"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.adoption-93936f",
+    "group": "pages",
+    "source": "Adoption",
+    "translations": {
+      "en": "Adoption",
+      "fr": "Adoption"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.agile-delivery-focused-on-quality-reusability-and-02a4dd",
+    "group": "pages",
+    "source": "Agile delivery focused on quality, reusability and maintainability.",
+    "translations": {
+      "en": "Agile delivery focused on quality, reusability and maintainability.",
+      "fr": "Une livraison agile centrée sur la qualité et la maintenabilité."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.aligned-incentives-a755b4",
+    "group": "pages",
+    "source": "Aligned incentives",
+    "translations": {
+      "en": "Aligned incentives",
+      "fr": "Intérêts alignés"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.build-818d60",
+    "group": "pages",
+    "source": "Build",
+    "translations": {
+      "en": "Build",
+      "fr": "Construction"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.built-right-tested-thoroughly-and-secured-by-5a053f",
+    "group": "pages",
+    "source": "Built right, tested thoroughly and secured by default.",
+    "translations": {
+      "en": "Built right, tested thoroughly and secured by default.",
+      "fr": "Bien construit, testé en profondeur, sécurisé par défaut."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.business-technical-alignment-e3e697",
+    "group": "pages",
+    "source": "Business & technical alignment",
+    "translations": {
+      "en": "Business & technical alignment",
+      "fr": "Alignement métier & technique"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.change-management-edc36e",
+    "group": "pages",
+    "source": "Change management",
+    "translations": {
+      "en": "Change management",
+      "fr": "Conduite du changement"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.clear-governance-keeps-alignment-transparency-and-risk-d1d670",
+    "group": "pages",
+    "source": "Clear governance keeps alignment, transparency and risk management across the program.",
+    "translations": {
+      "en": "Clear governance keeps alignment, transparency and risk management across the program.",
+      "fr": "Une gouvernance claire assure alignement, transparence et maîtrise des risques."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.client-leadership-1d0a9d",
+    "group": "pages",
+    "source": "Client leadership",
+    "translations": {
+      "en": "Client leadership",
+      "fr": "Direction client"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.code-quality-fd6fb5",
+    "group": "pages",
+    "source": "Code quality",
+    "translations": {
+      "en": "Code quality",
+      "fr": "Qualité du code"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.collaboration-model-ad6c53",
+    "group": "pages",
+    "source": "Collaboration model",
+    "translations": {
+      "en": "Collaboration model",
+      "fr": "Modèle de collaboration"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.collaborative-sessions-to-co-create-solutions-and-fa7e1b",
+    "group": "pages",
+    "source": "Collaborative sessions to co-create solutions and align business and technology.",
+    "translations": {
+      "en": "Collaborative sessions to co-create solutions and align business and technology.",
+      "fr": "Des sessions collaboratives pour co-construire et aligner métier et technique."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.continuous-feedback-loops-across-every-phase-to-480519",
+    "group": "pages",
+    "source": "Continuous feedback loops across every phase to adapt, refine and maximize impact.",
+    "translations": {
+      "en": "Continuous feedback loops across every phase to adapt, refine and maximize impact.",
+      "fr": "Des boucles de retour continues à chaque phase pour ajuster, affiner et maximiser l’impact."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.continuous-improvement-f2deb2",
+    "group": "pages",
+    "source": "Continuous improvement",
+    "translations": {
+      "en": "Continuous improvement",
+      "fr": "Amélioration continue"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.continuous-value-9a31bf",
+    "group": "pages",
+    "source": "Continuous value",
+    "translations": {
+      "en": "Continuous value",
+      "fr": "Valeur continue"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.data-cleansing-47fba8",
+    "group": "pages",
+    "source": "Data cleansing",
+    "translations": {
+      "en": "Data cleansing",
+      "fr": "Nettoyage des données"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.decision-frameworks-240364",
+    "group": "pages",
+    "source": "Decision frameworks",
+    "translations": {
+      "en": "Decision frameworks",
+      "fr": "Cadres de décision"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.delivery-principles-4ff02e",
+    "group": "pages",
+    "source": "Delivery principles",
+    "translations": {
+      "en": "Delivery principles",
+      "fr": "Principes de livraison"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.design-thinking-2a4a95",
+    "group": "pages",
+    "source": "Design thinking",
+    "translations": {
+      "en": "Design thinking",
+      "fr": "Design thinking"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.designed-for-scale-maintainability-and-longevity-307554",
+    "group": "pages",
+    "source": "Designed for scale, maintainability and longevity.",
+    "translations": {
+      "en": "Designed for scale, maintainability and longevity.",
+      "fr": "Conçu pour l’échelle, la maintenabilité et la longévité."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.end-to-end-testing-077f8d",
+    "group": "pages",
+    "source": "End-to-end testing",
+    "translations": {
+      "en": "End-to-end testing",
+      "fr": "Tests de bout en bout"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.enhancement-backlog-56be80",
+    "group": "pages",
+    "source": "Enhancement backlog",
+    "translations": {
+      "en": "Enhancement backlog",
+      "fr": "Backlog d’améliorations"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.every-decision-ties-back-to-measurable-business-388eda",
+    "group": "pages",
+    "source": "Every decision ties back to measurable business value.",
+    "translations": {
+      "en": "Every decision ties back to measurable business value.",
+      "fr": "Chaque décision se rattache à une valeur métier mesurable."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.expertise-execution-38465e",
+    "group": "pages",
+    "source": "Expertise & execution",
+    "translations": {
+      "en": "Expertise & execution",
+      "fr": "Expertise & exécution"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.flexible-engagement-models-9c9ecd",
+    "group": "pages",
+    "source": "Flexible engagement models",
+    "translations": {
+      "en": "Flexible engagement models",
+      "fr": "Modèles d’engagement flexibles"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.governance-fd9cd5",
+    "group": "pages",
+    "source": "Governance",
+    "translations": {
+      "en": "Governance",
+      "fr": "Gouvernance"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.how-we-work-b7ece1",
+    "group": "pages",
+    "source": "How we work",
+    "translations": {
+      "en": "How we work",
+      "fr": "Notre façon de travailler"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.hypercare-support-738406",
+    "group": "pages",
+    "source": "Hypercare support",
+    "translations": {
+      "en": "Hypercare support",
+      "fr": "Hypercare"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.innovation-automation-265f23",
+    "group": "pages",
+    "source": "Innovation & automation",
+    "translations": {
+      "en": "Innovation & automation",
+      "fr": "Innovation & automatisation"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.iterate-fast-learn-faster-and-adapt-to-56cf19",
+    "group": "pages",
+    "source": "Iterate fast, learn faster and adapt to change.",
+    "translations": {
+      "en": "Iterate fast, learn faster and adapt to change.",
+      "fr": "Itérer vite, apprendre plus vite, s’adapter au changement."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.joint-ownership-of-outcomes-db93f0",
+    "group": "pages",
+    "source": "Joint ownership of outcomes",
+    "translations": {
+      "en": "Joint ownership of outcomes",
+      "fr": "Responsabilité partagée des résultats"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.launch-0f323a",
+    "group": "pages",
+    "source": "Launch",
+    "translations": {
+      "en": "Launch",
+      "fr": "Lancement"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.measure-improve-a4d600",
+    "group": "pages",
+    "source": "Measure & improve",
+    "translations": {
+      "en": "Measure & improve",
+      "fr": "Mesurer & améliorer"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.migration-0739e3",
+    "group": "pages",
+    "source": "Migration",
+    "translations": {
+      "en": "Migration",
+      "fr": "Migration"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.migration-automation-0ecc3a",
+    "group": "pages",
+    "source": "Migration automation",
+    "translations": {
+      "en": "Migration automation",
+      "fr": "Migration automatisée"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.monitoring-alerts-844241",
+    "group": "pages",
+    "source": "Monitoring & alerts",
+    "translations": {
+      "en": "Monitoring & alerts",
+      "fr": "Supervision & alertes"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.open-communication-clear-reporting-no-surprises-ef38e7",
+    "group": "pages",
+    "source": "Open communication, clear reporting, no surprises.",
+    "translations": {
+      "en": "Open communication, clear reporting, no surprises.",
+      "fr": "Une communication ouverte, un reporting clair, aucune surprise."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.operational-readiness-96d79b",
+    "group": "pages",
+    "source": "Operational readiness",
+    "translations": {
+      "en": "Operational readiness",
+      "fr": "Préparation opérationnelle"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.outcome-driven-546ac4",
+    "group": "pages",
+    "source": "Outcome-driven",
+    "translations": {
+      "en": "Outcome-driven",
+      "fr": "Orientés résultats"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.outcomes-impact-7e8511",
+    "group": "pages",
+    "source": "Outcomes & impact",
+    "translations": {
+      "en": "Outcomes & impact",
+      "fr": "Résultats & impact"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.partners-not-just-providers-a684c4",
+    "group": "pages",
+    "source": "Partners, not just providers.",
+    "translations": {
+      "en": "Partners, not just providers.",
+      "fr": "Des partenaires, pas seulement des prestataires."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.peer-reviews-0a9598",
+    "group": "pages",
+    "source": "Peer reviews",
+    "translations": {
+      "en": "Peer reviews",
+      "fr": "Revues croisées"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.performance-reviews-cd2ab3",
+    "group": "pages",
+    "source": "Performance reviews",
+    "translations": {
+      "en": "Performance reviews",
+      "fr": "Revues de performance"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.performance-security-1ea7eb",
+    "group": "pages",
+    "source": "Performance & security",
+    "translations": {
+      "en": "Performance & security",
+      "fr": "Performance & sécurité"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.prioritization-dae5c9",
+    "group": "pages",
+    "source": "Prioritization",
+    "translations": {
+      "en": "Prioritization",
+      "fr": "Priorisation"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.prosperya-198d8e",
+    "group": "pages",
+    "source": "Prosperya",
+    "translations": {
+      "en": "Prosperya",
+      "fr": "Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.proven-migration-frameworks-minimize-risk-and-protect-e5ea8f",
+    "group": "pages",
+    "source": "Proven migration frameworks minimize risk and protect data integrity.",
+    "translations": {
+      "en": "Proven migration frameworks minimize risk and protect data integrity.",
+      "fr": "Des méthodes éprouvées qui limitent le risque et protègent les données."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.quality-by-design-df9552",
+    "group": "pages",
+    "source": "Quality by design",
+    "translations": {
+      "en": "Quality by design",
+      "fr": "Qualité dès la conception"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.reference-architecture-8a2d67",
+    "group": "pages",
+    "source": "Reference architecture",
+    "translations": {
+      "en": "Reference architecture",
+      "fr": "Architecture de référence"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.risk-issue-management-3c7370",
+    "group": "pages",
+    "source": "Risk & issue management",
+    "translations": {
+      "en": "Risk & issue management",
+      "fr": "Gestion des risques"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.scalability-performance-f2bc97",
+    "group": "pages",
+    "source": "Scalability & performance",
+    "translations": {
+      "en": "Scalability & performance",
+      "fr": "Évolutivité & performance"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.secure-scalable-architectures-aligned-to-your-business-989c8b",
+    "group": "pages",
+    "source": "Secure, scalable architectures aligned to your business and technology strategy.",
+    "translations": {
+      "en": "Secure, scalable architectures aligned to your business and technology strategy.",
+      "fr": "Des architectures sûres et évolutives, alignées sur votre stratégie."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.security-by-design-1c738e",
+    "group": "pages",
+    "source": "Security by design",
+    "translations": {
+      "en": "Security by design",
+      "fr": "Sécurité dès la conception"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.shared-goals-87c492",
+    "group": "pages",
+    "source": "Shared goals",
+    "translations": {
+      "en": "Shared goals",
+      "fr": "Objectifs communs"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.solution-architecture-a378e7",
+    "group": "pages",
+    "source": "Solution architecture",
+    "translations": {
+      "en": "Solution architecture",
+      "fr": "Architecture de solution"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.sprint-based-delivery-38d5ad",
+    "group": "pages",
+    "source": "Sprint-based delivery",
+    "translations": {
+      "en": "Sprint-based delivery",
+      "fr": "Livraison par sprints"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.stakeholder-engagement-963655",
+    "group": "pages",
+    "source": "Stakeholder engagement",
+    "translations": {
+      "en": "Stakeholder engagement",
+      "fr": "Engagement des parties prenantes"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.steering-committees-a6f592",
+    "group": "pages",
+    "source": "Steering committees",
+    "translations": {
+      "en": "Steering committees",
+      "fr": "Comités de pilotage"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.sustainability-bf8a72",
+    "group": "pages",
+    "source": "Sustainability",
+    "translations": {
+      "en": "Sustainability",
+      "fr": "Durabilité"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.testing-that-proves-functionality-performance-and-compliance-65c845",
+    "group": "pages",
+    "source": "Testing that proves functionality, performance and compliance.",
+    "translations": {
+      "en": "Testing that proves functionality, performance and compliance.",
+      "fr": "Des tests qui prouvent fonctionnalités, performance et conformité."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.the-standards-we-never-compromise-efb4fe",
+    "group": "pages",
+    "source": "The standards we never compromise.",
+    "translations": {
+      "en": "The standards we never compromise.",
+      "fr": "Les exigences sur lesquelles nous ne transigeons pas."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.training-enablement-51c882",
+    "group": "pages",
+    "source": "Training & enablement",
+    "translations": {
+      "en": "Training & enablement",
+      "fr": "Formation"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.transparency-862072",
+    "group": "pages",
+    "source": "Transparency",
+    "translations": {
+      "en": "Transparency",
+      "fr": "Transparence"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.transparent-communication-97f183",
+    "group": "pages",
+    "source": "Transparent communication",
+    "translations": {
+      "en": "Transparent communication",
+      "fr": "Communication transparente"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.uat-sign-off-cad85c",
+    "group": "pages",
+    "source": "UAT & sign-off",
+    "translations": {
+      "en": "UAT & sign-off",
+      "fr": "Recette & validation"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.validation-f76feb",
+    "group": "pages",
+    "source": "Validation",
+    "translations": {
+      "en": "Validation",
+      "fr": "Validation"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.validation-reconciliation-28fad0",
+    "group": "pages",
+    "source": "Validation & reconciliation",
+    "translations": {
+      "en": "Validation & reconciliation",
+      "fr": "Validation & rapprochement"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.vision-decisions-1fd1cf",
+    "group": "pages",
+    "source": "Vision & decisions",
+    "translations": {
+      "en": "Vision & decisions",
+      "fr": "Vision & décisions"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.we-stay-to-optimize-innovate-and-evolve-e95d3b",
+    "group": "pages",
+    "source": "We stay to optimize, innovate and evolve with your business.",
+    "translations": {
+      "en": "We stay to optimize, innovate and evolve with your business.",
+      "fr": "Nous restons pour optimiser, innover et évoluer avec vous."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.approach.copy.copy.workshops-c7494f",
+    "group": "pages",
+    "source": "Workshops",
+    "translations": {
+      "en": "Workshops",
+      "fr": "Ateliers"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.a-structured-iterative-methodology-designed-to-reduce-d704a8",
+    "group": "pages",
+    "source": "A structured, iterative methodology designed to reduce risk, accelerate delivery and ensure lasting adoption.",
+    "translations": {
+      "en": "A structured, iterative methodology designed to reduce risk, accelerate delivery and ensure lasting adoption.",
+      "fr": "Une méthode structurée et itérative pour réduire le risque, accélérer la livraison et garantir une adoption durable."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.from-strategy-to-sustained-value-70c86d",
+    "group": "pages",
+    "source": "From strategy to sustained value.",
+    "translations": {
+      "en": "From strategy to sustained value.",
+      "fr": "De la stratégie à la valeur durable."
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.hand-over-513516",
+    "group": "pages",
+    "source": "Hand-over",
+    "translations": {
+      "en": "Hand-over",
+      "fr": "Livrable"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.next-stage-e71f2c",
+    "group": "pages",
+    "source": "Next stage",
+    "translations": {
+      "en": "Next stage",
+      "fr": "Étape suivante"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.our-methodology-d277b7",
+    "group": "pages",
+    "source": "Our methodology",
+    "translations": {
+      "en": "Our methodology",
+      "fr": "Notre méthode"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.previous-stage-1b72b3",
+    "group": "pages",
+    "source": "Previous stage",
+    "translations": {
+      "en": "Previous stage",
+      "fr": "Étape précédente"
+    }
+  },
+  {
+    "key": "prosperya.pages.approach.delivery-sequence.transformation-stages-dcdb80",
+    "group": "pages",
+    "source": "Transformation stages",
+    "translations": {
+      "en": "Transformation stages",
+      "fr": "Étapes de transformation"
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.all-insights-3e70ef",
+    "group": "pages",
+    "source": "All insights",
+    "translations": {
+      "en": "All insights",
+      "fr": "Toutes les analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.by-the-prosperya-team-63c8ff",
+    "group": "pages",
+    "source": "By the Prosperya team",
+    "translations": {
+      "en": "By the Prosperya team",
+      "fr": "Par l’équipe Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.get-the-next-article-first-79dae7",
+    "group": "pages",
+    "source": "Get the next article first.",
+    "translations": {
+      "en": "Get the next article first.",
+      "fr": "Recevez la prochaine analyse."
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.insight-not-found-6a3f0b",
+    "group": "pages",
+    "source": "Insight not found",
+    "translations": {
+      "en": "Insight not found",
+      "fr": "Analyse introuvable"
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.keep-reading-6c0c98",
+    "group": "pages",
+    "source": "Keep reading",
+    "translations": {
+      "en": "Keep reading",
+      "fr": "À lire ensuite"
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.prosperya-insights-56ddec",
+    "group": "pages",
+    "source": "Prosperya — Insights",
+    "translations": {
+      "en": "Prosperya — Insights",
+      "fr": "Prosperya — Analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.article.article-page.related-insights-e79261",
+    "group": "pages",
+    "source": "Related insights",
+    "translations": {
+      "en": "Related insights",
+      "fr": "Analyses liées"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.after-733182",
+    "group": "pages",
+    "source": "After",
+    "translations": {
+      "en": "After",
+      "fr": "Après"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.all-case-studies-0baf60",
+    "group": "pages",
+    "source": "All case studies",
+    "translations": {
+      "en": "All case studies",
+      "fr": "Tous les cas clients"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.architecture-before-and-after-the-transformation-f26fa6",
+    "group": "pages",
+    "source": "Architecture before and after the transformation",
+    "translations": {
+      "en": "Architecture before and after the transformation",
+      "fr": "Architecture avant et après la transformation"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.at-a-glance-34f4be",
+    "group": "pages",
+    "source": "At a glance",
+    "translations": {
+      "en": "At a glance",
+      "fr": "En un coup d’œil"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.before-926f48",
+    "group": "pages",
+    "source": "Before",
+    "translations": {
+      "en": "Before",
+      "fr": "Avant"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.case-studies-262284",
+    "group": "pages",
+    "source": "Case studies",
+    "translations": {
+      "en": "Case studies",
+      "fr": "Cas clients"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.case-study-not-found-c33e56",
+    "group": "pages",
+    "source": "Case study not found",
+    "translations": {
+      "en": "Case study not found",
+      "fr": "Cas introuvable"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.core-erp-e561c8",
+    "group": "pages",
+    "source": "Core ERP",
+    "translations": {
+      "en": "Core ERP",
+      "fr": "Socle ERP"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.discuss-a-similar-project-a96665",
+    "group": "pages",
+    "source": "Discuss a similar project",
+    "translations": {
+      "en": "Discuss a similar project",
+      "fr": "Discuter d’un projet similaire"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.have-a-similar-project-in-mind-bbbb01",
+    "group": "pages",
+    "source": "Have a similar project in mind?",
+    "translations": {
+      "en": "Have a similar project in mind?",
+      "fr": "Un projet comparable en tête ?"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.illustrative-engagement-unverified-results-094592",
+    "group": "pages",
+    "source": "Illustrative engagement · unverified results",
+    "translations": {
+      "en": "Illustrative engagement · unverified results",
+      "fr": "Mission illustrative · résultats non vérifiés"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.illustrative-quote-45e8ad",
+    "group": "pages",
+    "source": "Illustrative quote",
+    "translations": {
+      "en": "Illustrative quote",
+      "fr": "Citation illustrative"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.industry-b26ab6",
+    "group": "pages",
+    "source": "Industry",
+    "translations": {
+      "en": "Industry",
+      "fr": "Secteur"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.next-project-eb1dfe",
+    "group": "pages",
+    "source": "Next project",
+    "translations": {
+      "en": "Next project",
+      "fr": "Projet suivant"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.prosperya-work-1636b5",
+    "group": "pages",
+    "source": "Prosperya — Work",
+    "translations": {
+      "en": "Prosperya — Work",
+      "fr": "Prosperya — Projets"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.secure-scalable-connected-7ae226",
+    "group": "pages",
+    "source": "Secure. Scalable. Connected.",
+    "translations": {
+      "en": "Secure. Scalable. Connected.",
+      "fr": "Sûr. Évolutif. Connecté."
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.single-source-037416",
+    "group": "pages",
+    "source": "SINGLE SOURCE",
+    "translations": {
+      "en": "SINGLE SOURCE",
+      "fr": "SOCLE UNIQUE"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.talk-it-through-with-an-architect-d4b031",
+    "group": "pages",
+    "source": "Talk it through with an architect.",
+    "translations": {
+      "en": "Talk it through with an architect.",
+      "fr": "Parlez à un architecte de votre contexte."
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.talk-to-an-architect-507d4c",
+    "group": "pages",
+    "source": "Talk to an architect",
+    "translations": {
+      "en": "Talk to an architect",
+      "fr": "Parler à un architecte"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.technology-stack-e21e26",
+    "group": "pages",
+    "source": "Technology stack",
+    "translations": {
+      "en": "Technology stack",
+      "fr": "Pile technologique"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.the-architecture-8ae880",
+    "group": "pages",
+    "source": "The architecture",
+    "translations": {
+      "en": "The architecture",
+      "fr": "L’architecture"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.the-challenge-c39e0a",
+    "group": "pages",
+    "source": "The challenge",
+    "translations": {
+      "en": "The challenge",
+      "fr": "Le défi"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.the-outcome-4d35d7",
+    "group": "pages",
+    "source": "The outcome",
+    "translations": {
+      "en": "The outcome",
+      "fr": "Le résultat"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.the-solution-f395ce",
+    "group": "pages",
+    "source": "The solution",
+    "translations": {
+      "en": "The solution",
+      "fr": "La solution"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.transformation-72c396",
+    "group": "pages",
+    "source": "Transformation",
+    "translations": {
+      "en": "Transformation",
+      "fr": "Transformation"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.view-case-study-2050cc",
+    "group": "pages",
+    "source": "View case study",
+    "translations": {
+      "en": "View case study",
+      "fr": "Voir le cas client"
+    }
+  },
+  {
+    "key": "prosperya.pages.case-study.case-study-page.work-2af496",
+    "group": "pages",
+    "source": "Work",
+    "translations": {
+      "en": "Work",
+      "fr": "Projets"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.a-clear-next-step-cd6efa",
+    "group": "pages",
+    "source": "A clear next step",
+    "translations": {
+      "en": "A clear next step",
+      "fr": "Une suite claire"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.a-first-conversation-f7708b",
+    "group": "pages",
+    "source": "A first conversation",
+    "translations": {
+      "en": "A first conversation",
+      "fr": "Une première conversation"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.about-3-minutes-fc8196",
+    "group": "pages",
+    "source": "About 3 minutes",
+    "translations": {
+      "en": "About 3 minutes",
+      "fr": "Environ 3 minutes"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.about-you-d40b5d",
+    "group": "pages",
+    "source": "About you",
+    "translations": {
+      "en": "About you",
+      "fr": "Vous"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.choose-an-option-from-the-list-f37800",
+    "group": "pages",
+    "source": "Choose an option from the list.",
+    "translations": {
+      "en": "Choose an option from the list.",
+      "fr": "Choisissez une option de la liste."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.context-goals-and-constraints-in-a-few-16b819",
+    "group": "pages",
+    "source": "Context, goals and constraints — in a few minutes.",
+    "translations": {
+      "en": "Context, goals and constraints — in a few minutes.",
+      "fr": "Contexte, objectifs, contraintes — en quelques minutes."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.enter-a-valid-email-address-e89bf5",
+    "group": "pages",
+    "source": "Enter a valid email address.",
+    "translations": {
+      "en": "Enter a valid email address.",
+      "fr": "Saisissez une adresse email valide."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.let-s-architect-what-comes-next-7eed29",
+    "group": "pages",
+    "source": "Let’s architect what comes next.",
+    "translations": {
+      "en": "Let’s architect what comes next.",
+      "fr": "Architecturons la suite."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.loading-options-725b1f",
+    "group": "pages",
+    "source": "Loading options",
+    "translations": {
+      "en": "Loading options",
+      "fr": "Chargement des options"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.no-options-available-39ed06",
+    "group": "pages",
+    "source": "No options available",
+    "translations": {
+      "en": "No options available",
+      "fr": "Aucune option disponible"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.outline-your-erp-transformation-integration-or-automation-be5fb5",
+    "group": "pages",
+    "source": "Outline your ERP transformation, integration or automation project with Prosperya.",
+    "translations": {
+      "en": "Outline your ERP transformation, integration or automation project with Prosperya.",
+      "fr": "Préparez votre projet de transformation ERP, d’intégration ou d’automatisation avec Prosperya."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.project-enquiries-are-temporarily-unavailable-6ce5fa",
+    "group": "pages",
+    "source": "Project enquiries are temporarily unavailable.",
+    "translations": {
+      "en": "Project enquiries are temporarily unavailable.",
+      "fr": "L’envoi de demandes est temporairement indisponible."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.select-one-7658c9",
+    "group": "pages",
+    "source": "Select one",
+    "translations": {
+      "en": "Select one",
+      "fr": "Sélectionnez"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.send-project-brief-816a21",
+    "group": "pages",
+    "source": "Send project brief",
+    "translations": {
+      "en": "Send project brief",
+      "fr": "Envoyer mon brief"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.sending-b7af8e",
+    "group": "pages",
+    "source": "Sending…",
+    "translations": {
+      "en": "Sending…",
+      "fr": "Envoi…"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.start-a-project-908ad4",
+    "group": "pages",
+    "source": "Start a project",
+    "translations": {
+      "en": "Start a project",
+      "fr": "Démarrer un projet"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.tell-us-where-you-are-today-what-dcc1ed",
+    "group": "pages",
+    "source": "Tell us where you are today, what you want to achieve and the constraints that matter.",
+    "translations": {
+      "en": "Tell us where you are today, what you want to achieve and the constraints that matter.",
+      "fr": "Dites-nous où vous en êtes, ce que vous voulez atteindre et les contraintes qui comptent."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.thank-you-your-project-brief-was-received-4a736f",
+    "group": "pages",
+    "source": "Thank you, your project brief was received.",
+    "translations": {
+      "en": "Thank you, your project brief was received.",
+      "fr": "Merci, votre demande a été reçue."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.the-text-exceeds-the-allowed-length-47d0c5",
+    "group": "pages",
+    "source": "The text exceeds the allowed length.",
+    "translations": {
+      "en": "The text exceeds the allowed length.",
+      "fr": "Le texte dépasse la longueur autorisée."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.this-field-is-required-b64844",
+    "group": "pages",
+    "source": "This field is required.",
+    "translations": {
+      "en": "This field is required.",
+      "fr": "Ce champ est obligatoire."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.too-many-requests-please-wait-before-trying-a64b07",
+    "group": "pages",
+    "source": "Too many requests. Please wait before trying again.",
+    "translations": {
+      "en": "Too many requests. Please wait before trying again.",
+      "fr": "Trop de demandes. Réessayez dans un moment."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.what-is-worth-changing-and-in-what-5f2545",
+    "group": "pages",
+    "source": "What is worth changing, and in what order.",
+    "translations": {
+      "en": "What is worth changing, and in what order.",
+      "fr": "Ce qui mérite d’être changé, et dans quel ordre."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.with-an-architect-not-a-sales-script-df646e",
+    "group": "pages",
+    "source": "With an architect, not a sales script.",
+    "translations": {
+      "en": "With an architect, not a sales script.",
+      "fr": "Avec un architecte, pas un commercial."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.your-brief-b39c64",
+    "group": "pages",
+    "source": "Your brief",
+    "translations": {
+      "en": "Your brief",
+      "fr": "Votre brief"
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.your-brief-could-not-be-sent-your-c7d07a",
+    "group": "pages",
+    "source": "Your brief could not be sent. Your information remains in the form; please try again.",
+    "translations": {
+      "en": "Your brief could not be sent. Your information remains in the form; please try again.",
+      "fr": "Votre demande n’a pas pu être envoyée. Vos informations restent dans le formulaire."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.your-project-brief-will-be-sent-to-5b9461",
+    "group": "pages",
+    "source": "Your project brief will be sent to Prosperya.",
+    "translations": {
+      "en": "Your project brief will be sent to Prosperya.",
+      "fr": "Votre demande sera transmise à Prosperya."
+    }
+  },
+  {
+    "key": "prosperya.pages.contact.contact-page.your-project-fb792b",
+    "group": "pages",
+    "source": "Your project",
+    "translations": {
+      "en": "Your project",
+      "fr": "Votre projet"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-detail-page.expertise-not-found-6043fe",
+    "group": "pages",
+    "source": "Expertise not found",
+    "translations": {
+      "en": "Expertise not found",
+      "fr": "Expertise introuvable"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.explore-complementary-capabilities-9969cf",
+    "group": "pages",
+    "source": "Explore complementary capabilities.",
+    "translations": {
+      "en": "Explore complementary capabilities.",
+      "fr": "Des capacités complémentaires."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.explore-our-approach-de10c8",
+    "group": "pages",
+    "source": "Explore our approach",
+    "translations": {
+      "en": "Explore our approach",
+      "fr": "Découvrir notre approche"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.home-ded702",
+    "group": "pages",
+    "source": "Home",
+    "translations": {
+      "en": "Home",
+      "fr": "Accueil"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.on-this-page-765502",
+    "group": "pages",
+    "source": "On this page",
+    "translations": {
+      "en": "On this page",
+      "fr": "Dans cette page"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.related-expertise-d6a7c0",
+    "group": "pages",
+    "source": "Related expertise",
+    "translations": {
+      "en": "Related expertise",
+      "fr": "Expertises associées"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.start-your-transformation-6e62e2",
+    "group": "pages",
+    "source": "Start your transformation",
+    "translations": {
+      "en": "Start your transformation",
+      "fr": "Démarrer votre projet"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.systems-in-motion-f02084",
+    "group": "pages",
+    "source": "Systems in motion",
+    "translations": {
+      "en": "Systems in motion",
+      "fr": "Systèmes en mouvement"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise-detail.expertise-page-content.talk-to-an-expert-8e5217",
+    "group": "pages",
+    "source": "Talk to an expert",
+    "translations": {
+      "en": "Talk to an expert",
+      "fr": "Parler à un expert"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.copy.complexity-reduces-ab79bd",
+    "group": "pages",
+    "source": "Complexity reduces",
+    "translations": {
+      "en": "Complexity reduces",
+      "fr": "La complexité diminue"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.copy.connections-appear-86e1fe",
+    "group": "pages",
+    "source": "Connections appear",
+    "translations": {
+      "en": "Connections appear",
+      "fr": "Les connexions apparaissent"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.copy.data-starts-flowing-70a84a",
+    "group": "pages",
+    "source": "Data starts flowing",
+    "translations": {
+      "en": "Data starts flowing",
+      "fr": "Les données circulent"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.copy.systems-reorganize-486e09",
+    "group": "pages",
+    "source": "Systems reorganize",
+    "translations": {
+      "en": "Systems reorganize",
+      "fr": "Les systèmes se réorganisent"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.explore-5be3be",
+    "group": "pages",
+    "source": "Explore",
+    "translations": {
+      "en": "Explore",
+      "fr": "Explorer"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.four-disciplines-5c8475",
+    "group": "pages",
+    "source": "Four disciplines",
+    "translations": {
+      "en": "Four disciplines",
+      "fr": "Quatre disciplines"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.one-architecture-four-moves-24d86b",
+    "group": "pages",
+    "source": "One architecture. Four moves.",
+    "translations": {
+      "en": "One architecture. Four moves.",
+      "fr": "Une architecture, quatre gestes."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.capability-story.scattered-systems-3cec7c",
+    "group": "pages",
+    "source": "Scattered systems",
+    "translations": {
+      "en": "Scattered systems",
+      "fr": "Systèmes dispersés"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.built-to-connect-5ea962",
+    "group": "pages",
+    "source": "Built to connect.",
+    "translations": {
+      "en": "Built to connect.",
+      "fr": "Conçu pour connecter."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.capabilities-that-drive-measurable-results-ad246d",
+    "group": "pages",
+    "source": "Capabilities that drive measurable results.",
+    "translations": {
+      "en": "Capabilities that drive measurable results.",
+      "fr": "Des expertises qui produisent des résultats."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.describe-the-problem-we-will-point-you-b40a3b",
+    "group": "pages",
+    "source": "Describe the problem. We will point you to the right starting point.",
+    "translations": {
+      "en": "Describe the problem. We will point you to the right starting point.",
+      "fr": "Décrivez le problème : nous vous indiquerons le bon point de départ."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.designed-to-scale-4d2442",
+    "group": "pages",
+    "source": "Designed to scale.",
+    "translations": {
+      "en": "Designed to scale.",
+      "fr": "Pensé pour grandir."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.erp-transformation-netsuite-implementation-integration-automation-audit-51a3ca",
+    "group": "pages",
+    "source": "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
+    "translations": {
+      "en": "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
+      "fr": "Transformation ERP, implémentation NetSuite, intégration, automatisation, audit et redressement."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.explore-our-approach-de10c8",
+    "group": "pages",
+    "source": "Explore our approach",
+    "translations": {
+      "en": "Explore our approach",
+      "fr": "Découvrir notre approche"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66",
+    "group": "pages",
+    "source": "Not sure which capability you need?",
+    "translations": {
+      "en": "Not sure which capability you need?",
+      "fr": "Vous hésitez entre plusieurs expertises ?"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.our-architecture-approach-37ec21",
+    "group": "pages",
+    "source": "Our architecture approach",
+    "translations": {
+      "en": "Our architecture approach",
+      "fr": "Notre approche d’architecture"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.our-architecture-framework-unifies-your-enterprise-systems-46a34d",
+    "group": "pages",
+    "source": "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth.",
+    "translations": {
+      "en": "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth.",
+      "fr": "Notre cadre d’architecture unifie systèmes, données et processus pour créer une fondation résiliente et évolutive."
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.talk-to-an-expert-8e5217",
+    "group": "pages",
+    "source": "Talk to an expert",
+    "translations": {
+      "en": "Talk to an expert",
+      "fr": "Parler à un expert"
+    }
+  },
+  {
+    "key": "prosperya.pages.expertise.expertise-page.we-help-enterprises-design-connect-and-optimize-2b00c4",
+    "group": "pages",
+    "source": "We help enterprises design, connect and optimize their systems to simplify operations, reduce complexity and unlock performance at scale.",
+    "translations": {
+      "en": "We help enterprises design, connect and optimize their systems to simplify operations, reduce complexity and unlock performance at scale.",
+      "fr": "Nous aidons les entreprises à concevoir, connecter et optimiser leurs systèmes pour simplifier les opérations, réduire la complexité et libérer la performance."
+    }
+  },
+  {
+    "key": "prosperya.pages.home.home-page.enterprise-systems-architecture-and-transformation-in-paris-3825b8",
+    "group": "pages",
+    "source": "Enterprise systems architecture and transformation in Paris.",
+    "translations": {
+      "en": "Enterprise systems architecture and transformation in Paris.",
+      "fr": "Architecture et transformation des systèmes d’entreprise à Paris."
+    }
+  },
+  {
+    "key": "prosperya.pages.home.home-page.prosperya-complexity-orchestrated-2438c7",
+    "group": "pages",
+    "source": "Prosperya — Complexity. Orchestrated.",
+    "translations": {
+      "en": "Prosperya — Complexity. Orchestrated.",
+      "fr": "Prosperya — Complexité. Orchestrée."
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.all-insights-3e70ef",
+    "group": "pages",
+    "source": "All insights",
+    "translations": {
+      "en": "All insights",
+      "fr": "Toutes les analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.featured-article-2293a3",
+    "group": "pages",
+    "source": "Featured article",
+    "translations": {
+      "en": "Featured article",
+      "fr": "À la une"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.filter-insights-4d063c",
+    "group": "pages",
+    "source": "Filter insights",
+    "translations": {
+      "en": "Filter insights",
+      "fr": "Filtrer les analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.ideas-and-perspectives-from-the-field-df7a44",
+    "group": "pages",
+    "source": "Ideas and perspectives from the field.",
+    "translations": {
+      "en": "Ideas and perspectives from the field.",
+      "fr": "Idées et regards venus du terrain."
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.insight-pages-21aff6",
+    "group": "pages",
+    "source": "Insight pages",
+    "translations": {
+      "en": "Insight pages",
+      "fr": "Pages des analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.insights-1bdb50",
+    "group": "pages",
+    "source": "Insights",
+    "translations": {
+      "en": "Insights",
+      "fr": "Analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.next-903b82",
+    "group": "pages",
+    "source": "Next",
+    "translations": {
+      "en": "Next",
+      "fr": "Suivant"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.page-b5a952",
+    "group": "pages",
+    "source": "Page",
+    "translations": {
+      "en": "Page",
+      "fr": "Page"
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.perspectives-on-erp-transformation-netsuite-integration-and-a12c24",
+    "group": "pages",
+    "source": "Perspectives on ERP transformation, NetSuite, integration and finance operations.",
+    "translations": {
+      "en": "Perspectives on ERP transformation, NetSuite, integration and finance operations.",
+      "fr": "Perspectives sur la transformation ERP, NetSuite, l’intégration et les opérations financières."
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.practical-insights-on-erp-netsuite-and-enterprise-709d4d",
+    "group": "pages",
+    "source": "Practical insights on ERP, NetSuite and enterprise transformation — shaped by experience, measured by impact.",
+    "translations": {
+      "en": "Practical insights on ERP, NetSuite and enterprise transformation — shaped by experience, measured by impact.",
+      "fr": "Des analyses pratiques sur l’ERP, NetSuite et la transformation d’entreprise — nourries par l’expérience, mesurées par l’impact."
+    }
+  },
+  {
+    "key": "prosperya.pages.insights.insights-page.previous-abad3a",
+    "group": "pages",
+    "source": "Previous",
+    "translations": {
+      "en": "Previous",
+      "fr": "Précédent"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.about-eff879",
+    "group": "pages",
+    "source": "About",
+    "translations": {
+      "en": "About",
+      "fr": "À propos"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.approach-d02268",
+    "group": "pages",
+    "source": "Approach",
+    "translations": {
+      "en": "Approach",
+      "fr": "Approche"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.expertise-6e9b7a",
+    "group": "pages",
+    "source": "Expertise",
+    "translations": {
+      "en": "Expertise",
+      "fr": "Expertises"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.insights-1bdb50",
+    "group": "pages",
+    "source": "Insights",
+    "translations": {
+      "en": "Insights",
+      "fr": "Analyses"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.page-not-found-prosperya-9423d8",
+    "group": "pages",
+    "source": "Page not found — Prosperya",
+    "translations": {
+      "en": "Page not found — Prosperya",
+      "fr": "Page introuvable — Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.return-home-2f1301",
+    "group": "pages",
+    "source": "Return home",
+    "translations": {
+      "en": "Return home",
+      "fr": "Retour à l’accueil"
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.the-page-may-have-moved-the-rest-43e3da",
+    "group": "pages",
+    "source": "The page may have moved. The rest of the system is running — pick a destination.",
+    "translations": {
+      "en": "The page may have moved. The rest of the system is running — pick a destination.",
+      "fr": "La page a peut-être été déplacée. Le reste du système fonctionne — choisissez une destination."
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.this-connection-leads-nowhere-e06690",
+    "group": "pages",
+    "source": "This connection leads nowhere.",
+    "translations": {
+      "en": "This connection leads nowhere.",
+      "fr": "Ce lien ne mène nulle part."
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.this-page-is-not-available-646f66",
+    "group": "pages",
+    "source": "This page is not available.",
+    "translations": {
+      "en": "This page is not available.",
+      "fr": "Cette page n’est pas disponible."
+    }
+  },
+  {
+    "key": "prosperya.pages.not-found.not-found-page.work-f8cafc",
+    "group": "pages",
+    "source": "Work",
+    "translations": {
+      "en": "Work",
+      "fr": "Réalisations"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.all-solutions-731f69",
+    "group": "pages",
+    "source": "All solutions",
+    "translations": {
+      "en": "All solutions",
+      "fr": "Toutes les solutions"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.capabilities-behind-the-solution-a492e7",
+    "group": "pages",
+    "source": "Capabilities behind the solution",
+    "translations": {
+      "en": "Capabilities behind the solution",
+      "fr": "Expertises mobilisées"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.concrete-capabilities-visible-outcomes-72f078",
+    "group": "pages",
+    "source": "Concrete capabilities. Visible outcomes.",
+    "translations": {
+      "en": "Concrete capabilities. Visible outcomes.",
+      "fr": "Des capacités concrètes. Des résultats visibles."
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.home-ded702",
+    "group": "pages",
+    "source": "Home",
+    "translations": {
+      "en": "Home",
+      "fr": "Accueil"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.in-practice-bf2d3c",
+    "group": "pages",
+    "source": "In practice",
+    "translations": {
+      "en": "In practice",
+      "fr": "En pratique"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.read-the-case-study-c265da",
+    "group": "pages",
+    "source": "Read the case study",
+    "translations": {
+      "en": "Read the case study",
+      "fr": "Lire le cas client"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.solution-not-found-0f1206",
+    "group": "pages",
+    "source": "Solution not found",
+    "translations": {
+      "en": "Solution not found",
+      "fr": "Solution introuvable"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.start-a-conversation-345cd0",
+    "group": "pages",
+    "source": "Start a conversation",
+    "translations": {
+      "en": "Start a conversation",
+      "fr": "Parlons de votre projet"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.start-with-the-friction-that-costs-you-df2223",
+    "group": "pages",
+    "source": "Start with the friction that costs you most.",
+    "translations": {
+      "en": "Start with the friction that costs you most.",
+      "fr": "Commencez par la friction qui vous coûte le plus."
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.what-changes-dd20b5",
+    "group": "pages",
+    "source": "What changes",
+    "translations": {
+      "en": "What changes",
+      "fr": "Ce qui change"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.what-makes-it-work-f49d2d",
+    "group": "pages",
+    "source": "What makes it work.",
+    "translations": {
+      "en": "What makes it work.",
+      "fr": "Ce qui rend la solution possible."
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.what-we-put-in-place-370fb3",
+    "group": "pages",
+    "source": "What we put in place",
+    "translations": {
+      "en": "What we put in place",
+      "fr": "Ce que nous mettons en place"
+    }
+  },
+  {
+    "key": "prosperya.pages.solution-detail.solution-detail-page.what-you-can-expect-508821",
+    "group": "pages",
+    "source": "What you can expect",
+    "translations": {
+      "en": "What you can expect",
+      "fr": "Ce que vous obtenez"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.illustrative-engagements-results-are-not-verified-client-9dc062",
+    "group": "pages",
+    "source": "Illustrative engagements. Results are not verified client references.",
+    "translations": {
+      "en": "Illustrative engagements. Results are not verified client references.",
+      "fr": "Missions illustratives, résultats non vérifiés."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.in-practice-bf2d3c",
+    "group": "pages",
+    "source": "In practice",
+    "translations": {
+      "en": "In practice",
+      "fr": "En pratique"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.next-function-00b85a",
+    "group": "pages",
+    "source": "Next function",
+    "translations": {
+      "en": "Next function",
+      "fr": "Fonction suivante"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.outcomes-by-function-7e7e49",
+    "group": "pages",
+    "source": "Outcomes by function",
+    "translations": {
+      "en": "Outcomes by function",
+      "fr": "Résultats par fonction"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.outcomes-function-by-function-4f7b75",
+    "group": "pages",
+    "source": "Outcomes, function by function.",
+    "translations": {
+      "en": "Outcomes, function by function.",
+      "fr": "Des résultats, fonction par fonction."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.previous-function-0ed881",
+    "group": "pages",
+    "source": "Previous function",
+    "translations": {
+      "en": "Previous function",
+      "fr": "Fonction précédente"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solution-proof.view-case-study-2050cc",
+    "group": "pages",
+    "source": "View case study",
+    "translations": {
+      "en": "View case study",
+      "fr": "Voir le cas client"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.built-around-your-business-outcomes-22e3a4",
+    "group": "pages",
+    "source": "Built around your business outcomes.",
+    "translations": {
+      "en": "Built around your business outcomes.",
+      "fr": "Pensées pour vos résultats."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.built-on-a-connected-architecture-that-scales-a0fd13",
+    "group": "pages",
+    "source": "Built on a connected architecture that scales with you.",
+    "translations": {
+      "en": "Built on a connected architecture that scales with you.",
+      "fr": "Une architecture connectée qui grandit avec vous."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.end-to-end-solutions-132f71",
+    "group": "pages",
+    "source": "End‑to‑end solutions.",
+    "translations": {
+      "en": "End‑to‑end solutions.",
+      "fr": "Des solutions de bout en bout."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.explore-our-approach-de10c8",
+    "group": "pages",
+    "source": "Explore our approach",
+    "translations": {
+      "en": "Explore our approach",
+      "fr": "Découvrir notre approche"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.explore-our-expertise-245f76",
+    "group": "pages",
+    "source": "Explore our expertise",
+    "translations": {
+      "en": "Explore our expertise",
+      "fr": "Nos expertises"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.finance-operations-supply-chain-and-data-solutions-69ed3c",
+    "group": "pages",
+    "source": "Finance, operations, supply chain and data solutions.",
+    "translations": {
+      "en": "Finance, operations, supply chain and data solutions.",
+      "fr": "Solutions pour la finance, les opérations, la chaîne logistique et les données."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.integrated-systems-intelligent-automation-and-actionable-insight-59c571",
+    "group": "pages",
+    "source": "Integrated systems, intelligent automation and actionable insight, connected across every function of your enterprise.",
+    "translations": {
+      "en": "Integrated systems, intelligent automation and actionable insight, connected across every function of your enterprise.",
+      "fr": "Des systèmes intégrés, une automatisation intelligente et des analyses exploitables, reliés à chaque fonction de l’entreprise."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.our-enterprise-architecture-connects-people-processes-and-77db9d",
+    "group": "pages",
+    "source": "Our enterprise architecture connects people, processes and systems — enabling seamless data flow and smarter decisions across your organization.",
+    "translations": {
+      "en": "Our enterprise architecture connects people, processes and systems — enabling seamless data flow and smarter decisions across your organization.",
+      "fr": "Notre architecture relie les personnes, les processus et les systèmes pour des flux de données fluides et de meilleures décisions."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.solutions-built-for-the-way-your-business-c82c90",
+    "group": "pages",
+    "source": "Solutions built for the way your business runs",
+    "translations": {
+      "en": "Solutions built for the way your business runs",
+      "fr": "Des solutions à l’image de votre activité"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.talk-to-an-expert-8e5217",
+    "group": "pages",
+    "source": "Talk to an expert",
+    "translations": {
+      "en": "Talk to an expert",
+      "fr": "Parler à un expert"
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.we-help-you-pick-the-function-where-15082c",
+    "group": "pages",
+    "source": "We help you pick the function where change pays back first.",
+    "translations": {
+      "en": "We help you pick the function where change pays back first.",
+      "fr": "Nous vous aidons à choisir la fonction où le changement rapporte le plus vite."
+    }
+  },
+  {
+    "key": "prosperya.pages.solutions.solutions-page.which-function-should-move-first-74e99d",
+    "group": "pages",
+    "source": "Which function should move first?",
+    "translations": {
+      "en": "Which function should move first?",
+      "fr": "Quelle fonction faire évoluer en premier ?"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.across-these-engagements-measured-by-impact-042bbc",
+    "group": "pages",
+    "source": "Across these engagements. Measured by impact.",
+    "translations": {
+      "en": "Across these engagements. Measured by impact.",
+      "fr": "Sur ces missions. Mesuré par l’impact."
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.all-capabilities-3d897f",
+    "group": "pages",
+    "source": "All capabilities",
+    "translations": {
+      "en": "All capabilities",
+      "fr": "Toutes les expertises"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.all-industries-42b72e",
+    "group": "pages",
+    "source": "All industries",
+    "translations": {
+      "en": "All industries",
+      "fr": "Tous les secteurs"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.erp-transformation-integration-and-connected-operations-through-732c8a",
+    "group": "pages",
+    "source": "ERP transformation, integration and connected operations through illustrative engagements.",
+    "translations": {
+      "en": "ERP transformation, integration and connected operations through illustrative engagements.",
+      "fr": "Des exemples de transformation ERP, d’intégration et d’opérations connectées."
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.facing-a-similar-challenge-bc32be",
+    "group": "pages",
+    "source": "Facing a similar challenge?",
+    "translations": {
+      "en": "Facing a similar challenge?",
+      "fr": "Un défi comparable ?"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.filter-by-capability-9f728f",
+    "group": "pages",
+    "source": "Filter by capability",
+    "translations": {
+      "en": "Filter by capability",
+      "fr": "Filtrer par expertise"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.filter-by-industry-3fbb2d",
+    "group": "pages",
+    "source": "Filter by industry",
+    "translations": {
+      "en": "Filter by industry",
+      "fr": "Filtrer par secteur"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.home-ded702",
+    "group": "pages",
+    "source": "Home",
+    "translations": {
+      "en": "Home",
+      "fr": "Accueil"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.illustrative-figures-from-the-engagements-above-9e82b7",
+    "group": "pages",
+    "source": "Illustrative figures from the engagements above.",
+    "translations": {
+      "en": "Illustrative figures from the engagements above.",
+      "fr": "Chiffres illustratifs issus des missions présentées."
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.illustrative-results-not-verified-ea3ab3",
+    "group": "pages",
+    "source": "illustrative, results not verified",
+    "translations": {
+      "en": "illustrative, results not verified",
+      "fr": "missions illustratives, résultats non vérifiés"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.real-challenges-explicit-decisions-measured-outcomes-see-b93c0c",
+    "group": "pages",
+    "source": "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work.",
+    "translations": {
+      "en": "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work.",
+      "fr": "Des défis réels, des décisions explicites, des résultats mesurés. Découvrez comment une architecture prend forme — des exemples illustratifs de notre façon de travailler."
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.tell-us-where-you-are-we-will-cb70c5",
+    "group": "pages",
+    "source": "Tell us where you are. We will tell you what a first step could look like.",
+    "translations": {
+      "en": "Tell us where you are. We will tell you what a first step could look like.",
+      "fr": "Dites-nous où vous en êtes : nous vous dirons à quoi pourrait ressembler un premier pas."
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.transformation-stories-that-prove-the-impact-f01aa8",
+    "group": "pages",
+    "source": "Transformation stories that prove the impact",
+    "translations": {
+      "en": "Transformation stories that prove the impact",
+      "fr": "Des transformations qui prouvent l’impact"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.work-2af496",
+    "group": "pages",
+    "source": "Work",
+    "translations": {
+      "en": "Work",
+      "fr": "Projets"
+    }
+  },
+  {
+    "key": "prosperya.pages.work.work-page.work-prosperya-bb3774",
+    "group": "pages",
+    "source": "Work — Prosperya",
+    "translations": {
+      "en": "Work — Prosperya",
+      "fr": "Projets — Prosperya"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.approach-preview-section.a-proven-path-to-transformation-b25b8e",
+    "group": "pages",
+    "source": "A proven path to transformation.",
+    "translations": {
+      "en": "A proven path to transformation.",
+      "fr": "Un chemin éprouvé vers la transformation."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.approach-preview-section.explore-the-approach-dd8b38",
+    "group": "pages",
+    "source": "Explore the approach",
+    "translations": {
+      "en": "Explore the approach",
+      "fr": "Explorer l’approche"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.approach-preview-section.our-approach-9bce36",
+    "group": "pages",
+    "source": "Our approach",
+    "translations": {
+      "en": "Our approach",
+      "fr": "Notre approche"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.capabilities-section.what-we-do-cfeef4",
+    "group": "pages",
+    "source": "What we do",
+    "translations": {
+      "en": "What we do",
+      "fr": "Ce que nous faisons"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.featured-work-section.featured-work-bda526",
+    "group": "pages",
+    "source": "Featured work",
+    "translations": {
+      "en": "Featured work",
+      "fr": "Projets"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.featured-work-section.illustrative-engagements-results-are-not-verified-client-3798b9",
+    "group": "pages",
+    "source": "Illustrative engagements — results are not verified client references.",
+    "translations": {
+      "en": "Illustrative engagements — results are not verified client references.",
+      "fr": "Missions illustratives — résultats non vérifiés."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.featured-work-section.measurable-impact-6dd1eb",
+    "group": "pages",
+    "source": "Measurable impact.",
+    "translations": {
+      "en": "Measurable impact.",
+      "fr": "Un impact mesurable."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.featured-work-section.real-outcomes-260034",
+    "group": "pages",
+    "source": "Real outcomes.",
+    "translations": {
+      "en": "Real outcomes.",
+      "fr": "Des résultats concrets."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.featured-work-section.view-all-case-studies-81af03",
+    "group": "pages",
+    "source": "View all case studies",
+    "translations": {
+      "en": "View all case studies",
+      "fr": "Tous les cas clients"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.built-for-ambitious-organizations-2ec66d",
+    "group": "pages",
+    "source": "Built for ambitious organizations",
+    "translations": {
+      "en": "Built for ambitious organizations",
+      "fr": "Pour les organisations ambitieuses"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.complexity-3598e9",
+    "group": "pages",
+    "source": "Complexity.",
+    "translations": {
+      "en": "Complexity.",
+      "fr": "Complexité."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.explore-our-approach-de10c8",
+    "group": "pages",
+    "source": "Explore our approach",
+    "translations": {
+      "en": "Explore our approach",
+      "fr": "Découvrir notre approche"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.family-business-5e5d7e",
+    "group": "pages",
+    "source": "Family business",
+    "translations": {
+      "en": "Family business",
+      "fr": "Entreprises familiales"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.fragmented-architecture-4082fc",
+    "group": "pages",
+    "source": "Fragmented architecture",
+    "translations": {
+      "en": "Fragmented architecture",
+      "fr": "Architecture fragmentée"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.global-enterprise-0b778c",
+    "group": "pages",
+    "source": "Global enterprise",
+    "translations": {
+      "en": "Global enterprise",
+      "fr": "Grands groupes"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.one-operating-architecture-df021b",
+    "group": "pages",
+    "source": "One operating architecture",
+    "translations": {
+      "en": "One operating architecture",
+      "fr": "Une architecture opérationnelle"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.orchestrated-3a4c51",
+    "group": "pages",
+    "source": "Orchestrated.",
+    "translations": {
+      "en": "Orchestrated.",
+      "fr": "Orchestrée."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.paris-based-globally-minded-880a0a",
+    "group": "pages",
+    "source": "Paris-based. Globally minded.",
+    "translations": {
+      "en": "Paris-based. Globally minded.",
+      "fr": "À Paris. Ouvert sur le monde."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.private-equity-f7a5ab",
+    "group": "pages",
+    "source": "Private equity",
+    "translations": {
+      "en": "Private equity",
+      "fr": "Capital-investissement"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.public-sector-0116a2",
+    "group": "pages",
+    "source": "Public sector",
+    "translations": {
+      "en": "Public sector",
+      "fr": "Secteur public"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.scale-up-8976ab",
+    "group": "pages",
+    "source": "Scale-up",
+    "translations": {
+      "en": "Scale-up",
+      "fr": "Scale-ups"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.talk-to-an-expert-8e5217",
+    "group": "pages",
+    "source": "Talk to an expert",
+    "translations": {
+      "en": "Talk to an expert",
+      "fr": "Parler à un expert"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.hero-story.copy.copy.we-architect-implement-and-connect-enterprise-systems-74bdcb",
+    "group": "pages",
+    "source": "We architect, implement and connect enterprise systems that power modern operations and fuel measurable impact.",
+    "translations": {
+      "en": "We architect, implement and connect enterprise systems that power modern operations and fuel measurable impact.",
+      "fr": "Nous concevons, déployons et connectons les systèmes d’entreprise qui font avancer vos opérations et produisent un impact mesurable."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.analytics-c0af1a",
+    "group": "pages",
+    "source": "Analytics",
+    "translations": {
+      "en": "Analytics",
+      "fr": "Analytique"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.automation-a3a1ce",
+    "group": "pages",
+    "source": "Automation",
+    "translations": {
+      "en": "Automation",
+      "fr": "Automatisation"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.crm-39069d",
+    "group": "pages",
+    "source": "CRM",
+    "translations": {
+      "en": "CRM",
+      "fr": "CRM"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.customers-288584",
+    "group": "pages",
+    "source": "Customers",
+    "translations": {
+      "en": "Customers",
+      "fr": "Clients"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.ecommerce-f95c01",
+    "group": "pages",
+    "source": "Ecommerce",
+    "translations": {
+      "en": "Ecommerce",
+      "fr": "E-commerce"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.field-service-b78af5",
+    "group": "pages",
+    "source": "Field service",
+    "translations": {
+      "en": "Field service",
+      "fr": "Services terrain"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.finance-9bee15",
+    "group": "pages",
+    "source": "Finance",
+    "translations": {
+      "en": "Finance",
+      "fr": "Finance"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.integrations-32d796",
+    "group": "pages",
+    "source": "Integrations",
+    "translations": {
+      "en": "Integrations",
+      "fr": "Intégrations"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.inventory-bec5e3",
+    "group": "pages",
+    "source": "Inventory",
+    "translations": {
+      "en": "Inventory",
+      "fr": "Stocks"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.manufacturing-608c6f",
+    "group": "pages",
+    "source": "Manufacturing",
+    "translations": {
+      "en": "Manufacturing",
+      "fr": "Production"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.operations-b5b127",
+    "group": "pages",
+    "source": "Operations",
+    "translations": {
+      "en": "Operations",
+      "fr": "Opérations"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.platform-33364a",
+    "group": "pages",
+    "source": "Platform",
+    "translations": {
+      "en": "Platform",
+      "fr": "Plateforme"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.procurement-1b7b09",
+    "group": "pages",
+    "source": "Procurement",
+    "translations": {
+      "en": "Procurement",
+      "fr": "Achats"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.projects-c08fd9",
+    "group": "pages",
+    "source": "Projects",
+    "translations": {
+      "en": "Projects",
+      "fr": "Projets"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.copy.warehouse-b277cf",
+    "group": "pages",
+    "source": "Warehouse",
+    "translations": {
+      "en": "Warehouse",
+      "fr": "Entrepôt"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.net-suite-foundation.one-foundation-one-data-model-912a1a",
+    "group": "pages",
+    "source": "One foundation, one data model",
+    "translations": {
+      "en": "One foundation, one data model",
+      "fr": "Un socle, un modèle de données"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.platform-story-section.built-around-netsuite-56c799",
+    "group": "pages",
+    "source": "Built around NetSuite.",
+    "translations": {
+      "en": "Built around NetSuite.",
+      "fr": "Construit autour de NetSuite."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.platform-story-section.built-for-what-s-next-788213",
+    "group": "pages",
+    "source": "Built for what’s next.",
+    "translations": {
+      "en": "Built for what’s next.",
+      "fr": "Pensé pour la suite."
+    }
+  },
+  {
+    "key": "prosperya.sections.home.platform-story-section.explore-netsuite-expertise-96a2da",
+    "group": "pages",
+    "source": "Explore NetSuite expertise",
+    "translations": {
+      "en": "Explore NetSuite expertise",
+      "fr": "Notre expertise NetSuite"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.platform-story-section.netsuite-at-the-core-1ead5e",
+    "group": "pages",
+    "source": "NetSuite at the core",
+    "translations": {
+      "en": "NetSuite at the core",
+      "fr": "NetSuite au cœur"
+    }
+  },
+  {
+    "key": "prosperya.sections.home.platform-story-section.we-design-implement-and-extend-netsuite-so-ce625b",
+    "group": "pages",
+    "source": "We design, implement and extend NetSuite so your entire business ecosystem runs on one foundation.",
+    "translations": {
+      "en": "We design, implement and extend NetSuite so your entire business ecosystem runs on one foundation.",
+      "fr": "Nous concevons, déployons et étendons NetSuite pour faire fonctionner tout l’écosystème de l’entreprise autour d’un même socle."
+    }
+  },
+  {
+    "key": "prosperya.solutions.detail_cta_title",
+    "group": "pages",
+    "source": "Let’s talk about your {solution}.",
+    "translations": {
+      "en": "Let’s talk about your {solution}.",
+      "fr": "Parlons de votre {solution}."
+    }
+  },
+  {
+    "key": "prosperya.work.count_many",
+    "group": "pages",
+    "source": "{count} engagements",
+    "translations": {
+      "en": "{count} engagements",
+      "fr": "{count} projets"
+    }
+  },
+  {
+    "key": "prosperya.work.count_one",
+    "group": "pages",
+    "source": "{count} engagement",
+    "translations": {
+      "en": "{count} engagement",
+      "fr": "{count} projet"
+    }
+  }
+]

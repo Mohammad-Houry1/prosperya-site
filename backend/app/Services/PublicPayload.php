@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\CorporatePage;
 use App\Models\Faq;
 use App\Models\Platform;
+use App\Models\Page;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -38,6 +39,40 @@ final class PublicPayload
         return ['id' => (string) $record->id, 'slug' => $record->slug ?? '',
             'name' => $record->text('name', $locale), 'position' => $record->text('position', $locale),
             'bio' => $record->text('bio', $locale), 'avatar' => $this->media($record->avatar, $locale)];
+    }
+
+    /** About is authored in Pages; linked people are read separately through the public Users API. */
+    public function page(Page $page, string $locale): array
+    {
+        $localizedRows = fn (mixed $rows, array $fields, string $imageField) => array_values(array_map(
+            function ($row) use ($fields, $imageField, $locale) {
+                $row = (object) $row;
+                $result = [];
+                foreach ($fields as $field) {
+                    $result[$field] = $this->content->text($row, $field, $locale);
+                }
+                $result[$imageField] = $this->media($row->{$imageField} ?? null, $locale);
+
+                return $result;
+            }, (array) $rows));
+        $userIds = array_map(fn ($value) => $this->referenceId($value), (array) $page->about_users);
+
+        return ['id' => (string) $page->id, 'slug' => $page->slug,
+            'about_title' => $page->text('about_title', $locale) ?: $page->text('name', $locale),
+            'description' => $page->text('description', $locale), 'content' => $page->text('content', $locale),
+            'cover_image' => $this->media($page->cover_image, $locale),
+            'about_story_title' => $page->text('about_story_title', $locale),
+            'about_users' => array_values(array_unique(array_map('strtolower', array_filter($userIds,
+                fn ($id) => is_string($id) && preg_match('/^[a-f0-9]{24}$/i', $id))))),
+            'about_facts' => $localizedRows($page->about_facts, ['fact_title', 'fact_value'], 'fact_image'),
+            'about_focus' => array_values(array_filter(array_map(fn ($value) => $this->content->text(
+                (object) ['value' => $value], 'value', $locale), (array) $page->about_focus), fn ($value) => trim($value) !== '')),
+            'about_principles' => $localizedRows($page->about_principles,
+                ['principle_title', 'principle_description'], 'principle_image'),
+            'about_work_title' => $page->text('about_work_title', $locale),
+            'about_work_description' => $page->text('about_work_description', $locale),
+            'about_steps' => $localizedRows($page->about_steps, ['step_title', 'step_description'], 'step_image'),
+        ];
     }
 
     public function testimonial(Testimonial $record, string $locale): array

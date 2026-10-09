@@ -17,8 +17,7 @@ import { dragScroll } from "../../motion/gestures.js";
 import styles from "./InsightsPage.module.css";
 
 export default function InsightsPage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState("all");
   const { isLoading, isError, refetch, data: articles = { items: [], meta: {} } } = useQuery({
@@ -39,10 +38,8 @@ export default function InsightsPage() {
   });
   useEffect(() => { setPage(1); setCategory("all"); }, [locale]);
   useDocumentMeta({
-    title: `${fr ? "Analyses" : "Insights"} — Prosperya`,
-    description: fr
-      ? "Perspectives sur la transformation ERP, NetSuite, l’intégration et les opérations financières."
-      : "Perspectives on ERP transformation, NetSuite, integration and finance operations.",
+    title: `${t("pages.insights.insights-page.insights-1bdb50", { en: "Insights", fr: "Analyses" })} — Prosperya`,
+    description: t("pages.insights.insights-page.perspectives-on-erp-transformation-netsuite-integration-and-a12c24", { en: "Perspectives on ERP transformation, NetSuite, integration and finance operations.", fr: "Perspectives sur la transformation ERP, NetSuite, l’intégration et les opérations financières." }),
   });
   if (isLoading || categoriesLoading) return <PageLoader />;
   if (isError || categoriesError)
@@ -59,14 +56,12 @@ export default function InsightsPage() {
   return (
     <>
       <PageHero
-        eyebrow={fr ? "Analyses" : "Insights"}
-        title={fr ? "Idées et regards venus du terrain." : "Ideas and perspectives from the field."}
+        eyebrow={t("pages.insights.insights-page.insights-1bdb50", { en: "Insights", fr: "Analyses" })}
+        title={t("pages.insights.insights-page.ideas-and-perspectives-from-the-field-df7a44", { en: "Ideas and perspectives from the field.", fr: "Idées et regards venus du terrain." })}
         titleClassName={styles.title}
         lead={
           <p>
-            {fr
-              ? "Des analyses pratiques sur l’ERP, NetSuite et la transformation d’entreprise — nourries par l’expérience, mesurées par l’impact."
-              : "Practical insights on ERP, NetSuite and enterprise transformation — shaped by experience, measured by impact."}
+            {t("pages.insights.insights-page.practical-insights-on-erp-netsuite-and-enterprise-709d4d", { en: "Practical insights on ERP, NetSuite and enterprise transformation — shaped by experience, measured by impact.", fr: "Des analyses pratiques sur l’ERP, NetSuite et la transformation d’entreprise — nourries par l’expérience, mesurées par l’impact." })}
           </p>
         }
         layout="stacked"
@@ -76,19 +71,19 @@ export default function InsightsPage() {
       <PageContainer>
         {featured && category === "all" && (
           <div className={styles.featured}>
-            <Eyebrow>{fr ? "À la une" : "Featured article"}</Eyebrow>
+            <Eyebrow>{t("pages.insights.insights-page.featured-article-2293a3", { en: "Featured article", fr: "À la une" })}</Eyebrow>
             <InsightCard insight={featured} locale={locale} featured />
           </div>
         )}
-        <div ref={dragScroll} className={styles.tabs} role="group" aria-label={fr ? "Filtrer les analyses" : "Filter insights"}>
-          {[["all", fr ? "Toutes les analyses" : "All insights"], ...categories.filter((item) => item.slug).map((item) => [item.slug, item.name])].map(([id, label]) => (
+        <div ref={dragScroll} className={styles.tabs} role="group" aria-label={t("pages.insights.insights-page.filter-insights-4d063c", { en: "Filter insights", fr: "Filtrer les analyses" })}>
+          {[["all", t("pages.insights.insights-page.all-insights-3e70ef", { en: "All insights", fr: "Toutes les analyses" })], ...categories.filter((item) => item.slug).map((item) => [item.slug, item.name])].map(([id, label]) => (
             <button key={id} type="button" aria-pressed={category === id} onClick={() => { setCategory(id); setPage(1); }}>
               {label}
             </button>
           ))}
         </div>
         <p className={styles.count} role="status">
-          {articles?.meta?.total ?? 0} {fr ? "analyse(s)" : articles?.meta?.total === 1 ? "article" : "articles"}
+          {articles?.meta?.total === 1 ? t("insights.count_one", { en: "{count} article", fr: "{count} analyse" }, { count: 1 }) : t("insights.count_many", { en: "{count} articles", fr: "{count} analyses" }, { count: articles?.meta?.total ?? 0 })}
         </p>
         {list.length ? (
           <div key={category} className={styles.grid}>
@@ -100,10 +95,10 @@ export default function InsightsPage() {
           <EmptyState />
         )}
         {lastPage > 1 && (
-          <nav className={styles.pagination} aria-label={fr ? "Pages des analyses" : "Insight pages"}>
-            <button type="button" disabled={page <= 1} onClick={() => setPage((value) => value - 1)}>{fr ? "Précédent" : "Previous"}</button>
-            <span>{fr ? "Page" : "Page"} {page} / {lastPage}</span>
-            <button type="button" disabled={page >= lastPage} onClick={() => setPage((value) => value + 1)}>{fr ? "Suivant" : "Next"}</button>
+          <nav className={styles.pagination} aria-label={t("pages.insights.insights-page.insight-pages-21aff6", { en: "Insight pages", fr: "Pages des analyses" })}>
+            <button type="button" disabled={page <= 1} onClick={() => setPage((value) => value - 1)}>{t("pages.insights.insights-page.previous-abad3a", { en: "Previous", fr: "Précédent" })}</button>
+            <span>{t("pages.insights.insights-page.page-b5a952", { en: "Page", fr: "Page" })} {page} / {lastPage}</span>
+            <button type="button" disabled={page >= lastPage} onClick={() => setPage((value) => value + 1)}>{t("pages.insights.insights-page.next-903b82", { en: "Next", fr: "Suivant" })}</button>
           </nav>
         )}
       </PageContainer>

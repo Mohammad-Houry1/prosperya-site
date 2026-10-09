@@ -5,6 +5,7 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
 import LegalPage from "../../src/pages/Legal/LegalPage.jsx";
 import SiteFooter from "../../src/components/layout/SiteFooter.jsx";
+import { createTranslator } from "../../src/i18n/labels.js";
 import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 
 const pages = [{ id: "about", slug: "about-prosperya", title: "About from CMS" },
@@ -12,7 +13,7 @@ const pages = [{ id: "about", slug: "about-prosperya", title: "About from CMS" }
 function renderPage(locale = "en") {
   return render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 300000 } } })}>
     <MemoryRouter initialEntries={[`/${locale}/corporate/about-prosperya`]}>
-      <LocaleContext.Provider value={{ locale, t: (key) => key }}>
+      <LocaleContext.Provider value={{ locale, t: createTranslator(locale) }}>
         <Routes><Route path="/:locale/corporate/:slug" element={<LegalPage />} /></Routes><SiteFooter />
       </LocaleContext.Provider>
     </MemoryRouter>

@@ -7,22 +7,22 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { dragScroll } from "../../motion/gestures.js";
 import styles from "./HomeSections.module.css";
 export default function FeaturedWorkSection({ data = [], isLoading, isError, refetch }) {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   return (
     <Section>
       <SectionHeader
-        eyebrow={fr ? "Projets" : "Featured work"}
+        eyebrow={t("sections.home.featured-work-section.featured-work-bda526", { en: "Featured work", fr: "Projets" })}
         title={
           <>
-            {fr ? "Des résultats concrets." : "Real outcomes."}
+            {t("sections.home.featured-work-section.real-outcomes-260034", { en: "Real outcomes.", fr: "Des résultats concrets." })}
             <br />
-            {fr ? "Un impact mesurable." : "Measurable impact."}
+            {t("sections.home.featured-work-section.measurable-impact-6dd1eb", { en: "Measurable impact.", fr: "Un impact mesurable." })}
           </>
         }
         action={{
           to: `/${locale}/work`,
-          label: fr ? "Tous les cas clients" : "View all case studies",
+          label: t("sections.home.featured-work-section.view-all-case-studies-81af03", { en: "View all case studies", fr: "Tous les cas clients" }),
         }}
       />
       {isLoading ? (
@@ -37,9 +37,7 @@ export default function FeaturedWorkSection({ data = [], isLoading, isError, ref
         </div>
       )}
       <p className={styles.note}>
-        {fr
-          ? "Missions illustratives — résultats non vérifiés."
-          : "Illustrative engagements — results are not verified client references."}
+        {t("sections.home.featured-work-section.illustrative-engagements-results-are-not-verified-client-3798b9", { en: "Illustrative engagements — results are not verified client references.", fr: "Missions illustratives — résultats non vérifiés." })}
       </p>
     </Section>
   );

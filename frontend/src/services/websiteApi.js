@@ -36,6 +36,7 @@ export const websiteApi = {
   categories: (query, signal) => request("article-categories", { query, signal }),
   testimonials: (query, signal) => request("testimonials", { query, signal }),
   platforms: (query, signal) => request("platforms", { query, signal }),
+  page: (slug, locale, signal) => request(`pages/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
   users: (query, signal) => request("users", { query, signal }),
   user: (slug, locale, signal) => request(`users/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
   faqs: (query, signal) => request("faqs", { query, signal }),

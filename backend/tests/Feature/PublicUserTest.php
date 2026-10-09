@@ -17,6 +17,7 @@ class PublicUserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        config(['database.connections.mongodb.database' => 'site_query_test']);
         config(['website.cms_url' => 'https://cms.example.test', 'website.key' => 'fixture-key']);
         Http::fake(['*' => Http::response(['valid' => true, 'tenant_id' => 'fixture-tenant',
             'modules' => [['model' => 'User', 'slug' => 'users']],
@@ -43,6 +44,17 @@ class PublicUserTest extends TestCase
     {
         $this->getJson('/api/users?roles=admin')->assertUnprocessable()->assertJsonValidationErrors('roles');
         $this->getJson('/api/users?role_id=invalid')->assertUnprocessable()->assertJsonValidationErrors('role_id');
+    }
+
+    public function test_selected_user_ids_are_canonical_distinct_and_bounded_before_database_access(): void
+    {
+        $this->getJson('/api/users?ids=admin')->assertUnprocessable()->assertJsonValidationErrors('ids');
+        $this->getJson('/api/users?ids[]=person-slug')->assertUnprocessable()->assertJsonValidationErrors('ids.0');
+        $id = '6ac8886280862f68e40a2864';
+        $this->getJson('/api/users?'.http_build_query(['ids' => [$id, strtoupper($id)]]))
+            ->assertUnprocessable()->assertJsonValidationErrors('ids.0');
+        $this->getJson('/api/users?'.http_build_query(['ids' => array_fill(0, 51, $id)]))
+            ->assertUnprocessable()->assertJsonValidationErrors('ids');
     }
 
     public function test_users_require_the_users_module(): void

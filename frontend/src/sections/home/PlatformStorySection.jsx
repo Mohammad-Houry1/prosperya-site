@@ -5,24 +5,22 @@ import NetSuiteFoundation from "./NetSuiteFoundation.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
 export default function PlatformStorySection() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   return (
     <Section>
       <div className={styles.platform}>
         <div className={styles.platformCopy}>
-          <Eyebrow>{fr ? "NetSuite au cœur" : "NetSuite at the core"}</Eyebrow>
+          <Eyebrow>{t("sections.home.platform-story-section.netsuite-at-the-core-1ead5e", { en: "NetSuite at the core", fr: "NetSuite au cœur" })}</Eyebrow>
           <h2>
-            {fr ? "Construit autour de NetSuite." : "Built around NetSuite."}
-            <span>{fr ? "Pensé pour la suite." : "Built for what’s next."}</span>
+            {t("sections.home.platform-story-section.built-around-netsuite-56c799", { en: "Built around NetSuite.", fr: "Construit autour de NetSuite." })}
+            <span>{t("sections.home.platform-story-section.built-for-what-s-next-788213", { en: "Built for what’s next.", fr: "Pensé pour la suite." })}</span>
           </h2>
           <p>
-            {fr
-              ? "Nous concevons, déployons et étendons NetSuite pour faire fonctionner tout l’écosystème de l’entreprise autour d’un même socle."
-              : "We design, implement and extend NetSuite so your entire business ecosystem runs on one foundation."}
+            {t("sections.home.platform-story-section.we-design-implement-and-extend-netsuite-so-ce625b", { en: "We design, implement and extend NetSuite so your entire business ecosystem runs on one foundation.", fr: "Nous concevons, déployons et étendons NetSuite pour faire fonctionner tout l’écosystème de l’entreprise autour d’un même socle." })}
           </p>
           <PrimaryLink to={`/${locale}/expertise/netsuite-implementation`} variant="ghost">
-            {fr ? "Notre expertise NetSuite" : "Explore NetSuite expertise"}
+            {t("sections.home.platform-story-section.explore-netsuite-expertise-96a2da", { en: "Explore NetSuite expertise", fr: "Notre expertise NetSuite" })}
           </PrimaryLink>
         </div>
         <NetSuiteFoundation />

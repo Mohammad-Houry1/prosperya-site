@@ -28,14 +28,15 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./SolutionDetailPage.module.css";
 
 function SolutionHero({ item, locale }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const ref = useRef(null);
   const progress = useHeroProgress(ref, { intro: 0.7 });
   return (
     <div ref={ref}>
       <PageHero
         breadcrumb={[
-          { label: fr ? "Accueil" : "Home", to: `/${locale}` },
+          { label: t("pages.solution-detail.solution-detail-page.home-ded702", { en: "Home", fr: "Accueil" }), to: `/${locale}` },
           { label: "Solutions", to: `/${locale}/solutions` },
           { label: item.title },
         ]}
@@ -49,9 +50,9 @@ function SolutionHero({ item, locale }) {
         }
         actions={
           <>
-            <PrimaryLink to={`/${locale}/contact`}>{fr ? "Parlons de votre projet" : "Start a conversation"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>{t("pages.solution-detail.solution-detail-page.start-a-conversation-345cd0", { en: "Start a conversation", fr: "Parlons de votre projet" })}</PrimaryLink>
             <PrimaryLink to={`/${locale}/solutions`} variant="ghost">
-              {fr ? "Toutes les solutions" : "All solutions"}
+              {t("pages.solution-detail.solution-detail-page.all-solutions-731f69", { en: "All solutions", fr: "Toutes les solutions" })}
             </PrimaryLink>
           </>
         }
@@ -63,8 +64,7 @@ function SolutionHero({ item, locale }) {
 
 export default function SolutionDetailPage() {
   const { slug } = useParams();
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
   const { data: solution = null, isLoading: solutionIsLoading, isError: solutionIsError, refetch: solutionRefetch } = useQuery({
     queryKey: ["solution", locale, slug],
     queryFn: async () => {
@@ -104,7 +104,7 @@ export default function SolutionDetailPage() {
   if (!solution)
     return (
       <Section>
-        <EmptyState title={fr ? "Solution introuvable" : "Solution not found"} />
+        <EmptyState title={t("pages.solution-detail.solution-detail-page.solution-not-found-0f1206", { en: "Solution not found", fr: "Solution introuvable" })} />
       </Section>
     );
   const item = solution;
@@ -138,14 +138,14 @@ export default function SolutionDetailPage() {
       </Section>
       <Section className={styles.change}>
         <SectionHeader
-          eyebrow={fr ? "Ce qui change" : "What changes"}
-          title={fr ? "Des capacités concrètes. Des résultats visibles." : "Concrete capabilities. Visible outcomes."}
+          eyebrow={t("pages.solution-detail.solution-detail-page.what-changes-dd20b5", { en: "What changes", fr: "Ce qui change" })}
+          title={t("pages.solution-detail.solution-detail-page.concrete-capabilities-visible-outcomes-72f078", { en: "Concrete capabilities. Visible outcomes.", fr: "Des capacités concrètes. Des résultats visibles." })}
         />
         <div className={styles.changeGrid}>
           <div className={styles.changeColumn} data-reveal="card">
-            <span>{fr ? "Ce que nous mettons en place" : "What we put in place"}</span>
+            <span>{t("pages.solution-detail.solution-detail-page.what-we-put-in-place-370fb3", { en: "What we put in place", fr: "Ce que nous mettons en place" })}</span>
             <ul className={styles.checks}>
-              {item.capabilitiesMap((capability) => (
+              {item.capabilities.map((capability) => (
                 <li key={capability}>
                   <CircleCheck size={18} strokeWidth={1.4} aria-hidden="true" />
                   {capability}
@@ -154,7 +154,7 @@ export default function SolutionDetailPage() {
             </ul>
           </div>
           <div className={styles.changeColumn} data-reveal="card" style={{ "--i": 2 }}>
-            <span>{fr ? "Ce que vous obtenez" : "What you can expect"}</span>
+            <span>{t("pages.solution-detail.solution-detail-page.what-you-can-expect-508821", { en: "What you can expect", fr: "Ce que vous obtenez" })}</span>
             <ul className={styles.outcomes}>
               {item.outcomes.map(([icon, text]) => (
                 <li key={text}>
@@ -175,7 +175,7 @@ export default function SolutionDetailPage() {
               <CaseVisual study={proof} />
             </div>
             <div className={styles.proofCopy}>
-              <Eyebrow>{fr ? "En pratique" : "In practice"}</Eyebrow>
+              <Eyebrow>{t("pages.solution-detail.solution-detail-page.in-practice-bf2d3c", { en: "In practice", fr: "En pratique" })}</Eyebrow>
               <h2>{proof.name}</h2>
               <p>{proof.title}</p>
               <dl className={styles.proofMetrics}>
@@ -190,7 +190,7 @@ export default function SolutionDetailPage() {
               </dl>
               <p className={styles.note}>{story.metricsNote}</p>
               <Link className={styles.proofLink} to={`/${locale}/work/${proof.slug}`}>
-                {fr ? "Lire le cas client" : "Read the case study"}
+                {t("pages.solution-detail.solution-detail-page.read-the-case-study-c265da", { en: "Read the case study", fr: "Lire le cas client" })}
                 <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
               </Link>
             </div>
@@ -200,8 +200,8 @@ export default function SolutionDetailPage() {
       {related.length > 0 && (
         <Section>
           <SectionHeader
-            eyebrow={fr ? "Expertises mobilisées" : "Capabilities behind the solution"}
-            title={fr ? "Ce qui rend la solution possible." : "What makes it work."}
+            eyebrow={t("pages.solution-detail.solution-detail-page.capabilities-behind-the-solution-a492e7", { en: "Capabilities behind the solution", fr: "Expertises mobilisées" })}
+            title={t("pages.solution-detail.solution-detail-page.what-makes-it-work-f49d2d", { en: "What makes it work.", fr: "Ce qui rend la solution possible." })}
           />
           <div className={styles.cards}>
             {related.map((cap, index) => (
@@ -212,9 +212,9 @@ export default function SolutionDetailPage() {
       )}
       <CTASection
         variant="band"
-        title={fr ? `Parlons de votre ${item.title.toLowerCase()}.` : `Let’s talk about your ${item.title.toLowerCase()}.`}
-        description={fr ? "Commencez par la friction qui vous coûte le plus." : "Start with the friction that costs you most."}
-        secondary={{ path: "solutions", label: fr ? "Toutes les solutions" : "All solutions" }}
+        title={t("solutions.detail_cta_title", { en: "Let’s talk about your {solution}.", fr: "Parlons de votre {solution}." }, { solution: item.title.toLowerCase() })}
+        description={t("pages.solution-detail.solution-detail-page.start-with-the-friction-that-costs-you-df2223", { en: "Start with the friction that costs you most.", fr: "Commencez par la friction qui vous coûte le plus." })}
+        secondary={{ path: "solutions", label: t("pages.solution-detail.solution-detail-page.all-solutions-731f69", { en: "All solutions", fr: "Toutes les solutions" }) }}
       />
     </>
   );

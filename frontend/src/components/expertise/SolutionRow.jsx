@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import CoverArt from "../visuals/CoverArt.jsx";
@@ -6,7 +7,8 @@ import styles from "./SolutionRow.module.css";
 
 // One business function as an editorial row: identity, friction, capabilities, outcomes.
 export default function SolutionRow({ solution, locale, index = 0 }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const to = `/${locale}/solutions/${solution.slug}`;
   return (
     <article className={styles.row} data-reveal="card" style={{ "--i": index }}>
@@ -20,13 +22,13 @@ export default function SolutionRow({ solution, locale, index = 0 }) {
         <h3>{solution.title}</h3>
         <p>{solution.tagline}</p>
         <Link to={to} className={styles.more}>
-          {fr ? "En savoir plus" : "Learn more"}
+          {t("components.expertise.solution-row.learn-more-f2ab41", { en: "Learn more", fr: "En savoir plus" })}
           <span className="visuallyHidden"> : {solution.title}</span>
           <ArrowRight size={14} strokeWidth={1.6} aria-hidden="true" />
         </Link>
       </div>
       <div className={styles.column}>
-        <span className={styles.label}>{fr ? "Difficultés" : "Pains"}</span>
+        <span className={styles.label}>{t("components.expertise.solution-row.pains-f524cc", { en: "Pains", fr: "Difficultés" })}</span>
         <ul className={styles.pains}>
           {solution.pains.map((item) => (
             <li key={item}>{item}</li>
@@ -34,7 +36,7 @@ export default function SolutionRow({ solution, locale, index = 0 }) {
         </ul>
       </div>
       <div className={styles.column}>
-        <span className={styles.label}>{fr ? "Capacités" : "Capabilities"}</span>
+        <span className={styles.label}>{t("components.expertise.solution-row.capabilities-912c87", { en: "Capabilities", fr: "Capacités" })}</span>
         <ul className={styles.checks}>
           {solution.capabilities.map((item) => (
             <li key={item}>
@@ -45,7 +47,7 @@ export default function SolutionRow({ solution, locale, index = 0 }) {
         </ul>
       </div>
       <div className={styles.column}>
-        <span className={styles.label}>{fr ? "Résultats" : "Outcomes"}</span>
+        <span className={styles.label}>{t("components.expertise.solution-row.outcomes-28c664", { en: "Outcomes", fr: "Résultats" })}</span>
         <ul className={styles.outcomes}>
           {solution.outcomes.map(([icon, text]) => (
             <li key={text}>
@@ -57,7 +59,7 @@ export default function SolutionRow({ solution, locale, index = 0 }) {
           ))}
         </ul>
       </div>
-      <Link to={to} className={styles.arrow} aria-label={`${fr ? "Découvrir" : "Explore"} ${solution.title}`}>
+      <Link to={to} className={styles.arrow} aria-label={`${t("components.expertise.solution-row.explore-82bb18", { en: "Explore", fr: "Découvrir" })} ${solution.title}`}>
         <ArrowRight size={18} strokeWidth={1.5} aria-hidden="true" />
       </Link>
     </article>

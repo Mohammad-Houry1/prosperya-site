@@ -24,7 +24,8 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./ApproachPage.module.css";
 
 function ApproachHero({ locale }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const ref = useRef(null);
   const progress = useHeroProgress(ref);
   return (
@@ -33,21 +34,19 @@ function ApproachHero({ locale }) {
         <SignalWave shape="rise" progressRef={progress} strands={44} particles={360} />
       </div>
       <PageHero
-        eyebrow={fr ? "Notre approche" : "Our approach"}
-        title={fr ? "Transformer sans chaos" : "Transformation without chaos"}
+        eyebrow={t("pages.approach.approach-page.our-approach-9bce36", { en: "Our approach", fr: "Notre approche" })}
+        title={t("pages.approach.approach-page.transformation-without-chaos-6c4c95", { en: "Transformation without chaos", fr: "Transformer sans chaos" })}
         titleClassName={styles.title}
         lead={
           <p>
-            {fr
-              ? "Une approche éprouvée, guidée par les résultats, qui aligne personnes, processus et technologie pour un impact mesurable — dans les délais, dans le budget, et fait pour durer."
-              : "A proven, outcome-driven approach that aligns people, process and technology to deliver measurable impact — on time, on budget and built to last."}
+            {t("pages.approach.approach-page.a-proven-outcome-driven-approach-that-aligns-f10b9f", { en: "A proven, outcome-driven approach that aligns people, process and technology to deliver measurable impact — on time, on budget and built to last.", fr: "Une approche éprouvée, guidée par les résultats, qui aligne personnes, processus et technologie pour un impact mesurable — dans les délais, dans le budget, et fait pour durer." })}
           </p>
         }
         actions={
           <>
-            <PrimaryLink to={`/${locale}/contact`}>{fr ? "Démarrer une conversation" : "Start a conversation"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>{t("pages.approach.approach-page.start-a-conversation-607ba9", { en: "Start a conversation", fr: "Démarrer une conversation" })}</PrimaryLink>
             <PrimaryLink to={`/${locale}/expertise`} variant="ghost">
-              {fr ? "Découvrir nos services" : "Explore our services"}
+              {t("pages.approach.approach-page.explore-our-services-8dc8aa", { en: "Explore our services", fr: "Découvrir nos services" })}
             </PrimaryLink>
           </>
         }
@@ -57,8 +56,8 @@ function ApproachHero({ locale }) {
 }
 
 export default function ApproachPage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
     queryKey: ["faq", locale, "approach"],
     queryFn: async ({ signal }) => {
@@ -72,12 +71,10 @@ export default function ApproachPage() {
       return localizeEntity(companyData.process, locale);
     },
   });
-  const copy = approachCopy[locale] ?? approachCopy.en;
+  const copy = approachCopy(t);
   useDocumentMeta({
-    title: `${fr ? "Notre approche" : "Our approach"} — Prosperya`,
-    description: fr
-      ? "Un parcours structuré, de la découverte au lancement et à l’amélioration continue."
-      : "A structured path from discovery and architecture to launch and continuous improvement.",
+    title: `${t("pages.approach.approach-page.our-approach-9bce36", { en: "Our approach", fr: "Notre approche" })} — Prosperya`,
+    description: t("pages.approach.approach-page.a-structured-path-from-discovery-and-architecture-2b67d9", { en: "A structured path from discovery and architecture to launch and continuous improvement.", fr: "Un parcours structuré, de la découverte au lancement et à l’amélioration continue." }),
   });
   if (processIsLoading) return <PageLoader />;
   if (processIsError)
@@ -155,11 +152,9 @@ export default function ApproachPage() {
       <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} layout="columns" />
       <CTASection
         variant="card"
-        title={fr ? "Traçons votre parcours ensemble." : "Map your path with us."}
+        title={t("pages.approach.approach-page.map-your-path-with-us-0a8424", { en: "Map your path with us.", fr: "Traçons votre parcours ensemble." })}
         description={
-          fr
-            ? "Partagez vos objectifs : nous construirons une approche sur mesure pour un impact durable."
-            : "Share your goals and we’ll craft a tailored approach to deliver lasting impact."
+          t("pages.approach.approach-page.share-your-goals-and-we-ll-craft-bb713a", { en: "Share your goals and we’ll craft a tailored approach to deliver lasting impact.", fr: "Partagez vos objectifs : nous construirons une approche sur mesure pour un impact durable." })
         }
       />
     </>

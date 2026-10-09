@@ -10,16 +10,17 @@ Updated on 2026-10-09. The website layout and existing routes remain in place. A
 | Testimonials | `/api/testimonials` | About and Work testimonials |
 | FAQs and categories | `/api/faqs`, `/api/faq-categories` | Approach and Contact accordions; topic is the category slug |
 | Platforms | `/api/platforms` | Home/About client logo strips, About platform names and platform labels used by Work/case-study layouts |
-| Public users | `/api/users`, `/api/users/{slug}` | API and frontend request helpers ready; profile sections await chosen roles/slugs |
+| Public users | `/api/users`, `/api/users/{slug}` | About leadership reads the Users selected on its Page, in selection order |
+| Static Pages | `/api/pages/{slug}` | About intro/story, facts, focus, principles, work steps and hero image from published Page slug `about` |
 | Corporate pages and categories | `/api/corporate-pages?category=corporate`, `/api/corporate-pages/{slug}`, `/api/corporate-page-categories` | Shared footer/sidebar category links and translated detail pages by slug |
 | Contact choices and submissions | `/api/contact/options`, `/api/contact` | CMS project types/stages, validation errors and accepted-submission feedback |
 | Newsletter | `/api/newsletter` | Insights signup with validation, duplicate handling and rate-limit feedback |
-| Shared translations | `/api/labels` | Navigation/footer labels, with existing EN/FR fallback for blank or missing translations |
+| Shared translations | `/api/labels` | Fixed website UI copy, captions, navigation, forms, buttons and diagrams; paginated dictionary with EN/FR fallbacks |
 | SEO | `/api/seo`, initial HTML, `/sitemap.xml`, `/robots.txt` | Canonical, metadata, language alternates, indexing rules and social sharing |
 
 All browser API calls go directly to the named routes in the table above. Reads use GET and show their query parameters in the URL; submissions use POST with JSON. Each has its own status/error response and cancellation signal. Existing rate limits and key checks stay on the individual routes. The batch endpoint and queue were removed to make debugging straightforward.
 
-Controllers use explicit `whereIn('project', ...)`, `whereIn('status', ...)`, `whereIn('country', ...)`, and `whereIn('language', ...)`, plus active/schedule conditions for public content. `forWebsite()` only validates the key; tenant/module/deletion/owner safeguards remain automatic. No public controller returns whole CMS records.
+Controllers use explicit project, status, country and language filters, plus active/schedule conditions for public content. Canonical CMS dictionary rows have Source/Translations and no status; those retain tenant/module/project/locale checks without requiring a content status. Only `prosperya.*` canonical labels may be tenant-wide. Legacy content-style labels still require published status. `forWebsite()` validates the key; tenant/module/deletion/owner safeguards remain automatic. No public controller returns whole CMS records.
 
 FAQ questions may store their answer in `content` or link to separate answer records through `question`. Both formats are supported without per-question database queries; only public linked answers are returned. FAQ/corporate rich HTML uses the existing sanitizer. Testimonial user snapshots expose only public name/company attribution; there is no query of CMS-internal users. For records using an existing user, the CMS must store those public attribution fields or a public snapshot.
 
@@ -38,24 +39,24 @@ Both EN and FR versions have the same remaining scope.
 
 | Page or section | Already connected | Still static |
 | --- | --- | --- |
-| Home `/en`, `/fr` | CMS client logos, shared labels and backend SEO when configured | Hero copy, capabilities, NetSuite story, featured work, process preview and CTA text |
-| About `/about` | Testimonials, CMS client logos and platforms | Intro/story copy, leadership/profile, statistics and capability presentation |
-| Approach `/approach` | FAQs | Hero, process steps, principles, outcomes and CTA copy |
-| Expertise `/expertise` and `/expertise/:slug` | Backend SEO when configured | Capability list, detail sections, diagrams' labels, outcomes, relationships and related work |
-| Solutions `/solutions` and `/solutions/:slug` | Backend SEO when configured | Solution lists, details, diagrams' labels, outcomes and related work |
-| Work `/work` and `/work/:slug` | Testimonials and platform labels | Case studies, industries, metrics, images, detail sections and expertise/platform relationships |
-| Contact `/contact` | Choices, submissions and FAQs | Intro, explanatory steps, field labels and form schema |
-| Insights `/insights`, `/insights/:slug` | Articles, categories, article SEO and newsletter submissions | List hero/section copy and signup promotional text |
-| Legal and `/corporate/:slug` routes | Corporate-page body, category navigation and backend SEO | Layout headings/fallback interface labels only |
-| Global layout | Shared translated navigation/footer labels | Navigation structure, fixed CTA copy and other labels not yet calling the translation lookup |
+| Home `/en`, `/fr` | CMS client logos, labels and SEO | Capability/work/process record data |
+| About `/about` | Page content, selected Users, testimonials, platforms, labels and SEO | No hardcoded profile/content fallback; publish Page slug `about` |
+| Approach `/approach` | FAQs, fixed presentation labels | Process records still need the existing Approach CMS module connection |
+| Expertise `/expertise` and `/expertise/:slug` | Fixed labels and SEO | Capability/detail records, outcomes, relationships and related work |
+| Solutions `/solutions` and `/solutions/:slug` | Fixed labels and SEO | Solution list/detail records, outcomes and related work |
+| Work `/work` and `/work/:slug` | Testimonials, platform names, labels and SEO | Case studies, industries, metrics, images, detail records and relationships |
+| Contact `/contact` | Choices, submissions, FAQs and fixed labels | Form structure/validation limits remain implementation |
+| Insights `/insights`, `/insights/:slug` | Articles, categories, SEO, newsletter and labels | No additional content module needed for fixed UI copy |
+| Legal and `/corporate/:slug` routes | Corporate body, navigation, SEO and labels | Route/layout structure remains implementation |
+| Global layout | Fixed translated navigation, footer and CTA labels | Navigation structure remains implementation |
 
-Key remaining source files: `frontend/src/data/expertise.data.js`, `expertiseDetails.data.js`, `solutions.data.js`, `caseStudies.data.js`, `caseStudyDetails.data.js`, `company.data.js`, page `*.copy.js` files and inline EN/FR presentation copy. Contact's `projectInquiry.data.js` intentionally remains the form schema; it is not a list of CMS records. Obsolete fictional company/testimonial/FAQ and platform data files have been removed.
+Key remaining record sources: `frontend/src/data/expertise.data.js`, `expertiseDetails.data.js`, `solutions.data.js`, `caseStudies.data.js`, `caseStudyDetails.data.js` and the process records in `company.data.js`. Contact's `projectInquiry.data.js` remains the form schema; it is not a list of CMS records. Hardcoded leadership and unused About copy have been removed. See [About and labels setup](cms/about-and-labels.md) for CMS tabs, website-key grants, import commands and remaining modules.
 
 ## Live CMS setup still required
 
 The live key check succeeds. Latest checks confirm platforms and corporate detail are accessible; `/api/corporate-pages/about-prosperya?locale=en` returns 200. The category-filtered list currently returns 404 because `corporate_page_categories` is not granted; users were also denied in the previous check. Module availability can change when the key is updated.
 
-Check that the key grants the modules required by each feature: `testimonials`, `faqs`, `faq_categories`, `platforms`, `corporate_pages`, `corporate_page_categories`, `users`, `project_types`, `project_stages`, and `newsletters`. Enable `seo_pages` and publish SeoPage records for normal-route SEO. The site's code does not bypass denied modules. Contact's `contact_forms` grant alone does not grant its type/stage choices.
+Check that the key grants the modules required by each feature: `pages`, `translations`, `testimonials`, `faqs`, `faq_categories`, `platforms`, `corporate_pages`, `corporate_page_categories`, `users`, `project_types`, `project_stages`, and `newsletters`. Enable `seo_pages` and publish SeoPage records for normal-route SEO. The site's code does not bypass denied modules. Contact's `contact_forms` grant alone does not grant its type/stage choices.
 
 Publish EN/FR content with the correct project/country/language/status assignments. Use FAQ category slugs `approach` and `contact`. Assign footer/sidebar documents to category slug `corporate`; unassigned pages (such as the pictured Cookie Policy) are excluded from those lists but can still be opened directly. Legal storage slugs are `privacy-policy`, `terms-of-use`, `cookie-policy`, and `accessibility`; frontend French paths remain translated. Use the statuses marked published by the CMS; no status slug is hardcoded.
 

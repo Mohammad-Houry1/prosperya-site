@@ -14,15 +14,44 @@ class WebsiteContentController
         [$locale, $perPage] = $this->parameters($request, $content, 500);
         $filters = $content->filters($locale);
         $page = Translation::forWebsite()
-            ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
+            ->where(function ($query) use ($filters) {
+                $query->whereIn('project', $filters['project'])
+                    ->orWhere(function ($dictionary) {
+                        // Tenant-wide CMS labels are public only in this site's namespace.
+                        $dictionary->whereRaw(['source' => ['$type' => 'string']])
+                            ->where('key', 'like', 'prosperya.%')
+                            ->whereIn('project', [null, []]);
+                    });
+            })
+            ->where(function ($query) use ($filters) {
+                $query->whereIn('status', $filters['status'])
+                    ->orWhere(function ($dictionary) {
+                        // Canonical dictionary entries have source/translations and no status.
+                        // Content-style entries still require a granted published status.
+                        $dictionary->whereRaw(['source' => ['$type' => 'string']])
+                            ->whereNull('status')->whereNull('status_id');
+                    });
+            })
             ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
             ->where('is_active', '!=', false)
             ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
             ->orderBy('_id')->paginate($perPage);
         $labels = $page->getCollection()->mapWithKeys(fn ($row) => is_string($row->key) && $row->key !== ''
-            ? [$row->key => $row->text('value', $locale)] : []);
+            ? [$row->key => $this->labelText($row, $locale)] : []);
 
         return ['data' => (object) $labels->all(), 'meta' => $payload->pagination($page)];
+    }
+
+    private function labelText(Translation $row, string $locale): string
+    {
+        if (is_string($row->source)) {
+            $translation = ((array) $row->translations)[$locale] ?? null;
+            // Blank or absent translations leave the site's locale-specific fallback intact.
+            // The CMS source is English; it must not replace French fallback copy.
+            return is_string($translation) ? $translation : ($locale === 'en' ? $row->source : '');
+        }
+
+        return $row->text('value', $locale);
     }
 
     private function parameters(Request $request, PublicContent $content, int $maximum): array

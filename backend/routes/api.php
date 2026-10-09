@@ -8,6 +8,7 @@ use App\Http\Controllers\WebsiteSeoController;
 use App\Http\Controllers\CorporatePageController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PlatformController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,7 @@ Route::middleware(['website.access', 'throttle:content'])->group(function () {
     Route::get('/faq-categories', [FaqController::class, 'getCategories']);
     Route::get('/testimonials', [TestimonialController::class, 'getTestimonials']);
     Route::get('/platforms', [PlatformController::class, 'getPlatforms']);
+    Route::get('/pages/{slug}', [PageController::class, 'getPage']);
     Route::get('/users', [UserController::class, 'getUsers']);
     Route::get('/users/{slug}', [UserController::class, 'getUsers']);
     Route::get('/labels', [WebsiteContentController::class, 'labels']);

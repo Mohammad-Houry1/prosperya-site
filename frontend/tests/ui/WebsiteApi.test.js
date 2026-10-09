@@ -30,6 +30,17 @@ test("requests profiles by encoded slug and users by multiple role slugs", async
   expect(url.searchParams.getAll("roles[]")).toEqual(["team", "author"]);
 });
 
+test("requests a localized CMS Page and selected Users by canonical IDs", async () => {
+  const fetcher = fetchApi(() => ({ data: [] }));
+  const ids = ["6ac8886280862f68e40a2864", "6ac8886280862f68e40a2865"];
+  await websiteApi.page("about", "fr");
+  await websiteApi.users({ locale: "fr", ids, per_page: 50 });
+  expect(fetcher.mock.calls[0][0]).toBe("/api/pages/about?locale=fr");
+  const url = new URL(fetcher.mock.calls[1][0], "https://site.test");
+  expect(url.searchParams.getAll("ids[]")).toEqual(ids);
+  expect(url.searchParams.has("role")).toBe(false);
+});
+
 test("requests public article pages with locale, category and no credentials", async () => {
   const fetcher = fetchApi(() => ({ data: [], meta: { last_page: 1 } }));
   await websiteApi.articles({ locale: "fr", page: 2, category_id: "cat-1" });

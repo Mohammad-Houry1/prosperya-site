@@ -5,18 +5,13 @@ import { messages } from "./messages.js";
 import { normalizeLocale } from "./locale.js";
 import { LocaleContext } from "./LocaleContext.jsx";
 import { websiteApi } from "../services/websiteApi.js";
-function getByPath(source, path) {
-  return path.split(".").reduce((value, key) => value?.[key], source);
-}
+import { createTranslator, loadLabels } from "./labels.js";
 export function LocaleProvider({ children }) {
   const { locale: routeLocale } = useParams();
   const locale = normalizeLocale(routeLocale);
   const { data: labels = {}, isPending: labelsLoading, isError: labelsError, refetch: retryLabels } = useQuery({
     queryKey: ["labels", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.labels({ locale }, signal);
-      return response.data || {};
-    },
+    queryFn: ({ signal }) => loadLabels(websiteApi, locale, signal),
     retry: false,
   });
   useEffect(() => {
@@ -29,13 +24,7 @@ export function LocaleProvider({ children }) {
       labelsLoading,
       labelsError,
       retryLabels,
-      t(key) {
-        const label = labels[key];
-        if (typeof label === "string" && label.trim() !== "") return label;
-        return (
-          getByPath(messages[locale], key) ?? getByPath(messages.en, key) ?? key
-        );
-      },
+      t: createTranslator(locale, labels),
     }),
     [locale, labels, labelsLoading, labelsError, retryLabels],
   );

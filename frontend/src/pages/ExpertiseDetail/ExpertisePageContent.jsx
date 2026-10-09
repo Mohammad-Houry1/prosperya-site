@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -29,7 +30,8 @@ function HeroAnimation({ slug, progress }) {
   return <SignalWave shape={scene} progressRef={progress} strands={42} particles={300} />;
 }
 export default function ExpertisePageContent({ page, related = [], locale }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const pageRef = useRef(null);
   const readingRef = useRef(null);
   const heroRef = useRef(null);
@@ -60,24 +62,24 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
       <div ref={heroRef} className={styles.heroWrap}>
         <PageHero className={styles.hero} title={page.title} titleClassName={styles.title}
           breadcrumb={[
-            { label: fr ? "Accueil" : "Home", to: `/${locale}` },
-            { label: "Expertise", to: `/${locale}/expertise` }, { label: page.title },
+            { label: t("pages.expertise-detail.expertise-page-content.home-ded702", { en: "Home", fr: "Accueil" }), to: `/${locale}` },
+            { label: t("nav.expertise"), to: `/${locale}/expertise` }, { label: page.title },
           ]}
           lead={<CmsRichHtml html={page.description} imageAlt={page.title} />}
           actions={<>
-            <PrimaryLink to={`/${locale}/contact`}>{fr ? "Démarrer votre projet" : "Start your transformation"}</PrimaryLink>
-            <PrimaryLink to={`/${locale}/approach`} variant="ghost">{fr ? "Découvrir notre approche" : "Explore our approach"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>{t("pages.expertise-detail.expertise-page-content.start-your-transformation-6e62e2", { en: "Start your transformation", fr: "Démarrer votre projet" })}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/approach`} variant="ghost">{t("pages.expertise-detail.expertise-page-content.explore-our-approach-de10c8", { en: "Explore our approach", fr: "Découvrir notre approche" })}</PrimaryLink>
           </>}
           visual={<div className={styles.sceneFrame} aria-hidden="true" data-reveal="scale" data-animation={SCENES[page.slug] || "structure"}>
-            <span className={styles.frameLabel}>{fr ? "Systèmes en mouvement" : "Systems in motion"}</span>
+            <span className={styles.frameLabel}>{t("pages.expertise-detail.expertise-page-content.systems-in-motion-f02084", { en: "Systems in motion", fr: "Systèmes en mouvement" })}</span>
             <div className={styles.sceneVisual}><HeroAnimation slug={page.slug} progress={progress} /></div>
-            <span className={styles.frameCaption}>Prosperya <span>/</span> Expertise</span>
+            <span className={styles.frameCaption}>Prosperya <span>/</span> {t("nav.expertise")}</span>
           </div>}
         />
       </div>
-      {sections.length > 0 && <nav className={styles.sectionNav} aria-label={fr ? "Dans cette page" : "On this page"}>
+      {sections.length > 0 && <nav className={styles.sectionNav} aria-label={t("pages.expertise-detail.expertise-page-content.on-this-page-765502", { en: "On this page", fr: "Dans cette page" })}>
         <PageContainer className={styles.navInner}>
-          <span className={styles.navLabel}>{fr ? "Dans cette page" : "On this page"}</span>
+          <span className={styles.navLabel}>{t("pages.expertise-detail.expertise-page-content.on-this-page-765502", { en: "On this page", fr: "Dans cette page" })}</span>
           <ol className={styles.navLinks}>{sections.map((section, index) => <li key={section.id || index}>
             <a href={`#expertise-section-${index + 1}`} aria-current={activeSection === index ? "location" : undefined} onClick={() => setActiveSection(index)}>
               <span>{String(index + 1).padStart(2, "0")}</span>
@@ -100,7 +102,7 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
         </Section>
       ))}
       {related.length > 0 && <Section>
-        <SectionHeader eyebrow={fr ? "Expertises associées" : "Related expertise"} title={fr ? "Des capacités complémentaires." : "Explore complementary capabilities."} />
+        <SectionHeader eyebrow={t("pages.expertise-detail.expertise-page-content.related-expertise-d6a7c0", { en: "Related expertise", fr: "Expertises associées" })} title={t("pages.expertise-detail.expertise-page-content.explore-complementary-capabilities-9969cf", { en: "Explore complementary capabilities.", fr: "Des capacités complémentaires." })} />
         <ul className={styles.related}>{related.map((item, index) => <li key={item.id || item.slug} data-reveal="card" style={{ "--i": index }}>
           <Link to={`/${locale}/expertise/${item.slug}`}>
             <span className={styles.relatedNumber}>{String(index + 1).padStart(2, "0")}</span>
@@ -108,7 +110,7 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
           </Link>
         </li>)}</ul>
       </Section>}
-      <CTASection variant="card" secondary={{ path: "contact", label: fr ? "Parler à un expert" : "Talk to an expert" }} />
+      <CTASection variant="card" secondary={{ path: "contact", label: t("pages.expertise-detail.expertise-page-content.talk-to-an-expert-8e5217", { en: "Talk to an expert", fr: "Parler à un expert" }) }} />
     </div>
   );
 }

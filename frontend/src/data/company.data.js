@@ -1,23 +1,4 @@
 export const companyData = {
-  leadership: [
-    {
-      id: "walid-houry",
-      initials: "WH",
-      linkedin: null,
-      copy: {
-        en: {
-          name: "Walid Houry",
-          role: "Founder & Managing Director",
-          bio: "Enterprise systems consultant focused on NetSuite, integrations, finance operations and supply-chain transformation.",
-        },
-        fr: {
-          name: "Walid Houry",
-          role: "Fondateur et directeur général",
-          bio: "Consultant en systèmes d’entreprise spécialisé en NetSuite, intégrations, opérations financières et transformation supply chain.",
-        },
-      },
-    },
-  ],
   process: [
     {
       id: "discover",

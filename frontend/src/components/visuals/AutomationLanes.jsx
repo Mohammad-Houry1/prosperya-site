@@ -5,10 +5,7 @@ import styles from "./AutomationLanes.module.css";
 
 const LANES = [96, 186, 276, 366];
 const STATIONS = [150, 280, 410, 540];
-const COPY = {
-  en: { lanes: ["Orders", "Invoices", "Payments", "Inventory"], stations: ["Capture", "Validate", "Approve", "Post"] },
-  fr: { lanes: ["Commandes", "Factures", "Paiements", "Stocks"], stations: ["Saisir", "Valider", "Approuver", "Comptabiliser"] },
-};
+const COPY = (t) => ({ lanes: [t("components.visuals.automation-lanes.copy.orders-9bed10", { en: "Orders", fr: "Commandes" }), t("components.visuals.automation-lanes.copy.invoices-db57f7", { en: "Invoices", fr: "Factures" }), t("components.visuals.automation-lanes.copy.payments-807062", { en: "Payments", fr: "Paiements" }), t("components.visuals.automation-lanes.copy.inventory-bec5e3", { en: "Inventory", fr: "Stocks" })], stations: [t("components.visuals.automation-lanes.copy.capture-f0b078", { en: "Capture", fr: "Saisir" }), t("components.visuals.automation-lanes.copy.validate-fae2e8", { en: "Validate", fr: "Valider" }), t("components.visuals.automation-lanes.copy.approve-a518c8", { en: "Approve", fr: "Approuver" }), t("components.visuals.automation-lanes.copy.post-9757ab", { en: "Post", fr: "Comptabiliser" })] });
 
 /*
   Automation: work moves through four lanes of process steps. With progress
@@ -18,8 +15,8 @@ const COPY = {
 export default function AutomationLanes({ progressRef }) {
   const ref = useRef(null);
   const reduced = useReducedMotion();
-  const { locale } = useLocale();
-  const copy = COPY[locale] ?? COPY.en;
+  const { t } = useLocale();
+  const copy = COPY(t);
   useEffect(() => {
     const root = ref.current;
     const packets = [...root.querySelectorAll("[data-packet]")];

@@ -125,7 +125,7 @@
 }
 .leader {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) minmax(0, 0.8fr);
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: clamp(24px, 4vw, 56px);
   align-items: center;
   margin-top: 22px;
@@ -212,7 +212,7 @@
 }
 .principles {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   margin: 22px 0 0;
   padding: 0;
   list-style: none;
@@ -299,6 +299,67 @@
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: clamp(28px, 5vw, 80px);
   align-items: center;
+}
+.singleColumn {
+  grid-template-columns: minmax(0, 1fr);
+}
+.portrait {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+.factImage {
+  grid-row: span 2;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.factText dt,
+.factText dd {
+  grid-column: 1 / -1;
+}
+.sectionImage {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.richSmall {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.richSmall p {
+  margin: 0 0 8px;
+}
+.paragraph img,
+.lead img,
+.richSmall img {
+  max-width: 100%;
+  height: auto;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.steps h3 {
+  margin: 18px 0 10px;
+  font-size: 16px;
+  font-weight: 400;
+}
+.stepNumber {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--brand-primary);
+  border-radius: 50%;
+  color: var(--accent-text);
+  font-size: 12px;
 }
 @media (max-width: 1100px) {
   .leader {

@@ -24,8 +24,8 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 export default function ArticlePage() {
   const articleRef = useRef(null);
   const { slug } = useParams();
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const { data: insight = null, isLoading: insightIsLoading, isError: insightIsError, refetch: insightRefetch } = useQuery({
     queryKey: ["insight", locale, slug],
     queryFn: async ({ signal }) => {
@@ -60,7 +60,7 @@ export default function ArticlePage() {
   const categoryNames = Object.fromEntries((categoriesData ?? []).map((entry) => [entry.id, entry.name]));
   useDocumentMeta({
     model: "Article",
-    title: item ? `${item.seo?.title || item.title} — Prosperya` : fr ? "Prosperya — Analyses" : "Prosperya — Insights",
+    title: item ? `${item.seo?.title || item.title} — Prosperya` : t("pages.article.article-page.prosperya-insights-56ddec", { en: "Prosperya — Insights", fr: "Prosperya — Analyses" }),
     description: item?.seo?.description || item?.excerpt,
     canonicalPath: item?.seo?.url || undefined,
     ogImage: item?.metaImage?.src || item?.image?.src,
@@ -77,7 +77,7 @@ export default function ArticlePage() {
   if (!item)
     return (
       <Section>
-        <EmptyState title={fr ? "Analyse introuvable" : "Insight not found"} />
+        <EmptyState title={t("pages.article.article-page.insight-not-found-6a3f0b", { en: "Insight not found", fr: "Analyse introuvable" })} />
       </Section>
     );
   const others = (articles?.items ?? []).filter((entry) => entry.id !== item.id).map((entry) => ({ ...entry, category: categoryNames[entry.categoryId] || "" }));
@@ -91,7 +91,7 @@ export default function ArticlePage() {
       <header className={styles.masthead}>
         <Link to={`/${locale}/insights`} className={styles.back}>
           <ArrowLeft size={15} strokeWidth={1.6} aria-hidden="true" />
-          {fr ? "Toutes les analyses" : "All insights"}
+          {t("pages.article.article-page.all-insights-3e70ef", { en: "All insights", fr: "Toutes les analyses" })}
         </Link>
         <p className={styles.category}>
           {categoryNames[item.categoryId] || ""}
@@ -111,9 +111,9 @@ export default function ArticlePage() {
           </span>}
           {item.readTime && <span>
             <Clock3 size={14} strokeWidth={1.5} aria-hidden="true" />
-            {item.readTime} min {fr ? "de lecture" : "read"}
+            {t("common.reading_time", { en: "{minutes} min read", fr: "{minutes} min de lecture" }, { minutes: item.readTime })}
           </span>}
-          <span>{fr ? "Par l’équipe Prosperya" : "By the Prosperya team"}</span>
+          <span>{t("pages.article.article-page.by-the-prosperya-team-63c8ff", { en: "By the Prosperya team", fr: "Par l’équipe Prosperya" })}</span>
         </p>
       </header>
       <PageContainer>
@@ -131,10 +131,10 @@ export default function ArticlePage() {
       {related.length > 0 && (
         <Section>
           <SectionHeader
-            eyebrow={fr ? "À lire ensuite" : "Keep reading"}
-            title={fr ? "Analyses liées" : "Related insights"}
+            eyebrow={t("pages.article.article-page.keep-reading-6c0c98", { en: "Keep reading", fr: "À lire ensuite" })}
+            title={t("pages.article.article-page.related-insights-e79261", { en: "Related insights", fr: "Analyses liées" })}
             align="split"
-            action={{ to: `/${locale}/insights`, label: fr ? "Toutes les analyses" : "All insights" }}
+            action={{ to: `/${locale}/insights`, label: t("pages.article.article-page.all-insights-3e70ef", { en: "All insights", fr: "Toutes les analyses" }) }}
           />
           <div className={styles.related}>
             {related.map((entry, index) => (
@@ -144,7 +144,7 @@ export default function ArticlePage() {
         </Section>
       )}
       <Section>
-        <Newsletter title={fr ? "Recevez la prochaine analyse." : "Get the next article first."} />
+        <Newsletter title={t("pages.article.article-page.get-the-next-article-first-79dae7", { en: "Get the next article first.", fr: "Recevez la prochaine analyse." })} />
       </Section>
     </>
   );

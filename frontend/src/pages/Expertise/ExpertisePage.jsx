@@ -16,8 +16,8 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./ExpertisePage.module.css";
 
 export default function ExpertisePage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const { isLoading: capabilitiesIsLoading, isError: capabilitiesIsError, refetch: capabilitiesRefetch, data: capabilities = [] } = useQuery({
     queryKey: ["capabilities", locale],
     queryFn: async () => {
@@ -26,9 +26,7 @@ export default function ExpertisePage() {
   });
   useDocumentMeta({
     title: "Prosperya — Expertise",
-    description: fr
-      ? "Transformation ERP, implémentation NetSuite, intégration, automatisation, audit et redressement."
-      : "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
+    description: t("pages.expertise.expertise-page.erp-transformation-netsuite-implementation-integration-automation-audit-51a3ca", { en: "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.", fr: "Transformation ERP, implémentation NetSuite, intégration, automatisation, audit et redressement." }),
   });
   if (capabilitiesIsLoading) return <PageLoader />;
   if (capabilitiesIsError)
@@ -41,13 +39,11 @@ export default function ExpertisePage() {
   return (
     <>
       <PageHero
-        eyebrow="Expertise"
-        title={fr ? "Des expertises qui produisent des résultats." : "Capabilities that drive measurable results."}
+        eyebrow={t("nav.expertise")}
+        title={t("pages.expertise.expertise-page.capabilities-that-drive-measurable-results-ad246d", { en: "Capabilities that drive measurable results.", fr: "Des expertises qui produisent des résultats." })}
         lead={
           <p>
-            {fr
-              ? "Nous aidons les entreprises à concevoir, connecter et optimiser leurs systèmes pour simplifier les opérations, réduire la complexité et libérer la performance."
-              : "We help enterprises design, connect and optimize their systems to simplify operations, reduce complexity and unlock performance at scale."}
+            {t("pages.expertise.expertise-page.we-help-enterprises-design-connect-and-optimize-2b00c4", { en: "We help enterprises design, connect and optimize their systems to simplify operations, reduce complexity and unlock performance at scale.", fr: "Nous aidons les entreprises à concevoir, connecter et optimiser leurs systèmes pour simplifier les opérations, réduire la complexité et libérer la performance." })}
           </p>
         }
         visual={<CapabilityIndex items={items} locale={locale} />}
@@ -56,18 +52,16 @@ export default function ExpertisePage() {
       <Section>
         <div className={styles.architecture}>
           <div className={styles.architectureCopy}>
-            <Eyebrow>{fr ? "Notre approche d’architecture" : "Our architecture approach"}</Eyebrow>
+            <Eyebrow>{t("pages.expertise.expertise-page.our-architecture-approach-37ec21", { en: "Our architecture approach", fr: "Notre approche d’architecture" })}</Eyebrow>
             <h2>
-              {fr ? "Conçu pour connecter." : "Built to connect."}
-              <span>{fr ? "Pensé pour grandir." : "Designed to scale."}</span>
+              {t("pages.expertise.expertise-page.built-to-connect-5ea962", { en: "Built to connect.", fr: "Conçu pour connecter." })}
+              <span>{t("pages.expertise.expertise-page.designed-to-scale-4d2442", { en: "Designed to scale.", fr: "Pensé pour grandir." })}</span>
             </h2>
             <p>
-              {fr
-                ? "Notre cadre d’architecture unifie systèmes, données et processus pour créer une fondation résiliente et évolutive."
-                : "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth."}
+              {t("pages.expertise.expertise-page.our-architecture-framework-unifies-your-enterprise-systems-46a34d", { en: "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth.", fr: "Notre cadre d’architecture unifie systèmes, données et processus pour créer une fondation résiliente et évolutive." })}
             </p>
             <PrimaryLink to={`/${locale}/approach`} variant="text">
-              {fr ? "Découvrir notre approche" : "Explore our approach"}
+              {t("pages.expertise.expertise-page.explore-our-approach-de10c8", { en: "Explore our approach", fr: "Découvrir notre approche" })}
             </PrimaryLink>
           </div>
           <ArchitectureFlowDiagram />
@@ -75,13 +69,11 @@ export default function ExpertisePage() {
       </Section>
       <CTASection
         variant="card"
-        title={fr ? "Vous hésitez entre plusieurs expertises ?" : "Not sure which capability you need?"}
+        title={t("pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66", { en: "Not sure which capability you need?", fr: "Vous hésitez entre plusieurs expertises ?" })}
         description={
-          fr
-            ? "Décrivez le problème : nous vous indiquerons le bon point de départ."
-            : "Describe the problem. We will point you to the right starting point."
+          t("pages.expertise.expertise-page.describe-the-problem-we-will-point-you-b40a3b", { en: "Describe the problem. We will point you to the right starting point.", fr: "Décrivez le problème : nous vous indiquerons le bon point de départ." })
         }
-        secondary={{ path: "contact", label: fr ? "Parler à un expert" : "Talk to an expert" }}
+        secondary={{ path: "contact", label: t("pages.expertise.expertise-page.talk-to-an-expert-8e5217", { en: "Talk to an expert", fr: "Parler à un expert" }) }}
       />
     </>
   );

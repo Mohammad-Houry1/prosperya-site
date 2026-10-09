@@ -2,20 +2,7 @@ import SystemIcon from "../system/SystemIcon.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./LayeredArchitecture.module.css";
 
-const COPY = {
-  en: [
-    ["Experience layer", [["users", "Employees"], ["share", "Partners"], ["badge", "Customers"], ["truck", "Suppliers"]]],
-    ["Solution layer", [[null, "Finance"], [null, "Operations"], [null, "Supply chain"], [null, "Data & analytics"]]],
-    ["Platform layer", [[null, "NetSuite"]]],
-    ["Foundation layer", [[null, "Integration & APIs"], [null, "Security & compliance"], [null, "Data management"], [null, "Cloud infrastructure"]]],
-  ],
-  fr: [
-    ["Couche expérience", [["users", "Collaborateurs"], ["share", "Partenaires"], ["badge", "Clients"], ["truck", "Fournisseurs"]]],
-    ["Couche solutions", [[null, "Finance"], [null, "Opérations"], [null, "Chaîne logistique"], [null, "Données & analyses"]]],
-    ["Couche plateforme", [[null, "NetSuite"]]],
-    ["Couche socle", [[null, "Intégration & API"], [null, "Sécurité & conformité"], [null, "Gestion des données"], [null, "Infrastructure cloud"]]],
-  ],
-};
+const COPY = (t) => ([[t("components.visuals.layered-architecture.copy.experience-layer-e650a1", { en: "Experience layer", fr: "Couche expérience" }), [["users", t("components.visuals.layered-architecture.copy.employees-090c5c", { en: "Employees", fr: "Collaborateurs" })], ["share", t("components.visuals.layered-architecture.copy.partners-2c98b8", { en: "Partners", fr: "Partenaires" })], ["badge", t("components.visuals.layered-architecture.copy.customers-288584", { en: "Customers", fr: "Clients" })], ["truck", t("components.visuals.layered-architecture.copy.suppliers-669453", { en: "Suppliers", fr: "Fournisseurs" })]]], [t("components.visuals.layered-architecture.copy.solution-layer-c353e3", { en: "Solution layer", fr: "Couche solutions" }), [[null, t("components.visuals.layered-architecture.copy.finance-9bee15", { en: "Finance", fr: "Finance" })], [null, t("components.visuals.layered-architecture.copy.operations-b5b127", { en: "Operations", fr: "Opérations" })], [null, t("components.visuals.layered-architecture.copy.supply-chain-681468", { en: "Supply chain", fr: "Chaîne logistique" })], [null, t("components.visuals.layered-architecture.copy.data-analytics-aaa526", { en: "Data & analytics", fr: "Données & analyses" })]]], [t("components.visuals.layered-architecture.copy.platform-layer-5724d1", { en: "Platform layer", fr: "Couche plateforme" }), [[null, t("components.visuals.layered-architecture.copy.netsuite-632fd2", { en: "NetSuite", fr: "NetSuite" })]]], [t("components.visuals.layered-architecture.copy.foundation-layer-ce83ed", { en: "Foundation layer", fr: "Couche socle" }), [[null, t("components.visuals.layered-architecture.copy.integration-apis-3ae2a5", { en: "Integration & APIs", fr: "Intégration & API" })], [null, t("components.visuals.layered-architecture.copy.security-compliance-0985e8", { en: "Security & compliance", fr: "Sécurité & conformité" })], [null, t("components.visuals.layered-architecture.copy.data-management-2cc30c", { en: "Data management", fr: "Gestion des données" })], [null, t("components.visuals.layered-architecture.copy.cloud-infrastructure-f4cac9", { en: "Cloud infrastructure", fr: "Infrastructure cloud" })]]]]);
 
 /*
   The architecture assembles from the ground up: the foundation arrives first,
@@ -23,8 +10,8 @@ const COPY = {
   each layer plugged into the one below.
 */
 export default function LayeredArchitecture() {
-  const { locale } = useLocale();
-  const layers = COPY[locale] ?? COPY.en;
+  const { t } = useLocale();
+  const layers = COPY(t);
   return (
     <div className={styles.stack}>
       {layers.map(([name, items], index) => (

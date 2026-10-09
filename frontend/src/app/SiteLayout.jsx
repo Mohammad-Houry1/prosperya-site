@@ -6,19 +6,19 @@ import PageLoader from "../components/feedback/PageLoader.jsx";
 import { useLocale } from "../i18n/LocaleContext.jsx";
 import { useRevealObserver } from "../motion/useRevealObserver.js";
 export default function SiteLayout() {
-  const { locale, labelsError, retryLabels } = useLocale();
+  const { t, labelsError, retryLabels } = useLocale();
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   useRevealObserver(mainRef);
   return (
     <>
       <a className="skipLink" href="#main-content">
-        {locale === "fr" ? "Aller au contenu" : "Skip to content"}
+        {t("common.skip_content", { en: "Skip to content", fr: "Aller au contenu" })}
       </a>
       <SiteHeader />
       {labelsError && <div role="alert" className="cms-label-alert">
-        {locale === "fr" ? "Certaines traductions n’ont pas pu être chargées." : "Some translations could not be loaded."}
-        <button type="button" onClick={retryLabels}>{locale === "fr" ? "Réessayer" : "Try again"}</button>
+        {t("common.labels_unavailable", { en: "Some translations could not be loaded.", fr: "Certaines traductions n’ont pas pu être chargées." })}
+        <button type="button" onClick={retryLabels}>{t("common.retry")}</button>
       </div>}
       <main id="main-content" ref={mainRef}>
         <Suspense fallback={<PageLoader />}>

@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { ArrowRight, CalendarDays, Clock3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ResponsiveImage from "../common/ResponsiveImage.jsx";
@@ -8,6 +9,7 @@ const date = (value, locale) =>
   new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(value));
 
 function Meta({ insight, locale }) {
+  const { t } = useLocale();
   if (!insight.publishedAt) return null;
   return (
     <p className={styles.meta}>
@@ -17,7 +19,7 @@ function Meta({ insight, locale }) {
       </span>
       {insight.readTime && <span>
         <Clock3 size={14} strokeWidth={1.5} aria-hidden="true" />
-        {insight.readTime} min {locale === "fr" ? "de lecture" : "read"}
+        {t("common.reading_time", { en: "{minutes} min read", fr: "{minutes} min de lecture" }, { minutes: insight.readTime })}
       </span>}
     </p>
   );
@@ -28,8 +30,9 @@ function Meta({ insight, locale }) {
   default: a journal card — words first, a generative cover beneath.
 */
 export default function InsightCard({ insight, locale, featured = false, large = false, index = 0 }) {
+  const { t } = useLocale();
   const to = `/${locale}/insights/${insight.slug}`;
-  const fr = locale === "fr";
+
   if (featured)
     return (
       <article className={styles.featured}>
@@ -45,7 +48,7 @@ export default function InsightCard({ insight, locale, featured = false, large =
           <h3>{insight.title}</h3>
           <p>{insight.excerpt}</p>
           <Link to={to} className={styles.more}>
-            {fr ? "Lire l’article" : "Read the full article"}
+            {t("components.insight.insight-card.read-the-full-article-9410c4", { en: "Read the full article", fr: "Lire l’article" })}
             <span className="visuallyHidden"> : {insight.title}</span>
             <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
           </Link>

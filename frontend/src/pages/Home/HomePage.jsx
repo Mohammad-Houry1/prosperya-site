@@ -14,7 +14,7 @@ import ApproachPreviewSection from "../../sections/home/ApproachPreviewSection.j
 import FinalCtaSection from "../../sections/home/FinalCtaSection.jsx";
 import ClientCompanies from "../../components/company/ClientCompanies.jsx";
 export default function HomePage() {
-  const { locale } = useLocale();
+  const {locale, t } = useLocale();
   const { data: capabilities = [], isLoading: capabilitiesIsLoading, isError: capabilitiesIsError, refetch: capabilitiesRefetch } = useQuery({
     queryKey: ["capabilities", locale],
     queryFn: async () => {
@@ -40,13 +40,9 @@ export default function HomePage() {
   });
   useDocumentMeta({
     title:
-      locale === "fr"
-        ? "Prosperya — Complexité. Orchestrée."
-        : "Prosperya — Complexity. Orchestrated.",
+      t("pages.home.home-page.prosperya-complexity-orchestrated-2438c7", { en: "Prosperya — Complexity. Orchestrated.", fr: "Prosperya — Complexité. Orchestrée." }),
     description:
-      locale === "fr"
-        ? "Architecture et transformation des systèmes d’entreprise à Paris."
-        : "Enterprise systems architecture and transformation in Paris.",
+      t("pages.home.home-page.enterprise-systems-architecture-and-transformation-in-paris-3825b8", { en: "Enterprise systems architecture and transformation in Paris.", fr: "Architecture et transformation des systèmes d’entreprise à Paris." }),
   });
   return (
     <>

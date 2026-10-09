@@ -6,10 +6,12 @@ use App\Models\Base\ContentEntity;
 use App\Models\Concerns\Trashable;
 use App\Rules\CmsGallery;
 use App\Rules\CmsMedia;
+use App\Rules\ListRules;
 use App\Rules\LocaleMap;
 use App\Support\CurrentTenant;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class Page extends ContentEntity
 {
@@ -116,6 +118,7 @@ class Page extends ContentEntity
             'source' => 'page_categories',
             'getter' => 'getPageCategoriesList',
         ],
+        ['key' => 'about_users', 'name' => 'About Leadership', 'type' => 'objects', 'source' => 'users', 'getter' => 'getUsersList'],
         ['key' => 'updated_at', 'name' => 'Updated', 'sortable' => true, 'type' => 'datetime'],
     ];
 
@@ -215,6 +218,43 @@ class Page extends ContentEntity
             'meta_keywords' => LocaleMap::rules(),
             'meta_type' => ['nullable', 'string', 'max:100'],
 
+            ...ListRules::of('sections', [
+                'section_title' => LocaleMap::rules(max: 255),
+                'section_description' => LocaleMap::rules(),
+                'section_image' => ['nullable', CmsMedia::valueOnly()],
+            ]),
+
+            'architecture_title' => LocaleMap::rules(max: 255),
+            'architecture_description' => LocaleMap::rules(),
+            ...ListRules::values('architecture_column_1', LocaleMap::rules(max: 255)),
+            ...ListRules::values('architecture_column_2', LocaleMap::rules(max: 255)),
+            ...ListRules::values('architecture_column_3', LocaleMap::rules(max: 255)),
+            ...ListRules::values('architecture_column_4', LocaleMap::rules(max: 255)),
+
+            'about_title' => LocaleMap::rules(max: 255),
+            'about_story_title' => LocaleMap::rules(max: 255),
+            'about_users' => ['nullable', 'array', 'list', 'max:50'],
+            'about_users.*' => ['bail', 'required', 'string', 'regex:/^[a-f0-9]{24}$/', 'distinct',
+                Rule::exists(User::class, '_id')->where(fn ($query) => $query->where('tenant_id', $tenantId)->whereNull('deleted_at'))],
+            ...ListRules::of('about_facts', [
+                'fact_title' => LocaleMap::rules(max: 255),
+                'fact_value' => LocaleMap::rules(max: 255),
+                'fact_image' => ['nullable', CmsMedia::valueOnly()],
+            ]),
+            ...ListRules::values('about_focus', LocaleMap::rules(max: 255)),
+            ...ListRules::of('about_principles', [
+                'principle_title' => LocaleMap::rules(max: 255),
+                'principle_description' => LocaleMap::rules(),
+                'principle_image' => ['nullable', CmsMedia::valueOnly()],
+            ]),
+            'about_work_title' => LocaleMap::rules(max: 255),
+            'about_work_description' => LocaleMap::rules(),
+            ...ListRules::of('about_steps', [
+                'step_title' => LocaleMap::rules(max: 255),
+                'step_description' => LocaleMap::rules(),
+                'step_image' => ['nullable', CmsMedia::valueOnly()],
+            ]),
+
             'page_category' => ['nullable'],
             'status' => [...$sometimes, 'required'],
             'published_at' => ['nullable', 'date'],
@@ -268,5 +308,24 @@ class Page extends ContentEntity
     public function category()
     {
         return $this->belongsTo(PageCategory::class, 'page_category');
+    }
+
+    public function getUsersList(): array
+    {
+        $tenantId = CurrentTenant::id();
+
+        if (! $tenantId) {
+            return [];
+        }
+
+        return User::query()->where('tenant_id', $tenantId)->whereNull('deleted_at')
+            ->orderBy('name')->get(['_id', 'name', 'project', 'country', 'language'])
+            ->map(fn (User $user): array => [
+                '_id' => (string) $user->getKey(),
+                'name' => $user->name,
+                'project' => $user->project,
+                'country' => $user->country,
+                'language' => $user->language,
+            ])->all();
     }
 }

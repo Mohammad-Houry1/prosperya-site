@@ -3,26 +3,7 @@ import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import SystemIcon from "../system/SystemIcon.jsx";
 import styles from "./ArchitectureFlowDiagram.module.css";
 
-const COPY = {
-  en: {
-    columns: ["Source systems", "Integration layer", "Enterprise platform", "Outcomes"],
-    sources: [["users", "CRM"], ["badge", "HCM"], ["cart", "eCommerce"], ["landmark", "Financials"], ["truck", "Supply chain"], ["database", "Legacy systems"]],
-    api: "API management",
-    events: "Data & event hub",
-    modules: ["Finance", "Operations", "Reporting", "Analytics"],
-    outcomes: ["Real-time insights", "Operational agility", "Business growth", "Cost optimization", "Risk reduction"],
-    label: "Source systems connect through an integration layer to NetSuite, producing business outcomes",
-  },
-  fr: {
-    columns: ["Systèmes sources", "Couche d’intégration", "Plateforme d’entreprise", "Résultats"],
-    sources: [["users", "CRM"], ["badge", "SIRH"], ["cart", "E-commerce"], ["landmark", "Finance"], ["truck", "Supply chain"], ["database", "Systèmes hérités"]],
-    api: "Gestion des API",
-    events: "Hub données & événements",
-    modules: ["Finance", "Opérations", "Reporting", "Analytique"],
-    outcomes: ["Pilotage temps réel", "Agilité opérationnelle", "Croissance", "Maîtrise des coûts", "Réduction des risques"],
-    label: "Les systèmes sources se connectent à NetSuite via une couche d’intégration, au service des résultats métier",
-  },
-};
+const COPY = (t) => ({ columns: [t("components.visuals.architecture-flow-diagram.copy.source-systems-8baa4f", { en: "Source systems", fr: "Systèmes sources" }), t("components.visuals.architecture-flow-diagram.copy.integration-layer-07c34a", { en: "Integration layer", fr: "Couche d’intégration" }), t("components.visuals.architecture-flow-diagram.copy.enterprise-platform-999f40", { en: "Enterprise platform", fr: "Plateforme d’entreprise" }), t("components.visuals.architecture-flow-diagram.copy.outcomes-28c664", { en: "Outcomes", fr: "Résultats" })], sources: [["users", t("components.visuals.architecture-flow-diagram.copy.crm-39069d", { en: "CRM", fr: "CRM" })], ["badge", t("components.visuals.architecture-flow-diagram.copy.hcm-aaabcb", { en: "HCM", fr: "SIRH" })], ["cart", t("components.visuals.architecture-flow-diagram.copy.ecommerce-44414e", { en: "eCommerce", fr: "E-commerce" })], ["landmark", t("components.visuals.architecture-flow-diagram.copy.financials-918f7b", { en: "Financials", fr: "Finance" })], ["truck", t("components.visuals.architecture-flow-diagram.copy.supply-chain-266c75", { en: "Supply chain", fr: "Supply chain" })], ["database", t("components.visuals.architecture-flow-diagram.copy.legacy-systems-4bc4a0", { en: "Legacy systems", fr: "Systèmes hérités" })]], api: t("components.visuals.architecture-flow-diagram.copy.api-management-804ad8", { en: "API management", fr: "Gestion des API" }), events: t("components.visuals.architecture-flow-diagram.copy.data-event-hub-a80e6b", { en: "Data & event hub", fr: "Hub données & événements" }), modules: [t("components.visuals.architecture-flow-diagram.copy.finance-9bee15", { en: "Finance", fr: "Finance" }), t("components.visuals.architecture-flow-diagram.copy.operations-b5b127", { en: "Operations", fr: "Opérations" }), t("components.visuals.architecture-flow-diagram.copy.reporting-576089", { en: "Reporting", fr: "Reporting" }), t("components.visuals.architecture-flow-diagram.copy.analytics-c0af1a", { en: "Analytics", fr: "Analytique" })], outcomes: [t("components.visuals.architecture-flow-diagram.copy.real-time-insights-d41a3b", { en: "Real-time insights", fr: "Pilotage temps réel" }), t("components.visuals.architecture-flow-diagram.copy.operational-agility-ab06df", { en: "Operational agility", fr: "Agilité opérationnelle" }), t("components.visuals.architecture-flow-diagram.copy.business-growth-812276", { en: "Business growth", fr: "Croissance" }), t("components.visuals.architecture-flow-diagram.copy.cost-optimization-630e5e", { en: "Cost optimization", fr: "Maîtrise des coûts" }), t("components.visuals.architecture-flow-diagram.copy.risk-reduction-e45519", { en: "Risk reduction", fr: "Réduction des risques" })], label: t("components.visuals.architecture-flow-diagram.copy.source-systems-connect-through-an-integration-layer-eca0d6", { en: "Source systems connect through an integration layer to NetSuite, producing business outcomes", fr: "Les systèmes sources se connectent à NetSuite via une couche d’intégration, au service des résultats métier" }) });
 const sourceY = (i) => 60 + i * 46;
 const outcomeY = (i) => 64 + i * 52;
 // Each source keeps its own lane through the integration rail: a flow, not a Hub.
@@ -38,9 +19,9 @@ const outcomePath = (i) => `M772 176 C808 176 802 ${outcomeY(i)} 838 ${outcomeY(
   paths once the diagram is in view, fade out, and the diagram holds still.
 */
 export default function ArchitectureFlowDiagram() {
-  const { locale } = useLocale();
+  const { t } = useLocale();
   const reduced = useReducedMotion();
-  const copy = COPY[locale] ?? COPY.en;
+  const copy = COPY(t);
   return (
     <div className={styles.wrap} data-reveal="fade">
       <svg viewBox="0 0 1000 350" className={styles.diagram} role="img" aria-label={copy.label}>

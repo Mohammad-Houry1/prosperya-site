@@ -7,12 +7,16 @@ import { solutionsData } from "../../src/data/solutions.data.js";
 import { companyData } from "../../src/data/company.data.js";
 import { localizeEntity } from "../../src/repositories/localize.js";
 import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
+import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
+import { createTranslator } from "../../src/i18n/labels.js";
 
 test("a solution row presents pains, capabilities and outcomes with locale-aware links", async () => {
   const [solution] = localizeEntity(solutionsData, "fr");
   render(
     <MemoryRouter>
-      <SolutionRow solution={solution} locale="fr" />
+      <LocaleContext.Provider value={{ locale: "fr", t: createTranslator("fr") }}>
+        <SolutionRow solution={solution} locale="fr" />
+      </LocaleContext.Provider>
     </MemoryRouter>,
   );
   expect(screen.getByRole("heading", { name: solution.title })).toBeInTheDocument();
@@ -27,7 +31,9 @@ test("delivery sequence can be reversed and cannot advance past the final stage"
   const steps = localizeEntity(companyData.process, "en");
   render(
     <ThemeProvider>
-      <DeliverySequence steps={steps} locale="en" />
+      <LocaleContext.Provider value={{ locale: "en", t: createTranslator("en") }}>
+        <DeliverySequence steps={steps} locale="en" />
+      </LocaleContext.Provider>
     </ThemeProvider>,
   );
   expect(screen.getByRole("button", { name: "Previous stage" })).toBeDisabled();

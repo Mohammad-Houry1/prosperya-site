@@ -9,20 +9,20 @@ import styles from "./NotFoundPage.module.css";
 
 // A lost connection: the hub still works, so its nodes lead back in.
 export default function NotFoundPage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   useDocumentMeta({
-    title: fr ? "Page introuvable — Prosperya" : "Page not found — Prosperya",
-    description: fr ? "Cette page n’est pas disponible." : "This page is not available.",
+    title: t("pages.not-found.not-found-page.page-not-found-prosperya-9423d8", { en: "Page not found — Prosperya", fr: "Page introuvable — Prosperya" }),
+    description: t("pages.not-found.not-found-page.this-page-is-not-available-646f66", { en: "This page is not available.", fr: "Cette page n’est pas disponible." }),
     robots: "noindex, follow",
   });
   const routes = [
-    ["expertise", fr ? "Expertises" : "Expertise"],
+    ["expertise", t("pages.not-found.not-found-page.expertise-6e9b7a", { en: "Expertise", fr: "Expertises" })],
     ["solutions", "Solutions"],
-    ["work", fr ? "Réalisations" : "Work"],
-    ["approach", fr ? "Approche" : "Approach"],
-    ["insights", fr ? "Analyses" : "Insights"],
-    ["about", fr ? "À propos" : "About"],
+    ["work", t("pages.not-found.not-found-page.work-f8cafc", { en: "Work", fr: "Réalisations" })],
+    ["approach", t("pages.not-found.not-found-page.approach-d02268", { en: "Approach", fr: "Approche" })],
+    ["insights", t("pages.not-found.not-found-page.insights-1bdb50", { en: "Insights", fr: "Analyses" })],
+    ["about", t("pages.not-found.not-found-page.about-eff879", { en: "About", fr: "À propos" })],
   ];
   return (
     <PageContainer>
@@ -32,15 +32,13 @@ export default function NotFoundPage() {
             404
           </p>
           <RevealText as="h1" onLoad>
-            {fr ? "Ce lien ne mène nulle part." : "This connection leads nowhere."}
+            {t("pages.not-found.not-found-page.this-connection-leads-nowhere-e06690", { en: "This connection leads nowhere.", fr: "Ce lien ne mène nulle part." })}
           </RevealText>
           <p>
-            {fr
-              ? "La page a peut-être été déplacée. Le reste du système fonctionne — choisissez une destination."
-              : "The page may have moved. The rest of the system is running — pick a destination."}
+            {t("pages.not-found.not-found-page.the-page-may-have-moved-the-rest-43e3da", { en: "The page may have moved. The rest of the system is running — pick a destination.", fr: "La page a peut-être été déplacée. Le reste du système fonctionne — choisissez une destination." })}
           </p>
           <div>
-            <PrimaryLink to={`/${locale}`}>{fr ? "Retour à l’accueil" : "Return home"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}`}>{t("pages.not-found.not-found-page.return-home-2f1301", { en: "Return home", fr: "Retour à l’accueil" })}</PrimaryLink>
           </div>
         </div>
         <HubDiagram

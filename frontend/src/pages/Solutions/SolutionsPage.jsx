@@ -20,8 +20,8 @@ import SolutionProof from "./SolutionProof.jsx";
 import styles from "./SolutionsPage.module.css";
 
 export default function SolutionsPage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const { isLoading, isError, refetch, data = [] } = useQuery({
     queryKey: ["solutions", locale],
     queryFn: async () => {
@@ -41,9 +41,7 @@ export default function SolutionsPage() {
   });
   useDocumentMeta({
     title: "Prosperya — Solutions",
-    description: fr
-      ? "Solutions pour la finance, les opérations, la chaîne logistique et les données."
-      : "Finance, operations, supply chain and data solutions.",
+    description: t("pages.solutions.solutions-page.finance-operations-supply-chain-and-data-solutions-69ed3c", { en: "Finance, operations, supply chain and data solutions.", fr: "Solutions pour la finance, les opérations, la chaîne logistique et les données." }),
   });
   if (isLoading) return <PageLoader />;
   if (isError)
@@ -55,20 +53,18 @@ export default function SolutionsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Solutions"
-        title={fr ? "Des solutions à l’image de votre activité" : "Solutions built for the way your business runs"}
+        eyebrow={t("nav.solutions")}
+        title={t("pages.solutions.solutions-page.solutions-built-for-the-way-your-business-c82c90", { en: "Solutions built for the way your business runs", fr: "Des solutions à l’image de votre activité" })}
         lead={
           <p>
-            {fr
-              ? "Des systèmes intégrés, une automatisation intelligente et des analyses exploitables, reliés à chaque fonction de l’entreprise."
-              : "Integrated systems, intelligent automation and actionable insight, connected across every function of your enterprise."}
+            {t("pages.solutions.solutions-page.integrated-systems-intelligent-automation-and-actionable-insight-59c571", { en: "Integrated systems, intelligent automation and actionable insight, connected across every function of your enterprise.", fr: "Des systèmes intégrés, une automatisation intelligente et des analyses exploitables, reliés à chaque fonction de l’entreprise." })}
           </p>
         }
         actions={
           <>
-            <PrimaryLink to={`/${locale}/approach`}>{fr ? "Découvrir notre approche" : "Explore our approach"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/approach`}>{t("pages.solutions.solutions-page.explore-our-approach-de10c8", { en: "Explore our approach", fr: "Découvrir notre approche" })}</PrimaryLink>
             <PrimaryLink to={`/${locale}/contact`} variant="ghost">
-              {fr ? "Parler à un expert" : "Talk to an expert"}
+              {t("pages.solutions.solutions-page.talk-to-an-expert-8e5217", { en: "Talk to an expert", fr: "Parler à un expert" })}
             </PrimaryLink>
           </>
         }
@@ -84,8 +80,8 @@ export default function SolutionsPage() {
         <div className={styles.panel}>
           <div className={styles.sticky}>
             <h2 id="solutions-heading">
-              {fr ? "Des solutions de bout en bout." : "End‑to‑end solutions."}
-              <span>{fr ? "Pensées pour vos résultats." : "Built around your business outcomes."}</span>
+              {t("pages.solutions.solutions-page.end-to-end-solutions-132f71", { en: "End‑to‑end solutions.", fr: "Des solutions de bout en bout." })}
+              <span>{t("pages.solutions.solutions-page.built-around-your-business-outcomes-22e3a4", { en: "Built around your business outcomes.", fr: "Pensées pour vos résultats." })}</span>
             </h2>
           </div>
           <div className={styles.rows}>
@@ -99,11 +95,9 @@ export default function SolutionsPage() {
       <section className={styles.architecture}>
         <div className={styles.panel}>
           <div className={styles.sticky}>
-            <h2>{fr ? "Une architecture connectée qui grandit avec vous." : "Built on a connected architecture that scales with you."}</h2>
+            <h2>{t("pages.solutions.solutions-page.built-on-a-connected-architecture-that-scales-a0fd13", { en: "Built on a connected architecture that scales with you.", fr: "Une architecture connectée qui grandit avec vous." })}</h2>
             <p>
-              {fr
-                ? "Notre architecture relie les personnes, les processus et les systèmes pour des flux de données fluides et de meilleures décisions."
-                : "Our enterprise architecture connects people, processes and systems — enabling seamless data flow and smarter decisions across your organization."}
+              {t("pages.solutions.solutions-page.our-enterprise-architecture-connects-people-processes-and-77db9d", { en: "Our enterprise architecture connects people, processes and systems — enabling seamless data flow and smarter decisions across your organization.", fr: "Notre architecture relie les personnes, les processus et les systèmes pour des flux de données fluides et de meilleures décisions." })}
             </p>
           </div>
           <LayeredArchitecture />
@@ -112,13 +106,11 @@ export default function SolutionsPage() {
       <SolutionProof solutions={data} studies={studies ?? []} locale={locale} />
       <CTASection
         variant="band"
-        title={fr ? "Quelle fonction faire évoluer en premier ?" : "Which function should move first?"}
+        title={t("pages.solutions.solutions-page.which-function-should-move-first-74e99d", { en: "Which function should move first?", fr: "Quelle fonction faire évoluer en premier ?" })}
         description={
-          fr
-            ? "Nous vous aidons à choisir la fonction où le changement rapporte le plus vite."
-            : "We help you pick the function where change pays back first."
+          t("pages.solutions.solutions-page.we-help-you-pick-the-function-where-15082c", { en: "We help you pick the function where change pays back first.", fr: "Nous vous aidons à choisir la fonction où le changement rapporte le plus vite." })
         }
-        secondary={{ path: "expertise", label: fr ? "Nos expertises" : "Explore our expertise" }}
+        secondary={{ path: "expertise", label: t("pages.solutions.solutions-page.explore-our-expertise-245f76", { en: "Explore our expertise", fr: "Nos expertises" }) }}
       />
     </>
   );

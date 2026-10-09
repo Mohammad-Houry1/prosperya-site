@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { render } from "../renderWithQueries.jsx";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
+import { createTranslator } from "../../src/i18n/labels.js";
 import AboutPage from "../../src/pages/About/AboutPage.jsx";
 import WorkPage from "../../src/pages/Work/WorkPage.jsx";
 import InsightsPage from "../../src/pages/Insights/InsightsPage.jsx";
@@ -12,6 +13,7 @@ import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 beforeEach(() => {
   vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: {} });
+  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: { about_title: "CMS About", about_users: [] } });
   vi.spyOn(websiteApi, "testimonials").mockImplementation(async ({ locale }) => ({ data: [{
     id: "testimonial", quote: locale === "fr" ? "Nos équipes travaillent ensemble." : "Our teams work together.",
     name: "Alex", role: "Operations", company: "Example",
@@ -22,7 +24,7 @@ afterEach(() => vi.restoreAllMocks());
 
 function renderPage(page, locale = "en", route = "/*", pathname = `/${locale}`) {
   return render(<ThemeProvider><MemoryRouter initialEntries={[pathname]}>
-    <LocaleContext.Provider value={{ locale, t: (key) => key }}>
+    <LocaleContext.Provider value={{ locale, t: createTranslator(locale) }}>
       <Routes><Route path={route} element={page} /></Routes>
     </LocaleContext.Provider>
   </MemoryRouter></ThemeProvider>);

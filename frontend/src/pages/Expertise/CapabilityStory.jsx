@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -6,10 +7,7 @@ import Eyebrow from "../../components/common/Eyebrow.jsx";
 import CapabilityStateVisual from "../../components/visuals/CapabilityStateVisual.jsx";
 import styles from "./CapabilityStory.module.css";
 
-const VERBS = {
-  en: ["Systems reorganize", "Connections appear", "Data starts flowing", "Complexity reduces"],
-  fr: ["Les systèmes se réorganisent", "Les connexions apparaissent", "Les données circulent", "La complexité diminue"],
-};
+const VERBS = (t) => ([t("pages.expertise.capability-story.copy.systems-reorganize-486e09", { en: "Systems reorganize", fr: "Les systèmes se réorganisent" }), t("pages.expertise.capability-story.copy.connections-appear-86e1fe", { en: "Connections appear", fr: "Les connexions apparaissent" }), t("pages.expertise.capability-story.copy.data-starts-flowing-70a84a", { en: "Data starts flowing", fr: "Les données circulent" }), t("pages.expertise.capability-story.copy.complexity-reduces-ab79bd", { en: "Complexity reduces", fr: "La complexité diminue" })]);
 
 /*
   The capability index: four large chapters scroll past one shared visual
@@ -18,7 +16,8 @@ const VERBS = {
   with reduced motion — the state changes, only the transitions disappear.
 */
 export default function CapabilityStory({ items, locale }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const [active, setActive] = useState(-1);
   const list = useRef(null);
   useEffect(() => {
@@ -34,22 +33,22 @@ export default function CapabilityStory({ items, locale }) {
     steps.forEach((step) => observer.observe(step));
     return () => observer.disconnect();
   }, [items]);
-  const verbs = VERBS[locale] ?? VERBS.en;
+  const verbs = VERBS(t);
   return (
     <section className={styles.story} aria-labelledby="capability-index">
       <PageContainer className={styles.grid}>
         <div className={styles.aside}>
           <div className={styles.sticky}>
             <div className={styles.heading}>
-              <Eyebrow>{fr ? "Quatre disciplines" : "Four disciplines"}</Eyebrow>
+              <Eyebrow>{t("pages.expertise.capability-story.four-disciplines-5c8475", { en: "Four disciplines", fr: "Quatre disciplines" })}</Eyebrow>
               <h2 id="capability-index">
-                {fr ? "Une architecture, quatre gestes." : "One architecture. Four moves."}
+                {t("pages.expertise.capability-story.one-architecture-four-moves-24d86b", { en: "One architecture. Four moves.", fr: "Une architecture, quatre gestes." })}
               </h2>
             </div>
             <div className={styles.visual}>
               <CapabilityStateVisual
                 state={active}
-                caption={active >= 0 ? verbs[active] : fr ? "Systèmes dispersés" : "Scattered systems"}
+                caption={active >= 0 ? verbs[active] : t("pages.expertise.capability-story.scattered-systems-3cec7c", { en: "Scattered systems", fr: "Systèmes dispersés" })}
               />
             </div>
             <ol className={styles.progress} aria-hidden="true">
@@ -75,7 +74,7 @@ export default function CapabilityStory({ items, locale }) {
                 ))}
               </ul>
               <Link to={`/${locale}/expertise/${item.slug}`} className={styles.link}>
-                {fr ? "Explorer" : "Explore"} {item.detailTitle}
+                {t("pages.expertise.capability-story.explore-5be3be", { en: "Explore", fr: "Explorer" })} {item.detailTitle}
                 <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
               </Link>
             </li>

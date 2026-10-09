@@ -6,7 +6,11 @@ function response(item) {
   if (item.path === "seo") {
     const path = item.query.path;
     data = { path, locale: path.split("/")[1], title: "CMS title", description: "CMS description", robots: "index, follow", canonical: `http://127.0.0.1:5173${path}`, alternates: [] };
-  } else if (item.path === "labels") data = {};
+  } else if (item.path === "labels") data = { "prosperya.about.eyebrow": fr ? "Notre société CMS" : "CMS company heading" };
+  else if (item.path === "pages/about") data = { about_title: fr ? "Titre About CMS" : "CMS About title",
+    description: "<p>CMS company introduction</p>", about_users: ["aaaaaaaaaaaaaaaaaaaaaaaa"],
+    about_facts: [{ fact_title: "CMS fact", fact_value: "42" }], about_focus: ["CMS focus"] };
+  else if (item.path === "users") data = [{ id: "aaaaaaaaaaaaaaaaaaaaaaaa", name: "CMS leader", position: "CMS role", bio: "<p>Current CMS biography</p>" }];
   else if (item.path === "testimonials") data = [{ id: "quote", name: "Approved Person", company: "Approved Company", quote: fr ? "Avis publié du CMS" : "Published CMS testimonial" }];
   else if (item.path === "platforms") data = [{ id: "platform", slug: "cms-platform", name: "CMS Platform",
     logo_image: { url: "/cms-logo.svg", alt: "uploaded-file.svg", width: 100, height: 100 } }];
@@ -32,6 +36,10 @@ for (const locale of ["en", "fr"]) {
       await route.fulfill({ status: result.status, json: result.body });
     });
     await page.goto(`/${locale}/about`);
+    await expect(page.getByRole("heading", { name: frTitle(locale) })).toBeVisible();
+    await expect(page.getByText(locale === "fr" ? "Notre société CMS" : "CMS company heading", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "CMS leader", exact: true })).toBeVisible();
+    expect(calls.some((item) => item.path === "users" && item.query['ids[]'] === "aaaaaaaaaaaaaaaaaaaaaaaa")).toBe(true);
     await expect(page.getByText(locale === "fr" ? "Avis publié du CMS" : "Published CMS testimonial", { exact: false })).toBeVisible();
     await expect(page.getByText("CMS Platform", { exact: true })).toBeVisible();
     const alt = locale === "fr" ? "Logo CMS Platform" : "CMS Platform logo";
@@ -82,4 +90,8 @@ for (const locale of ["en", "fr"]) {
       expect(calls.find((item) => item.path === "newsletter").data.email).toBe("visitor@example.test");
     }
   });
+}
+
+function frTitle(locale) {
+  return locale === "fr" ? "Titre About CMS" : "CMS About title";
 }

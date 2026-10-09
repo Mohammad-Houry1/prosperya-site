@@ -13,7 +13,7 @@ import ExpertisePageContent from "./ExpertisePageContent.jsx";
 
 export default function ExpertiseDetailPage() {
   const { slug } = useParams();
-  const { locale } = useLocale();
+  const {locale, t } = useLocale();
   const { data: page = null, isLoading, isError, refetch } = useQuery({
     queryKey: ["expertise-page", locale, slug],
     queryFn: async () => {
@@ -25,7 +25,7 @@ export default function ExpertiseDetailPage() {
   useDocumentMeta({ title: page ? `${page.title} — Prosperya` : "Prosperya — Expertise" });
   if (isLoading) return <PageLoader />;
   if (isError) return <Section><ErrorState onRetry={refetch} /></Section>;
-  if (!page) return <Section><EmptyState title={locale === "fr" ? "Expertise introuvable" : "Expertise not found"} /></Section>;
+  if (!page) return <Section><EmptyState title={t("pages.expertise-detail.expertise-detail-page.expertise-not-found-6043fe", { en: "Expertise not found", fr: "Expertise introuvable" })} /></Section>;
   const related = localizeEntity(expertiseData, locale)
     .filter((item) => item.slug !== slug)
     .map((item) => ({ id: item.id, slug: item.slug, title: item.detailTitle || item.title }));
