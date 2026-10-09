@@ -1,5 +1,10 @@
 # CMS integration and remaining dynamic pages
 
+For the newer audit of the implemented CMS modules, exact page/field mapping,
+remaining website connections and complete implementation checklist, see
+[the 2026-10-10 handoff](cms/dynamic-content-handoff.md). Live permission checks
+reported below are historical observations, not a fresh grant audit.
+
 Updated on 2026-10-09. The website layout and existing routes remain in place. A connected section needs its module granted to the website key and published content in the CMS before it appears live.
 
 ## Implemented

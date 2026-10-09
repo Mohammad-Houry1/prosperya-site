@@ -47,6 +47,10 @@ Copy the result into the CMS manifest and run the explicit insert-only import co
 
 ## Remaining content modules
 
+See [the complete page-by-page handoff](dynamic-content-handoff.md) for current
+field mappings, the remaining connections, identified small gaps and instructions
+for copying content models into this website.
+
 Fixed interface copy is editable through labels. This does not turn lists/detail records in `solutions.data.js`, `caseStudies.data.js`, `caseStudyDetails.data.js`, `expertise.data.js` or `expertiseDetails.data.js` into API data.
 
 Solutions, Work / Case Studies and Expertise now have CMS authoring implementations with translated content, repeaters, relationships, separate Images tabs and SEO. Their website list/detail API connections are still needed; their existence in the CMS does not replace these static website datasets automatically. Approach has its CMS module, but the website's process records still need its connection. Home retains static record data too. Reuse these modules for authored records; keep short fixed captions/buttons in Translations instead of creating a module for each heading. Exact CMS identities are `solutions` / `Solution`, `case_studies` / `CaseStudy` and `expertise` / `Expertise`.
