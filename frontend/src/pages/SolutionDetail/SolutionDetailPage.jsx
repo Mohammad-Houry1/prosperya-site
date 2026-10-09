@@ -1,3 +1,8 @@
+import { caseStudiesData } from "../../data/caseStudies.data.js";
+import { caseStudyDetailsData, industries } from "../../data/caseStudyDetails.data.js";
+import { expertiseData } from "../../data/expertise.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
+import { solutionsData } from "../../data/solutions.data.js";
 import { useRef } from "react";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
@@ -16,7 +21,7 @@ import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
-import { useCapabilities, useCaseStudies, useSolution } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useHeroProgress } from "../../motion/hooks/useHeroProgress.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
@@ -60,30 +65,52 @@ export default function SolutionDetailPage() {
   const { slug } = useParams();
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const solution = useSolution(locale, slug);
-  const capabilities = useCapabilities(locale);
-  const studies = useCaseStudies(locale);
-  useDocumentMeta({
-    title: solution.data ? `${solution.data.title} — Prosperya` : "Prosperya — Solutions",
-    description: solution.data?.description,
+  const { data: solution = null, isLoading: solutionIsLoading, isError: solutionIsError, refetch: solutionRefetch } = useQuery({
+    queryKey: ["solution", locale, slug],
+    queryFn: async () => {
+      const solutions = localizeEntity(solutionsData, locale);
+      return solutions.find((solution) => solution.slug === slug) || null;
+    },
+    enabled: Boolean(slug),
   });
-  if (solution.isLoading) return <PageLoader />;
-  if (solution.isError)
+  const { data: capabilities = [] } = useQuery({
+    queryKey: ["capabilities", locale],
+    queryFn: async () => {
+      return localizeEntity(expertiseData, locale);
+    },
+  });
+  const { data: studies = [] } = useQuery({
+    queryKey: ["case-studies", locale],
+    queryFn: async () => {
+      return localizeEntity(caseStudiesData, locale).map((study) => {
+        const industry = caseStudyDetailsData[study.id]?.industry;
+        return industry
+          ? { ...study, industry, industryName: industries[industry][locale] ?? industries[industry].en }
+          : study;
+      });
+    },
+  });
+  useDocumentMeta({
+    title: solution ? `${solution.title} — Prosperya` : "Prosperya — Solutions",
+    description: solution?.description,
+  });
+  if (solutionIsLoading) return <PageLoader />;
+  if (solutionIsError)
     return (
       <Section>
-        <ErrorState onRetry={() => solution.refetch()} />
+        <ErrorState onRetry={() => solutionRefetch()} />
       </Section>
     );
-  if (!solution.data)
+  if (!solution)
     return (
       <Section>
         <EmptyState title={fr ? "Solution introuvable" : "Solution not found"} />
       </Section>
     );
-  const item = solution.data;
+  const item = solution;
   const story = item.story;
-  const related = (capabilities.data ?? []).filter((cap) => item.expertiseIds.includes(cap.id));
-  const proof = (studies.data ?? []).find((study) => study.id === item.caseStudyId);
+  const related = (capabilities ?? []).filter((cap) => item.expertiseIds.includes(cap.id));
+  const proof = (studies ?? []).find((study) => study.id === item.caseStudyId);
   return (
     <>
       <SolutionHero item={item} locale={locale} />
@@ -118,7 +145,7 @@ export default function SolutionDetailPage() {
           <div className={styles.changeColumn} data-reveal="card">
             <span>{fr ? "Ce que nous mettons en place" : "What we put in place"}</span>
             <ul className={styles.checks}>
-              {item.capabilities.map((capability) => (
+              {item.capabilitiesMap((capability) => (
                 <li key={capability}>
                   <CircleCheck size={18} strokeWidth={1.4} aria-hidden="true" />
                   {capability}

@@ -1,3 +1,8 @@
+import { caseStudiesData } from "../../data/caseStudies.data.js";
+import { caseStudyDetailsData, industries as industryLabels } from "../../data/caseStudyDetails.data.js";
+import { expertiseData } from "../../data/expertise.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
+import { websiteApi } from "../../services/websiteApi.js";
 import { useState } from "react";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
@@ -10,7 +15,7 @@ import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
-import { useCapabilities, useCaseStudies, usePlatforms } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import WorkDeck from "./WorkDeck.jsx";
@@ -36,9 +41,40 @@ function Filter({ label, value, options, onChange }) {
 export default function WorkPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const query = useCaseStudies(locale);
-  const capabilities = useCapabilities(locale);
-  const platforms = usePlatforms(locale);
+  const { data: stories = [], isLoading: storiesIsLoading, isError: storiesIsError, refetch: storiesRefetch } = useQuery({
+    queryKey: ["company-stories", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.testimonials({ locale }, signal);
+      return response.data || [];
+    },
+  });
+  const { isLoading, isError, refetch, data = [] } = useQuery({
+    queryKey: ["case-studies", locale],
+    queryFn: async () => {
+      return localizeEntity(caseStudiesData, locale).map((study) => {
+        const industry = caseStudyDetailsData[study.id]?.industry;
+        return industry
+          ? { ...study, industry, industryName: industryLabels[industry][locale] ?? industryLabels[industry].en }
+          : study;
+      });
+    },
+  });
+  const { data: capabilities = [] } = useQuery({
+    queryKey: ["capabilities", locale],
+    queryFn: async () => {
+      return localizeEntity(expertiseData, locale);
+    },
+  });
+  const { data: platformRows = [] } = useQuery({
+    queryKey: ["platforms", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.platforms({ locale }, signal);
+      return response.data || [];
+    },
+  });
+  const platforms = platformRows.map((platform) => ({
+    ...platform, id: platform.slug || platform.id, category: "",
+  }));
   const [industry, setIndustry] = useState("all");
   const [capability, setCapability] = useState("all");
   useDocumentMeta({
@@ -47,16 +83,15 @@ export default function WorkPage() {
       ? "Des exemples de transformation ERP, d’intégration et d’opérations connectées."
       : "ERP transformation, integration and connected operations through illustrative engagements.",
   });
-  if (query.isLoading) return <PageLoader />;
-  if (query.isError)
+  if (isLoading) return <PageLoader />;
+  if (isError)
     return (
       <Section>
-        <ErrorState onRetry={() => query.refetch()} />
+        <ErrorState onRetry={() => refetch()} />
       </Section>
     );
-  const data = query.data ?? [];
-  const capabilityNames = Object.fromEntries((capabilities.data ?? []).map((c) => [c.id, c.detailTitle]));
-  const platformNames = Object.fromEntries((platforms.data ?? []).map((p) => [p.id, p.name]));
+  const capabilityNames = Object.fromEntries((capabilities ?? []).map((c) => [c.id, c.detailTitle]));
+  const platformNames = Object.fromEntries(platforms.map((p) => [p.id, p.name]));
   const industries = [...new Map(data.filter((s) => s.industry).map((s) => [s.industry, s.industryName]))];
   const capabilityIds = [...new Set(data.flatMap((s) => s.expertiseIds))];
   const filtered = data.filter(
@@ -132,7 +167,7 @@ export default function WorkPage() {
           <p>{fr ? "Chiffres illustratifs issus des missions présentées." : "Illustrative figures from the engagements above."}</p>
         </div>
       </Section>
-      <Testimonials variant="rail" />
+      <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} variant="rail" />
       <CTASection
         variant="band"
         title={fr ? "Un défi comparable ?" : "Facing a similar challenge?"}

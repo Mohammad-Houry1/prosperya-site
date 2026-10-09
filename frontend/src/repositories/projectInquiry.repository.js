@@ -1,5 +1,4 @@
 import { inquiryFields } from "../data/projectInquiry.data.js";
-import { websiteApi } from "../services/websiteApi.js";
 
 export function normalizeProjectInquiry(values, locale) {
   return {
@@ -33,10 +32,4 @@ export function validateProjectInquiry(inquiry, options = {}) {
   if (inquiry.work_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiry.work_email))
     errors.work_email = "invalid_email";
   return errors;
-}
-
-export async function submitProjectInquiry(inquiry) {
-  const { data } = await websiteApi.contact(inquiry);
-  if (!data.accepted) throw new Error("The CMS did not accept the project brief.");
-  return data;
 }

@@ -1,22 +1,9 @@
 .loader {
   min-height: 52vh;
   display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 14px;
-  color: var(--text-secondary);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.mark {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid var(--border-strong);
-  border-radius: 50%;
-  color: var(--text-primary);
-  font-size: 16px;
-  animation: statusPulse 1.6s ease-in-out infinite;
+  align-content: start;
+  gap: 24px;
+  width: min(100%, 1200px);
+  margin-inline: auto;
+  padding: clamp(40px, 6vw, 80px) var(--gutter);
 }

@@ -5,10 +5,10 @@ namespace App\Services;
 final class WebsiteRoutes
 {
     public const LEGAL = [
-        'privacy-policy' => ['en' => 'privacy-policy', 'fr' => 'politique-de-confidentialite'],
-        'terms' => ['en' => 'terms', 'fr' => 'conditions-utilisation'],
-        'cookie-policy' => ['en' => 'cookie-policy', 'fr' => 'politique-cookies'],
-        'accessibility' => ['en' => 'accessibility', 'fr' => 'accessibilite'],
+        'privacy-policy' => ['en' => 'privacy-policy', 'fr' => 'privacy-policy'],
+        'terms-of-use' => ['en' => 'terms-of-use', 'fr' => 'terms-of-use'],
+        'cookie-policy' => ['en' => 'cookie-policy', 'fr' => 'cookie-policy'],
+        'accessibility' => ['en' => 'accessibility', 'fr' => 'accessibility'],
     ];
 
     public const STATIC_PAGES = ['', 'expertise', 'solutions', 'work', 'approach', 'about', 'insights', 'contact'];
@@ -30,9 +30,9 @@ final class WebsiteRoutes
                 break;
             }
         }
-        if ($kind === 'page' && preg_match('~^insights/([^/]+)$~u', $slug, $match)) {
-            $kind = 'article';
-            $slug = rawurldecode($match[1]);
+        if ($kind === 'page' && preg_match('~^(insights|corporate)/([^/]+)$~u', $slug, $match)) {
+            $kind = $match[1] === 'insights' ? 'article' : 'legal';
+            $slug = rawurldecode($match[2]);
             if (! preg_match('/^[\p{L}\p{N}_-]+$/u', $slug)) {
                 return null;
             }
@@ -47,7 +47,7 @@ final class WebsiteRoutes
     public function path(string $kind, string $slug, string $locale): string
     {
         $suffix = match ($kind) {
-            'legal' => self::LEGAL[$slug][$locale],
+            'legal' => self::LEGAL[$slug][$locale] ?? 'corporate/'.rawurlencode($slug),
             'article' => 'insights/'.rawurlencode($slug),
             default => $slug === 'home' ? '' : $slug,
         };

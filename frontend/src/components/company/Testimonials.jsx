@@ -4,7 +4,7 @@ import SectionHeader from "../common/SectionHeader.jsx";
 import Eyebrow from "../common/Eyebrow.jsx";
 import CarouselArrows from "../common/CarouselArrows.jsx";
 import ErrorState from "../feedback/ErrorState.jsx";
-import { useCompanyStories } from "../../queries/useCompanyStories.js";
+import SectionSkeleton from "../feedback/SectionSkeleton.jsx";
 import { useCarousel } from "../../motion/gestures.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./CompanyStories.module.css";
@@ -13,30 +13,25 @@ import styles from "./CompanyStories.module.css";
   Client perspectives, swipeable everywhere (touch, trackpad, mouse drag).
   `rail`: quote cards bleeding off the right edge (Work).
   `feature`: one large quote at a time with a progress selector (About).
-  Demo content is always labelled as fictional.
 */
-export default function Testimonials({ variant = "feature" }) {
+export default function Testimonials({ variant = "feature", data = [], isError, isLoading, refetch }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const query = useCompanyStories(locale);
   const carousel = useCarousel();
-  if (query.isError)
+  if (isError)
     return (
       <Section>
-        <ErrorState onRetry={query.refetch} />
+        <ErrorState onRetry={refetch} />
       </Section>
     );
-  if (query.isLoading)
+  if (isLoading)
     return (
       <Section>
-        <div className={styles.placeholder} aria-busy="true" aria-label={fr ? "Chargement des témoignages" : "Loading testimonials"} />
+        <SectionSkeleton rows={2} label={fr ? "Chargement des témoignages" : "Loading testimonials"} />
       </Section>
     );
-  const items = query.data.testimonials;
+  const items = data;
   if (!items.length) return null;
-  const demo = query.data.isDemo && (
-    <p className={styles.demo}>{fr ? "Témoignages fictifs pour démonstration." : "Fictional testimonials for demonstration."}</p>
-  );
   const label = fr ? "Témoignages clients" : "Client testimonials";
   const arrows = (
     <CarouselArrows
@@ -67,7 +62,6 @@ export default function Testimonials({ variant = "feature" }) {
             </figure>
           ))}
         </div>
-        {demo}
       </Section>
     );
   return (
@@ -76,7 +70,6 @@ export default function Testimonials({ variant = "feature" }) {
         <div>
           <Eyebrow>{fr ? "Regards clients" : "Client perspectives"}</Eyebrow>
           <h2>{fr ? "Le changement se vit." : "Change is experienced."}</h2>
-          {demo}
         </div>
         <div className={styles.featureBody}>
           <div ref={carousel.ref} className={styles.slides} tabIndex={0} role="region" aria-label={label}>

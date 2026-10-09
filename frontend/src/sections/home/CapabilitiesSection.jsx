@@ -2,12 +2,10 @@ import Section from "../../components/common/Section.jsx";
 import CapabilityCard from "../../components/expertise/CapabilityCard.jsx";
 import SectionSkeleton from "../../components/feedback/SectionSkeleton.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
-import { useCapabilities } from "../../queries/useContentQueries.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
-export default function CapabilitiesSection() {
+export default function CapabilitiesSection({ data = [], isLoading, isError, refetch }) {
   const { locale } = useLocale();
-  const { data = [], isLoading, isError, refetch } = useCapabilities(locale);
   return (
     <Section className={styles.whatWeDo}>
       <h2 className={styles.kicker}>

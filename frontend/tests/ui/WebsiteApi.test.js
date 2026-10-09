@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { websiteApi } from "../../src/services/websiteApi.js";
-import { loadWebsiteLabels } from "../../src/services/loadWebsiteLabels.js";
 
 function fetchApi(handler) {
   const fetcher = vi.fn(async (url, options) => ({ ok: true, status: 200, json: async () => ({
@@ -11,6 +10,25 @@ function fetchApi(handler) {
 }
 beforeEach(() => vi.stubEnv("VITE_API_BASE_URL", ""));
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+
+test("passes the explicitly selected SEO model with the route", async () => {
+  const fetcher = fetchApi(() => ({ data: {} }));
+  await websiteApi.seo("/fr/insights", undefined, "SeoPage");
+  await websiteApi.seo("/en/insights/example", undefined, "Article");
+  await websiteApi.seo("/en/corporate/about-prosperya", undefined, "CorporatePage");
+  expect(fetcher.mock.calls.map(([url]) => new URL(url, "https://site.test").searchParams.get("model")))
+    .toEqual(["SeoPage", "Article", "CorporatePage"]);
+});
+
+test("requests profiles by encoded slug and users by multiple role slugs", async () => {
+  const fetcher = fetchApi(() => ({ data: [] }));
+  await websiteApi.user("public/person", "fr");
+  await websiteApi.users({ locale: "en", roles: ["team", "author"] });
+  expect(fetcher.mock.calls[0][0]).toBe("/api/users/public%2Fperson?locale=fr");
+  const url = new URL(fetcher.mock.calls[1][0], "https://site.test");
+  expect(url.pathname).toBe("/api/users");
+  expect(url.searchParams.getAll("roles[]")).toEqual(["team", "author"]);
+});
 
 test("requests public article pages with locale, category and no credentials", async () => {
   const fetcher = fetchApi(() => ({ data: [], meta: { last_page: 1 } }));
@@ -43,8 +61,10 @@ test("posts submission JSON directly to the named endpoint", async () => {
   expect(options.headers["Content-Type"]).toBe("application/json");
 });
 
-test("loads every page of translated labels", async () => {
-  const fetcher = fetchApi(({ query }) => ({ data: query.page === "1" ? { "nav.insights": "Insights" } : { "footer.rights": "Rights" }, meta: { last_page: 2 } }));
-  expect(await loadWebsiteLabels("en")).toEqual({ "nav.insights": "Insights", "footer.rights": "Rights" });
-  expect(new URL(fetcher.mock.calls[1][0], 'https://site.test').searchParams.get('page')).toBe('2');
+test("loads translated labels with one request", async () => {
+  const fetcher = fetchApi(() => ({ data: { "nav.insights": "Insights", "footer.rights": "Rights" }, meta: { last_page: 2 } }));
+  const response = await websiteApi.labels({ locale: "en" });
+  expect(response.data).toEqual({ "nav.insights": "Insights", "footer.rights": "Rights" });
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(new URL(fetcher.mock.calls[0][0], 'https://site.test').searchParams.get('locale')).toBe('en');
 });

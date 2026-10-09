@@ -5,10 +5,13 @@ namespace App\Services;
 use App\Models\Article;
 use App\Models\Base\ContentEntity;
 use App\Models\CorporatePage;
-use App\Models\Page;
+use App\Models\SeoPage;
 
 final class WebsiteSeo
 {
+    /** One route-to-model mapping for metadata, canonicals and sitemap entries. */
+    private const SOURCES = ['page' => SeoPage::class, 'article' => Article::class, 'legal' => CorporatePage::class];
+
     public function __construct(private readonly WebsiteAccess $access, private readonly PublicPayload $payload,
         private readonly WebsiteRoutes $routes, private readonly PublicContent $content) {}
 
@@ -23,13 +26,20 @@ final class WebsiteSeo
         return rtrim($value, '/');
     }
 
-    public function resolve(string $path): array
+    public static function modelNames(): array
+    {
+        return array_map('class_basename', array_values(self::SOURCES));
+    }
+
+    public function resolve(string $path, ?string $model = null): array
     {
         $origin = $this->origin();
         $route = $this->routes->parse($path);
         if (! $route || ! in_array($route['locale'], $this->locales(), true)) {
             return $this->missing($path);
         }
+        abort_if($model !== null && $model !== class_basename(self::SOURCES[$route['kind']]),
+            422, 'The requested SEO model does not match this website route.');
         $record = $this->record($route, $route['locale']);
         if (! $record) {
             // The route inventory verifies that these pages exist in the frontend.
@@ -68,7 +78,7 @@ final class WebsiteSeo
         foreach ($this->locales() as $locale) {
             $this->content->language($locale);
             $filters = $this->content->filters($locale);
-            foreach (['page' => Page::class, 'article' => Article::class, 'legal' => CorporatePage::class] as $kind => $model) {
+            foreach (self::SOURCES as $kind => $model) {
                 if (! $this->granted($model)) {
                     continue;
                 }
@@ -79,9 +89,6 @@ final class WebsiteSeo
                     ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
                     ->orderBy('_id')->cursor() as $record) {
                     $slug = trim((string) $record->slug, '/');
-                    if ($kind === 'legal' && ! isset(WebsiteRoutes::LEGAL[$slug])) {
-                        continue;
-                    }
                     if ($slug === '') {
                         continue;
                     }
@@ -135,9 +142,7 @@ final class WebsiteSeo
 
     private function record(array $route, string $locale): ?ContentEntity
     {
-        $model = match ($route['kind']) {
-            'article' => Article::class, 'legal' => CorporatePage::class, default => Page::class
-        };
+        $model = self::SOURCES[$route['kind']];
         // Static frontend pages still exist when their SEO module is unavailable.
         // Return the noindex fallback without reading a module the key denies.
         if (! $this->granted($model)) {
@@ -163,10 +168,7 @@ final class WebsiteSeo
             $target = $this->routes->parse(parse_url($value, PHP_URL_PATH));
             $source = $this->routes->parse($path);
             if ($target && $target['locale'] === ($source['locale'] ?? null)) {
-                $model = match ($target['kind']) {
-                    'article' => Article::class, 'legal' => CorporatePage::class, default => Page::class
-                };
-                $record = $this->granted($model) ? $this->record($target, $target['locale']) : null;
+                $record = $this->record($target, $target['locale']);
                 if ($record && ! str_contains($this->payload->seo($record, $target['locale'])['robots'], 'noindex')) {
                     return $origin.$target['path'];
                 }

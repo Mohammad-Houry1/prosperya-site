@@ -5,6 +5,7 @@ import { useWebGLSupport } from "../../hooks/useWebGLSupport.js";
 import SystemNetworkFallback from "./SystemNetworkFallback.jsx";
 import CanvasErrorBoundary from "./CanvasErrorBoundary.jsx";
 import styles from "./OrchestrationExperience.module.css";
+import Skeleton from "../feedback/Skeleton.jsx";
 const OrchestrationCanvas = lazy(
   () => import("../../three/OrchestrationCanvas.jsx"),
 );
@@ -50,7 +51,7 @@ export default function OrchestrationExperience({
     <div ref={ref} className={styles.wrap}>
       {webgl && !reduced && !small ? (
         <CanvasErrorBoundary fallback={fallback}>
-          <Suspense fallback={fallback}>
+          <Suspense fallback={<Skeleton height="100%" />}>
             <OrchestrationCanvas
               progressRef={progressRef}
               viewRef={viewRef}

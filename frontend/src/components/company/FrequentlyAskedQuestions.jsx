@@ -2,25 +2,25 @@ import { Accordion } from "@mantine/core";
 import Section from "../common/Section.jsx";
 import Eyebrow from "../common/Eyebrow.jsx";
 import ErrorState from "../feedback/ErrorState.jsx";
+import SectionSkeleton from "../feedback/SectionSkeleton.jsx";
 import CmsRichHtml from "../common/CmsRichHtml.jsx";
-import { useFrequentlyAskedQuestions } from "../../queries/useCompanyStories.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import styles from "./FrequentlyAskedQuestions.module.css";
 
 // layout "aside": heading beside one column (Contact). "columns": heading above two columns (Approach).
-export default function FrequentlyAskedQuestions({ topic = "general", layout = "aside" }) {
+export default function FrequentlyAskedQuestions({ layout = "aside", data = [], isError, isPending, refetch }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const query = useFrequentlyAskedQuestions(locale, topic);
   const reduced = useReducedMotion();
-  if (query.isError)
+  if (isError)
     return (
       <Section>
-        <ErrorState onRetry={query.refetch} />
+        <ErrorState onRetry={refetch} />
       </Section>
     );
-  if (!query.data?.length) return null;
+  if (isPending) return <Section><SectionSkeleton rows={3} label={fr ? "Chargement des questions" : "Loading questions"} /></Section>;
+  if (!data?.length) return null;
   const list = (items) => (
     <Accordion
       transitionDuration={reduced ? 0 : 220}
@@ -34,7 +34,7 @@ export default function FrequentlyAskedQuestions({ topic = "general", layout = "
       ))}
     </Accordion>
   );
-  const half = Math.ceil(query.data.length / 2);
+  const half = Math.ceil(data.length / 2);
   return (
     <Section>
       <div className={`${styles.layout} ${styles[layout]}`}>
@@ -55,11 +55,11 @@ export default function FrequentlyAskedQuestions({ topic = "general", layout = "
         </div>
         {layout === "columns" ? (
           <div className={styles.columns}>
-            {list(query.data.slice(0, half))}
-            {list(query.data.slice(half))}
+            {list(data.slice(0, half))}
+            {list(data.slice(half))}
           </div>
         ) : (
-          list(query.data)
+          list(data)
         )}
       </div>
     </Section>

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Mail } from "lucide-react";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./Newsletter.module.css";
@@ -10,6 +11,15 @@ export default function Newsletter({ title }) {
   const fr = locale === "fr";
   const [state, setState] = useState("idle");
   const lock = useRef(false);
+  const { mutateAsync: subscribe } = useMutation({
+    mutationFn: async (email) => {
+      const response = await websiteApi.newsletter({ email, origin: "footer", locale, website: "" });
+      if (!response.data.accepted) throw new Error("Newsletter request was not accepted.");
+      return response.data;
+    },
+    retry: false,
+    gcTime: 0,
+  });
   const submit = async (event) => {
     event.preventDefault();
     if (!submissionsEnabled || lock.current) return;
@@ -19,8 +29,7 @@ export default function Newsletter({ title }) {
     lock.current = true;
     setState("sending");
     try {
-      const { data } = await websiteApi.newsletter({ email, origin: "footer", locale, website: "" });
-      if (!data.accepted) throw new Error("Newsletter request was not accepted.");
+      await subscribe(email);
       setState("done");
       form.reset();
     } catch (error) {

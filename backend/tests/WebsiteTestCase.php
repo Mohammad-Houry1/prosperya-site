@@ -23,7 +23,7 @@ abstract class WebsiteTestCase extends TestCase
         DB::purge('mongodb');
         $tenant = (string) new ObjectId;
         $modules = [];
-        foreach (['articles' => 'Article', 'article_categories' => 'ArticleCategory', 'pages' => 'Page',
+        foreach (['articles' => 'Article', 'article_categories' => 'ArticleCategory', 'pages' => 'Page', 'seo_pages' => 'SeoPage',
             'corporate_pages' => 'CorporatePage', 'translations' => 'Translation', 'newsletters' => 'Newsletter',
             'project_types' => 'ProjectType', 'project_stages' => 'ProjectStage', 'contact_forms' => 'ContactForm',
             'testimonials' => 'Testimonial', 'faqs' => 'Faq', 'faq_categories' => 'FaqCategory',

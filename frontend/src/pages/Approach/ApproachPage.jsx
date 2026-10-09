@@ -1,3 +1,6 @@
+import { companyData } from "../../data/company.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
+import { websiteApi } from "../../services/websiteApi.js";
 import { useRef } from "react";
 import { CircleCheck, Infinity as Loop } from "lucide-react";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -14,7 +17,7 @@ import ErrorState from "../../components/feedback/ErrorState.jsx";
 import DeliverySequence from "./DeliverySequence.jsx";
 import CollaborationVenn from "./CollaborationVenn.jsx";
 import { approachCopy } from "./approach.copy.js";
-import { useProcess } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useHeroProgress } from "../../motion/hooks/useHeroProgress.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
@@ -56,7 +59,19 @@ function ApproachHero({ locale }) {
 export default function ApproachPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const process = useProcess(locale);
+  const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
+    queryKey: ["faq", locale, "approach"],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.faqs({ locale, category: "approach" }, signal);
+      return response.data || [];
+    },
+  });
+  const { isLoading: processIsLoading, isError: processIsError, refetch: processRefetch, data: process = [] } = useQuery({
+    queryKey: ["process", locale],
+    queryFn: async () => {
+      return localizeEntity(companyData.process, locale);
+    },
+  });
   const copy = approachCopy[locale] ?? approachCopy.en;
   useDocumentMeta({
     title: `${fr ? "Notre approche" : "Our approach"} — Prosperya`,
@@ -64,17 +79,17 @@ export default function ApproachPage() {
       ? "Un parcours structuré, de la découverte au lancement et à l’amélioration continue."
       : "A structured path from discovery and architecture to launch and continuous improvement.",
   });
-  if (process.isLoading) return <PageLoader />;
-  if (process.isError)
+  if (processIsLoading) return <PageLoader />;
+  if (processIsError)
     return (
       <Section>
-        <ErrorState onRetry={process.refetch} />
+        <ErrorState onRetry={processRefetch} />
       </Section>
     );
   return (
     <>
       <ApproachHero locale={locale} />
-      <DeliverySequence steps={process.data ?? []} locale={locale} />
+      <DeliverySequence steps={process ?? []} locale={locale} />
       <div className={styles.loopWrap}>
         <p className={styles.loop}>
           <Loop size={34} strokeWidth={1.2} aria-hidden="true" />
@@ -137,7 +152,7 @@ export default function ApproachPage() {
           </div>
         </div>
       </Section>
-      <FrequentlyAskedQuestions topic="approach" layout="columns" />
+      <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} layout="columns" />
       <CTASection
         variant="card"
         title={fr ? "Traçons votre parcours ensemble." : "Map your path with us."}

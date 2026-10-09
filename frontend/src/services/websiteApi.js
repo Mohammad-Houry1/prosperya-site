@@ -11,7 +11,9 @@ async function request(path, { query = {}, data, signal } = {}) {
   const base = (import.meta.env?.VITE_API_BASE_URL || "").replace(/\/$/, "");
   const params = new URLSearchParams();
   Object.entries(query).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") params.set(key, String(value));
+    if (Array.isArray(value)) {
+      value.forEach((item) => params.append(`${key}[]`, String(item)));
+    } else if (value !== undefined && value !== null && value !== "") params.set(key, String(value));
   });
   const response = await fetch(`${base}/api/${path}${params.size ? `?${params}` : ""}`, {
     method: data === undefined ? "GET" : "POST",
@@ -34,6 +36,8 @@ export const websiteApi = {
   categories: (query, signal) => request("article-categories", { query, signal }),
   testimonials: (query, signal) => request("testimonials", { query, signal }),
   platforms: (query, signal) => request("platforms", { query, signal }),
+  users: (query, signal) => request("users", { query, signal }),
+  user: (slug, locale, signal) => request(`users/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
   faqs: (query, signal) => request("faqs", { query, signal }),
   faqCategories: (query, signal) => request("faq-categories", { query, signal }),
   corporatePages: (query, signal) => request("corporate-pages", { query, signal }),
@@ -43,5 +47,5 @@ export const websiteApi = {
   labels: (query, signal) => request("labels", { query, signal }),
   contact: (data) => request("contact", { data }),
   newsletter: (data) => request("newsletter", { data }),
-  seo: (path, signal) => request("seo", { query: { path }, signal }),
+  seo: (path, signal, model = "SeoPage") => request("seo", { query: { path, model }, signal }),
 };

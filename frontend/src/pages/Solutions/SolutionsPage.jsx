@@ -1,3 +1,7 @@
+import { caseStudiesData } from "../../data/caseStudies.data.js";
+import { caseStudyDetailsData, industries } from "../../data/caseStudyDetails.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
+import { solutionsData } from "../../data/solutions.data.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import Section from "../../components/common/Section.jsx";
@@ -8,7 +12,7 @@ import LayeredArchitecture from "../../components/visuals/LayeredArchitecture.js
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
-import { useCaseStudies, useSolutions } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import SolutionStrip from "./SolutionStrip.jsx";
@@ -18,22 +22,36 @@ import styles from "./SolutionsPage.module.css";
 export default function SolutionsPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const query = useSolutions(locale);
-  const studies = useCaseStudies(locale);
+  const { isLoading, isError, refetch, data = [] } = useQuery({
+    queryKey: ["solutions", locale],
+    queryFn: async () => {
+      return localizeEntity(solutionsData, locale);
+    },
+  });
+  const { data: studies = [] } = useQuery({
+    queryKey: ["case-studies", locale],
+    queryFn: async () => {
+      return localizeEntity(caseStudiesData, locale).map((study) => {
+        const industry = caseStudyDetailsData[study.id]?.industry;
+        return industry
+          ? { ...study, industry, industryName: industries[industry][locale] ?? industries[industry].en }
+          : study;
+      });
+    },
+  });
   useDocumentMeta({
     title: "Prosperya — Solutions",
     description: fr
       ? "Solutions pour la finance, les opérations, la chaîne logistique et les données."
       : "Finance, operations, supply chain and data solutions.",
   });
-  if (query.isLoading) return <PageLoader />;
-  if (query.isError)
+  if (isLoading) return <PageLoader />;
+  if (isError)
     return (
       <Section>
-        <ErrorState onRetry={() => query.refetch()} />
+        <ErrorState onRetry={() => refetch()} />
       </Section>
     );
-  const data = query.data ?? [];
   return (
     <>
       <PageHero
@@ -91,7 +109,7 @@ export default function SolutionsPage() {
           <LayeredArchitecture />
         </div>
       </section>
-      <SolutionProof solutions={data} studies={studies.data ?? []} locale={locale} />
+      <SolutionProof solutions={data} studies={studies ?? []} locale={locale} />
       <CTASection
         variant="band"
         title={fr ? "Quelle fonction faire évoluer en premier ?" : "Which function should move first?"}

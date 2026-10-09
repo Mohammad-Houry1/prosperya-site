@@ -8,6 +8,8 @@ import ClientCompanies from "../../src/components/company/ClientCompanies.jsx";
 
 beforeEach(() => {
   vi.spyOn(websiteApi, "testimonials").mockResolvedValue({ data: [{ id: "t", company: "Northline", name: "Visitor", quote: "Approved" }], meta: { last_page: 1 } });
+  vi.spyOn(websiteApi, "platforms").mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker",
+    logo_image: { url: "https://media.example.test/foot-locker.jpg", alt: "FL_Logo_Primary_Black_RGB.jpg", width: 3000, height: 2732 } }], meta: { last_page: 1 } });
   vi.spyOn(websiteApi, "labels").mockResolvedValue({ data: {}, meta: { last_page: 1 } });
 });
 afterEach(() => vi.restoreAllMocks());
@@ -32,11 +34,11 @@ function renderStrip(props = {}) {
 }
 
 // The drifting track is the element that holds the moving copies of the marks.
-const movingTrack = () => screen.getAllByText("Northline").at(-1).closest("ul").parentElement;
+const movingTrack = () => screen.getAllByAltText("Foot Locker logo").at(-1).closest("ul").parentElement;
 
 test("the Home marquee can be paused and resumed", async () => {
   renderStrip();
-  await screen.findAllByText("Northline");
+  await screen.findAllByAltText("Foot Locker logo");
   const control = screen.queryByRole("button", { name: /pause client logos/i });
   expect(control).toBeInTheDocument();
   expect(getComputedStyle(movingTrack()).animationPlayState).not.toBe("paused");
@@ -48,7 +50,17 @@ test("the Home marquee can be paused and resumed", async () => {
 
 test("the still client row shows each mark once, with nothing to pause", async () => {
   renderStrip({ still: true });
-  await screen.findAllByText("Northline");
-  expect(screen.getAllByText("Northline")).toHaveLength(1);
+  const logo = await screen.findByAltText("Foot Locker logo");
+  expect(screen.getAllByAltText("Foot Locker logo")).toHaveLength(1);
+  expect(logo).toHaveAttribute("src", "https://media.example.test/foot-locker.jpg");
+  expect(logo).toHaveAttribute("loading", "lazy");
+  expect(screen.queryByText("Northline")).not.toBeInTheDocument();
+  expect(websiteApi.testimonials).not.toHaveBeenCalled();
   expect(screen.queryByRole("button", { name: /client logos/i })).not.toBeInTheDocument();
+});
+
+test("a CMS platform without a logo keeps a readable company name", async () => {
+  websiteApi.platforms.mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker", logo_image: null }], meta: { last_page: 1 } });
+  renderStrip({ still: true });
+  expect(await screen.findByText("Foot Locker")).toBeInTheDocument();
 });

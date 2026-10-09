@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import BrandMark from "./BrandMark.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { replaceLocaleInPath } from "../../i18n/locale.js";
-import { LEGAL_ROUTES } from "../../i18n/legalRoutes.js";
+import CorporatePageLinks from "../legal/CorporatePageLinks.jsx";
 import styles from "./SiteFooter.module.css";
 const sections = [
   {
@@ -56,12 +56,6 @@ const sections = [
     ],
   },
 ];
-const legalLabels = {
-  privacy: ["Privacy policy", "Confidentialité"],
-  terms: ["Terms of use", "Conditions d’utilisation"],
-  cookies: ["Cookie policy", "Politique des cookies"],
-  accessibility: ["Accessibility", "Accessibilité"],
-};
 export default function SiteFooter() {
   const { locale, t } = useLocale();
   const location = useLocation();
@@ -117,11 +111,7 @@ export default function SiteFooter() {
             className={styles.legal}
             aria-label={fr ? "Informations légales" : "Legal information"}
           >
-            {Object.entries(LEGAL_ROUTES).map(([key, paths]) => (
-              <Link key={key} to={`/${locale}/${paths[locale]}`}>
-                {legalLabels[key][fr ? 1 : 0]}
-              </Link>
-            ))}
+            <CorporatePageLinks inline />
           </nav>
         </div>
       </div>

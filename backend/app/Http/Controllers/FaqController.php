@@ -31,11 +31,13 @@ class FaqController
                 ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
         }
         if (isset($params['category'])) {
-            $category = (clone $categories)->where('slug', $params['category'])->firstOrFail();
+            $category = (clone $categories)->where('slug', $params['category'])->first();
+            abort_unless($category, 404, 'No public FAQ category matches the requested category for this website and language.');
             $query->where('faq_category', (string) $category->id);
         }
         if (isset($params['category_id'])) {
-            $category = (clone $categories)->whereKey($params['category_id'])->firstOrFail();
+            $category = (clone $categories)->whereKey($params['category_id'])->first();
+            abort_unless($category, 404, 'No public FAQ category matches the requested category for this website and language.');
             $query->where('faq_category', (string) $category->id);
         }
 

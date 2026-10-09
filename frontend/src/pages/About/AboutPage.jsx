@@ -1,3 +1,7 @@
+import { companyData } from "../../data/company.data.js";
+import { expertiseData } from "../../data/expertise.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
+import { websiteApi } from "../../services/websiteApi.js";
 import { Linkedin } from "lucide-react";
 import ClientCompanies from "../../components/company/ClientCompanies.jsx";
 import Testimonials from "../../components/company/Testimonials.jsx";
@@ -12,7 +16,7 @@ import SystemIcon from "../../components/system/SystemIcon.jsx";
 import RevealText from "../../motion/components/RevealText.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
-import { useCapabilities, useLeadership, usePlatforms } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import { aboutCopy } from "./about.copy.js";
@@ -25,9 +29,35 @@ import styles from "./AboutPage.module.css";
 export default function AboutPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const leadership = useLeadership(locale);
-  const capabilities = useCapabilities(locale);
-  const platforms = usePlatforms(locale);
+  const { data: stories = [], isLoading: storiesIsLoading, isError: storiesIsError, refetch: storiesRefetch } = useQuery({
+    queryKey: ["company-stories", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.testimonials({ locale }, signal);
+      return response.data || [];
+    },
+  });
+  const { isLoading: leadershipIsLoading, isError: leadershipIsError, refetch: leadershipRefetch, data: leadership = [] } = useQuery({
+    queryKey: ["leadership", locale],
+    queryFn: async () => {
+      return localizeEntity(companyData.leadership, locale);
+    },
+  });
+  const { data: capabilities = [] } = useQuery({
+    queryKey: ["capabilities", locale],
+    queryFn: async () => {
+      return localizeEntity(expertiseData, locale);
+    },
+  });
+  const { data: platformRows = [] } = useQuery({
+    queryKey: ["platforms", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.platforms({ locale }, signal);
+      return response.data || [];
+    },
+  });
+  const platforms = platformRows.map((platform) => ({
+    ...platform, id: platform.slug || platform.id, category: "",
+  }));
   const copy = aboutCopy[locale] ?? aboutCopy.en;
   useDocumentMeta({
     title: `${fr ? "À propos" : "About"} — Prosperya`,
@@ -35,14 +65,14 @@ export default function AboutPage() {
       ? "Architecture d’entreprise, transformation ERP et opérations connectées, depuis Paris."
       : "Enterprise architecture, ERP transformation and connected operations, from Paris.",
   });
-  if (leadership.isLoading) return <PageLoader />;
-  if (leadership.isError)
+  if (leadershipIsLoading) return <PageLoader />;
+  if (leadershipIsError)
     return (
       <Section>
-        <ErrorState onRetry={leadership.refetch} />
+        <ErrorState onRetry={leadershipRefetch} />
       </Section>
     );
-  const [leader] = leadership.data ?? [];
+  const [leader] = leadership ?? [];
   return (
     <>
       <section className={styles.hero}>
@@ -158,7 +188,7 @@ export default function AboutPage() {
           <div>
             <Eyebrow>{copy.platformsEyebrow}</Eyebrow>
             <ul className={styles.wordmarks}>
-              {(platforms.data ?? []).map((platform, index) => (
+              {platforms.map((platform, index) => (
                 <li key={platform.id} data-reveal="card" style={{ "--i": index }}>
                   {platform.name}
                   <span>{platform.category}</span>
@@ -170,7 +200,7 @@ export default function AboutPage() {
           <div>
             <Eyebrow>{copy.expertiseEyebrow}</Eyebrow>
             <ul className={styles.tags}>
-              {(capabilities.data ?? []).map((item) => (
+              {(capabilities ?? []).map((item) => (
                 <li key={item.id}>{item.detailTitle}</li>
               ))}
             </ul>
@@ -193,7 +223,7 @@ export default function AboutPage() {
           <ProcessPath steps={copy.how} />
         </div>
       </Section>
-      <Testimonials />
+      <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} />
       <CTASection
         variant="split"
         title={fr ? "Commençons par une conversation." : "Start with a conversation."}

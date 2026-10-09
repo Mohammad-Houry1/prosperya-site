@@ -1,5 +1,5 @@
 import { MantineProvider } from "@mantine/core";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
@@ -9,9 +9,23 @@ import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 
 const choices = { project_types: [{ id: "type-1", name: "Integration" }], project_stages: [{ id: "stage-1", name: "Planning" }] };
 
+// These tests exercise the form contract. Real dropdown rendering and keyboard
+// interaction are covered in CmsModules.spec.js with a browser layout engine.
+vi.mock("@mantine/core", async (importOriginal) => ({
+  ...await importOriginal(),
+  Select: ({ id, name, data, value, onChange, placeholder, required, ...props }) => (
+    <select id={id} name={name} value={value ?? ""} required={required}
+      aria-invalid={props["aria-invalid"]} aria-describedby={props["aria-describedby"]}
+      onChange={(event) => onChange(event.target.value)}>
+      <option value="" disabled>{placeholder}</option>
+      {data.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+    </select>
+  ),
+}));
+
 function renderPage(locale = "en") {
   return render(
-    <MantineProvider>
+    <MantineProvider env="test">
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter initialEntries={[`/${locale}/contact`]}>
           <Routes><Route path="/:locale/contact" element={<LocaleProvider><ContactPage /></LocaleProvider>} /></Routes>
@@ -22,23 +36,48 @@ function renderPage(locale = "en") {
 }
 
 async function fillBrief() {
-  await screen.findByRole("option", { name: "Integration" });
+  await waitFor(() => expect(document.getElementById("project_type")).not.toBeNull());
   for (const [label, value] of [
     ["Name", "  Jad  "], ["Company", "Example"], ["Work email", "jad@example.com"],
-    ["Country", "France"], ["Project type", "type-1"], ["Project stage", "stage-1"],
+    ["Country", "France"],
     ["What needs to change?", "Connect our finance systems"],
   ]) fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  for (const [label, value] of [["Project type", "type-1"], ["Project stage", "stage-1"]]) {
+    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  }
 }
 
 beforeEach(() => {
   vi.stubEnv("VITE_CMS_SUBMISSIONS_ENABLED", "true");
-  vi.stubGlobal("matchMedia", vi.fn((query) => ({ matches: false, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(), addListener: vi.fn(), removeListener: vi.fn() })));
+  vi.stubGlobal("matchMedia", vi.fn((query) => ({ matches: query.includes("prefers-reduced-motion"), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(), addListener: vi.fn(), removeListener: vi.fn() })));
   vi.spyOn(websiteApi, "contactOptions").mockResolvedValue({ data: choices, meta: { locale: "en" } });
+  vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: null });
+  vi.spyOn(websiteApi, "faqs").mockResolvedValue({ data: [], meta: { last_page: 1 } });
   vi.spyOn(websiteApi, "contact").mockResolvedValue({ data: { accepted: true } });
 });
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("ContactPage", () => {
+  test("shows select skeletons while choices are pending", () => {
+    websiteApi.contactOptions.mockReturnValue(new Promise(() => {}));
+    renderPage();
+    expect(screen.getAllByRole("status", { name: "Loading options" })).toHaveLength(2);
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.queryByText("Loading form options…")).not.toBeInTheDocument();
+  });
+
+  test("hides unavailable selects without an options error or retry button", async () => {
+    websiteApi.contactOptions.mockRejectedValue(new WebsiteApiError("Unavailable", 503));
+    renderPage();
+    await waitFor(() => expect(screen.queryAllByRole("status", { name: "Loading options" })).toHaveLength(0));
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.queryByText("Project type")).not.toBeInTheDocument();
+    expect(screen.queryByText("Form options could not be loaded.")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("button", { name: "Send project brief" }).closest("form")).queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Send project brief" })).toBeDisabled();
+    expect(screen.getByLabelText("Name")).toBeVisible();
+  });
+
   test("keeps submissions disabled when only read access is configured", () => {
     vi.stubEnv("VITE_CMS_SUBMISSIONS_ENABLED", "false");
     renderPage();
@@ -49,7 +88,7 @@ describe("ContactPage", () => {
 
   test("validates required fields and focuses the first error", async () => {
     renderPage();
-    await screen.findByRole("option", { name: "Integration" });
+    await waitFor(() => expect(document.getElementById("project_type")).not.toBeNull());
     fireEvent.click(screen.getByRole("button", { name: "Send project brief" }));
     expect(screen.getByLabelText("Name")).toHaveFocus();
     expect(websiteApi.contact).not.toHaveBeenCalled();
@@ -61,6 +100,7 @@ describe("ContactPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Send project brief" }));
     expect(await screen.findByText("Thank you, your project brief was received.")).toBeInTheDocument();
     expect(websiteApi.contact).toHaveBeenCalledWith(expect.objectContaining({ name: "Jad", company_name: "Example", project_type: "type-1", project_stage: "stage-1", locale: "en" }));
+    expect(screen.getByLabelText("Project type")).toHaveValue("");
   });
 
   test("preserves values and displays CMS validation errors", async () => {
@@ -74,7 +114,11 @@ describe("ContactPage", () => {
 
   test("shows the CMS choices in French", async () => {
     renderPage("fr");
-    await waitFor(() => expect(screen.getByRole("option", { name: "Integration" })).toHaveValue("type-1"));
+    await waitFor(() => expect(document.getElementById("project_type")).not.toBeNull());
+    const select = screen.getByLabelText("Type de projet");
+    expect(select).toHaveValue("");
+    expect(screen.getAllByRole("option", { name: "Sélectionnez" })).toHaveLength(2);
+    expect(screen.getByRole("option", { name: "Integration" })).toHaveValue("type-1");
     expect(screen.getByRole("button", { name: "Envoyer mon brief" })).toBeVisible();
   });
 });

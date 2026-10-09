@@ -1,18 +1,46 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { websiteApi } from "../../services/websiteApi.js";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
-import { useLegalDocument } from "../../queries/useLegalDocument.js";
+import { useQuery } from "@tanstack/react-query";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import LegalPageLayout from "../../components/legal/LegalPageLayout.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import Section from "../../components/common/Section.jsx";
+import { LEGAL_CMS_SLUGS, corporatePagePath } from "../../i18n/legalRoutes.js";
 
 export default function LegalPage({ documentId }) {
   const { locale } = useLocale();
   const { pathname } = useLocation();
-  const query = useLegalDocument(locale, documentId);
-  const document = query.data;
+  const { slug } = useParams();
+  const documentSlug = documentId ? LEGAL_CMS_SLUGS[documentId] : slug;
+  const { data: document = null, isPending, isError, refetch } = useQuery({
+    queryKey: ["corporate-page", locale, documentSlug],
+    queryFn: async ({ signal }) => {
+      try {
+        const { data: page } = await websiteApi.corporatePage(documentSlug, locale, signal);
+        return {
+          id: page.id || documentSlug,
+          title: page.title,
+          intro: page.description,
+          sections: (page.sections || []).map((section, index) => ({
+            id: "section-" + (index + 1), title: section.title, body: section.description,
+          })),
+          lastUpdated: page.updated_at,
+          seo: page.seo,
+          metaImage: page.meta_image?.url || null,
+          path: corporatePagePath(locale, page.slug || documentSlug),
+        };
+      } catch (error) {
+        if (error.status === 404) return null;
+        throw error;
+      }
+    },
+    enabled: Boolean(documentSlug),
+    staleTime: 0,
+  });
   useDocumentMeta({
+    model: "CorporatePage",
     title: document ? `${document.seo?.title || document.title} — Prosperya` : "Prosperya",
     description: document?.seo?.description,
     keywords: document?.seo?.keywords,
@@ -21,11 +49,11 @@ export default function LegalPage({ documentId }) {
     canonicalPath: document?.seo?.url || document?.path,
     robots: "index, follow",
   });
-  if (query.isPending) return <PageLoader />;
-  if (query.isError || !document)
+  if (isPending) return <PageLoader />;
+  if (isError || !document)
     return (
       <Section>
-        <ErrorState onRetry={() => query.refetch()} />
+        <ErrorState onRetry={() => refetch()} />
       </Section>
     );
   if (pathname !== document.path)

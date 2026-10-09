@@ -7,13 +7,15 @@ use App\Services\WebsiteAccess;
 use App\Services\WebsiteRoutes;
 use App\Services\WebsiteSeo;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class WebsiteSeoController
 {
     public function metadata(Request $request, WebsiteSeo $seo)
     {
-        $params = $request->validate(['path' => ['required', 'string', 'max:2048', 'starts_with:/']]);
-        $metadata = $seo->resolve($params['path']);
+        $params = $request->validate(['path' => ['required', 'string', 'max:2048', 'starts_with:/'],
+            'model' => ['sometimes', 'string', Rule::in(WebsiteSeo::modelNames())]]);
+        $metadata = $seo->resolve($params['path'], $params['model'] ?? null);
 
         return response()->json(['data' => $metadata], $metadata['status'])->header('Cache-Control', 'no-store');
     }

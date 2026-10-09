@@ -27,12 +27,12 @@ test("replaces only the leading locale segment", () => {
   assert.equal(replaceLocaleInPath("/contact", "fr"), "/fr/contact");
 });
 
-test("switches each translated legal route in both directions", () => {
+test("keeps the explicit legal slugs when switching locale", () => {
   const pairs = [
-    ["privacy-policy", "politique-de-confidentialite"],
-    ["terms", "conditions-utilisation"],
-    ["cookie-policy", "politique-cookies"],
-    ["accessibility", "accessibilite"],
+    ["privacy-policy", "privacy-policy"],
+    ["terms-of-use", "terms-of-use"],
+    ["cookie-policy", "cookie-policy"],
+    ["accessibility", "accessibility"],
   ];
   for (const [en, fr] of pairs) {
     assert.equal(replaceLocaleInPath(`/en/${en}`, "fr"), `/fr/${fr}`);

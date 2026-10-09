@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { websiteApi } from "../services/websiteApi.js";
 
@@ -37,31 +38,30 @@ function absoluteUrl(value) {
 
 // Page signatures stay unchanged. Published backend SEO takes precedence;
 // local strings are only a loading/error fallback and are never indexable.
-export function useDocumentMeta({ title, description, ogTitle, ogDescription, ogType = "website", keywords }) {
+export function useDocumentMeta({ title, description, ogTitle, ogDescription, ogType = "website", keywords, model = "SeoPage" }) {
   const { pathname } = useLocation();
-  const [metadata, setMetadata] = useState(() => bootstrap(pathname));
-  const initial = useRef(metadata);
+  const [initial] = useState(() => bootstrap(pathname));
+  const initialPath = useRef(pathname);
   const navigated = useRef(false);
+  const { data: metadata = null, isError, isFetching } = useQuery({
+    queryKey: ["seo", pathname, model],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.seo(pathname, signal, model);
+      return validMetadata(response.data, pathname) ? response.data : null;
+    },
+    initialData: () => initial && !navigated.current && samePath(initial.path, pathname) ? initial : undefined,
+    enabled: !(initial && !navigated.current && samePath(initial.path, pathname)),
+    retry: false,
+    staleTime: 0,
+  });
 
   useEffect(() => {
-    if (initial.current && !navigated.current && samePath(initial.current.path, pathname)) {
-      document.getElementById("website-seo")?.remove();
-      setMetadata(initial.current);
-      return;
-    }
-    navigated.current = true;
-    const controller = new AbortController();
-    setMetadata(null);
-    websiteApi.seo(pathname, controller.signal)
-      .then(({ data }) => {
-        if (!controller.signal.aborted && validMetadata(data, pathname)) setMetadata(data);
-      })
-      .catch(() => { if (!controller.signal.aborted) setMetadata(null); });
-    return () => controller.abort();
+    document.getElementById("website-seo")?.remove();
+    if (pathname !== initialPath.current) navigated.current = true;
   }, [pathname]);
 
   useEffect(() => {
-    const data = samePath(metadata?.path, pathname) ? metadata : null;
+    const data = !isError && !isFetching && samePath(metadata?.path, pathname) ? metadata : null;
     const locale = data?.locale || (pathname.split("/")[1] === "fr" ? "fr" : "en");
     const managed = new Set();
     const tag = (attribute, key, value) => {
@@ -117,5 +117,5 @@ export function useDocumentMeta({ title, description, ogTitle, ogDescription, og
       managed.add(schema);
     }
     return () => managed.forEach((element) => element.remove());
-  }, [metadata, pathname, title, description, ogTitle, ogDescription, ogType, keywords]);
+  }, [metadata, isError, isFetching, pathname, title, description, ogTitle, ogDescription, ogType, keywords]);
 }

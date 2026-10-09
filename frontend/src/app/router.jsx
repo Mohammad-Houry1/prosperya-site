@@ -4,10 +4,8 @@ import RootRedirect from "./RootRedirect.jsx";
 import LocaleGate from "./LocaleGate.jsx";
 import SiteLayout from "./SiteLayout.jsx";
 import RouteErrorBoundary from "./RouteErrorBoundary.jsx";
-import { LEGAL_ROUTES } from "../i18n/legalRoutes.js";
 
 const LegalPage = lazy(() => import("../pages/Legal/LegalPage.jsx"));
-
 const HomePage = lazy(() => import("../pages/Home/HomePage.jsx"));
 const ExpertisePage = lazy(
   () => import("../pages/Expertise/ExpertisePage.jsx"),
@@ -33,7 +31,11 @@ const ContactPage = lazy(() => import("../pages/Contact/ContactPage.jsx"));
 const NotFoundPage = lazy(() => import("../pages/NotFound/NotFoundPage.jsx"));
 
 export const router = createBrowserRouter([
-  { path: "/", element: <RootRedirect />, errorElement: <RouteErrorBoundary /> },
+  {
+    path: "/",
+    element: <RootRedirect />,
+    errorElement: <RouteErrorBoundary />,
+  },
   {
     path: "/:locale",
     element: <LocaleGate />,
@@ -55,16 +57,28 @@ export const router = createBrowserRouter([
           { path: "insights", element: <InsightsPage /> },
           { path: "insights/:slug", element: <ArticlePage /> },
           { path: "contact", element: <ContactPage /> },
-          ...Object.entries(LEGAL_ROUTES).flatMap(([documentId, paths]) =>
-            Object.values(paths).map((path) => ({
-              path,
-              element: <LegalPage documentId={documentId} />,
-            })),
-          ),
+          { path: "corporate/:slug", element: <LegalPage /> },
+          {
+            path: "privacy-policy",
+            element: <LegalPage documentId="privacy" />,
+          },
+          { path: "terms-of-use", element: <LegalPage documentId="terms" /> },
+          {
+            path: "cookie-policy",
+            element: <LegalPage documentId="cookies" />,
+          },
+          {
+            path: "accessibility",
+            element: <LegalPage documentId="accessibility" />,
+          },
           { path: "*", element: <NotFoundPage /> },
         ],
       },
     ],
   },
-  { path: "*", element: <Navigate to="/en" replace />, errorElement: <RouteErrorBoundary /> },
+  {
+    path: "*",
+    element: <Navigate to="/en" replace />,
+    errorElement: <RouteErrorBoundary />,
+  },
 ]);

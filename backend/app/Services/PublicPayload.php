@@ -8,6 +8,7 @@ use App\Models\CorporatePage;
 use App\Models\Faq;
 use App\Models\Platform;
 use App\Models\Testimonial;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /** Explicit public fields, shared by the JSON APIs and server metadata. */
@@ -30,6 +31,13 @@ final class PublicPayload
     public function category(ContentEntity $record, string $locale): array
     {
         return ['id' => (string) $record->id, 'slug' => $record->slug ?? '', 'name' => $record->text('name', $locale)];
+    }
+
+    public function user(User $record, string $locale): array
+    {
+        return ['id' => (string) $record->id, 'slug' => $record->slug ?? '',
+            'name' => $record->text('name', $locale), 'position' => $record->text('position', $locale),
+            'bio' => $record->text('bio', $locale), 'avatar' => $this->media($record->avatar, $locale)];
     }
 
     public function testimonial(Testimonial $record, string $locale): array

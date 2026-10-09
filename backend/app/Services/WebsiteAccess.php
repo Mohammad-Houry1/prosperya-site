@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Throwable;
 
 /**
@@ -57,7 +58,8 @@ final class WebsiteAccess
     public function moduleFor(string $modelClass): array
     {
         $module = collect($this->grant()['modules'])->firstWhere('model', class_basename($modelClass));
-        abort_unless(is_array($module), 404);
+        abort_unless(is_array($module), 404,
+            'This website key does not allow the '.Str::snake(Str::pluralStudly(class_basename($modelClass))).' module.');
 
         return $module;
     }
@@ -66,7 +68,7 @@ final class WebsiteAccess
     public function module(string $slug): array
     {
         $module = collect($this->grant()['modules'])->firstWhere('slug', $slug);
-        abort_unless(is_array($module), 404);
+        abort_unless(is_array($module), 404, 'This website key does not allow the '.$slug.' module.');
 
         return $module;
     }

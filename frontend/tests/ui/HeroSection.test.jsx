@@ -1,4 +1,5 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { screen, cleanup } from "@testing-library/react";
+import { render } from "../renderWithQueries.jsx";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
 import { LocaleProvider } from "../../src/i18n/LocaleProvider.jsx";

@@ -1,6 +1,8 @@
+import { useQuery, useMutation } from "@tanstack/react-query";
 import FrequentlyAskedQuestions from "../../components/company/FrequentlyAskedQuestions.jsx";
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, CircleCheck, ShieldCheck } from "lucide-react";
+import { useRef, useState } from "react";
+import { Select } from "@mantine/core";
+import { ArrowRight, ChevronDown, CircleCheck, ShieldCheck } from "lucide-react";
 import RevealText from "../../motion/components/RevealText.jsx";
 import Section from "../../components/common/Section.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
@@ -10,26 +12,44 @@ import {
   normalizeProjectInquiry,
   validateProjectInquiry,
 } from "../../repositories/projectInquiry.repository.js";
-import { useProjectInquiry } from "../../queries/useProjectInquiry.js";
-import { useContactOptions } from "../../queries/useContactOptions.js";
+import { websiteApi } from "../../services/websiteApi.js";
 import styles from "./ContactPage.module.css";
+import Skeleton from "../../components/feedback/Skeleton.jsx";
 
 export default function ContactPage() {
   const submissionsEnabled = import.meta.env?.VITE_CMS_SUBMISSIONS_ENABLED === "true";
   const { locale } = useLocale();
   const fr = locale === "fr";
+  const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
+    queryKey: ["faq", locale, "contact"],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.faqs({ locale, category: "contact" }, signal);
+      return response.data || [];
+    },
+  });
   const formRef = useRef(null);
   const submitLock = useRef(false);
   const [errors, setErrors] = useState({});
-  const submission = useProjectInquiry();
-  const optionsQuery = useContactOptions(locale, submissionsEnabled);
-  useEffect(() => {
-    if (!optionsQuery.data || !formRef.current) return;
-    for (const [name, choices] of [["project_type", optionsQuery.data.project_types], ["project_stage", optionsQuery.data.project_stages]]) {
-      const select = formRef.current.elements.namedItem(name);
-      if (select?.value && !choices.some((choice) => choice.id === select.value)) select.value = "";
-    }
-  }, [optionsQuery.data]);
+  const [selections, setSelections] = useState({});
+  const [openSelect, setOpenSelect] = useState(null);
+  const submission = useMutation({
+    mutationFn: async (inquiry) => {
+      const response = await websiteApi.contact(inquiry);
+      if (!response.data.accepted) throw new Error("The CMS did not accept the project brief.");
+      return response.data;
+    },
+    retry: false,
+    gcTime: 0,
+  });
+  const { isPending: optionsPending, isError: optionsError, data: options = {} } = useQuery({
+    queryKey: ["contact-options", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.contactOptions(locale, signal);
+      return response.data;
+    },
+    staleTime: 0,
+    enabled: submissionsEnabled,
+  });
   useDocumentMeta({
     title: `${fr ? "Démarrer un projet" : "Start a project"} — Prosperya`,
     description: fr
@@ -51,21 +71,24 @@ export default function ContactPage() {
       };
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!submissionsEnabled || submitLock.current || optionsQuery.isPending || optionsQuery.isError) return;
+    if (!submissionsEnabled || submitLock.current || optionsPending || optionsError) return;
     const payload = normalizeProjectInquiry(
       Object.fromEntries(new FormData(event.currentTarget)),
       locale,
     );
-    const nextErrors = validateProjectInquiry(payload, optionsQuery.data);
+    const nextErrors = validateProjectInquiry(payload, options);
     setErrors(nextErrors);
     submission.reset();
     if (Object.keys(nextErrors).length) {
-      formRef.current.elements.namedItem(Object.keys(nextErrors)[0])?.focus();
+      formRef.current.querySelector(`[id="${Object.keys(nextErrors)[0]}"]`)?.focus();
       return;
     }
     submitLock.current = true;
     submission.mutate(payload, {
-      onSuccess: () => formRef.current?.reset(),
+      onSuccess: () => {
+        formRef.current?.reset();
+        setSelections({});
+      },
       onError: (error) => {
         if (error.status === 422) setErrors(Object.fromEntries(Object.entries(error.errors).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])));
       },
@@ -73,6 +96,15 @@ export default function ContactPage() {
     });
   };
   const renderField = (field) => {
+    const choices = field.name === "project_type" ? options?.project_types : options?.project_stages;
+    const selected = selections[locale]?.[field.name];
+    if (field.options && (!submissionsEnabled || optionsError)) return null;
+    if (field.options && optionsPending) {
+      return <div key={field.name} className={styles.field} role="status" aria-label={fr ? "Chargement des options" : "Loading options"} aria-busy="true">
+        <Skeleton width="40%" height={16} />
+        <Skeleton height={48} className={styles.skeletonSelect} />
+      </div>;
+    }
     const attributes = {
       id: field.name,
       name: field.name,
@@ -91,16 +123,31 @@ export default function ContactPage() {
           {field.label[locale] ?? field.label.en}
         </label>
         {field.options ? (
-          <select {...attributes} key={locale} defaultValue="" disabled={optionsQuery.isPending || optionsQuery.isError}>
-            <option value="" disabled>
-              {fr ? "Sélectionnez" : "Select one"}
-            </option>
-            {(field.name === "project_type" ? optionsQuery.data?.project_types : optionsQuery.data?.project_stages)?.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
+          <Select
+            {...attributes}
+            key={locale}
+            role="combobox"
+            error={Boolean(errors[field.name])}
+            attributes={{ input: { "aria-expanded": openSelect === field.name, "aria-describedby": attributes["aria-describedby"] } }}
+            onDropdownOpen={() => setOpenSelect(field.name)}
+            onDropdownClose={() => setOpenSelect((current) => current === field.name ? null : current)}
+            data={(choices ?? []).map((option) => ({ value: option.id, label: option.name }))}
+            value={choices?.some((option) => option.id === selected) ? selected : null}
+            onChange={(value) => {
+              setSelections((current) => ({ ...current, [locale]: { ...current[locale], [field.name]: value } }));
+              if (submission.isSuccess || submission.isError) submission.reset();
+            }}
+            placeholder={fr ? "Sélectionnez" : "Select one"}
+            nothingFoundMessage={fr ? "Aucune option disponible" : "No options available"}
+            allowDeselect={false}
+            checkIconPosition="right"
+            rightSection={<ChevronDown size={16} strokeWidth={1.6} aria-hidden="true" />}
+            rightSectionPointerEvents="none"
+            maxDropdownHeight={240}
+            withScrollArea={false}
+            comboboxProps={{ offset: 6, position: "bottom-start" }}
+            classNames={{ input: styles.selectInput, dropdown: styles.selectDropdown, option: styles.selectOption, section: styles.selectSection, empty: styles.selectEmpty }}
+          />
         ) : field.multiline ? (
           <textarea {...attributes} rows={5} />
         ) : (
@@ -176,8 +223,6 @@ export default function ContactPage() {
             aria-busy={submission.isPending}
             data-reveal="scale"
           >
-            {submissionsEnabled && optionsQuery.isPending && <p role="status">{fr ? "Chargement des options…" : "Loading form options…"}</p>}
-            {submissionsEnabled && optionsQuery.isError && <div role="alert"><p>{fr ? "Les options du formulaire sont indisponibles." : "Form options could not be loaded."}</p><button type="button" onClick={() => optionsQuery.refetch()}>{fr ? "Réessayer" : "Try again"}</button></div>}
             {groups.map(([legend, fields], groupIndex) => (
               <fieldset key={legend} className={styles.group} disabled={!submissionsEnabled}>
                 <legend>
@@ -188,7 +233,7 @@ export default function ContactPage() {
               </fieldset>
             ))}
             <div className={styles.actions}>
-              <button type="submit" className={styles.submit} disabled={!submissionsEnabled || submission.isPending || optionsQuery.isPending || optionsQuery.isError}>
+              <button type="submit" className={styles.submit} disabled={!submissionsEnabled || submission.isPending || optionsPending || optionsError}>
                 {submission.isPending
                   ? fr
                     ? "Envoi…"
@@ -218,7 +263,7 @@ export default function ContactPage() {
           </form>
         </div>
       </Section>
-      <FrequentlyAskedQuestions topic="contact" />
+      <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} />
     </>
   );
 }

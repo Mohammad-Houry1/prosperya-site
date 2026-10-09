@@ -3,12 +3,13 @@ import { MemoryRouter } from "react-router-dom";
 import { expect, test } from "vitest";
 import SolutionRow from "../../src/components/expertise/SolutionRow.jsx";
 import DeliverySequence from "../../src/pages/Approach/DeliverySequence.jsx";
-import { getSolutions } from "../../src/repositories/solutions.repository.js";
-import { getProcess } from "../../src/repositories/company.repository.js";
+import { solutionsData } from "../../src/data/solutions.data.js";
+import { companyData } from "../../src/data/company.data.js";
+import { localizeEntity } from "../../src/repositories/localize.js";
 import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 test("a solution row presents pains, capabilities and outcomes with locale-aware links", async () => {
-  const [solution] = await getSolutions("fr");
+  const [solution] = localizeEntity(solutionsData, "fr");
   render(
     <MemoryRouter>
       <SolutionRow solution={solution} locale="fr" />
@@ -23,7 +24,7 @@ test("a solution row presents pains, capabilities and outcomes with locale-aware
 });
 
 test("delivery sequence can be reversed and cannot advance past the final stage", async () => {
-  const steps = await getProcess("en");
+  const steps = localizeEntity(companyData.process, "en");
   render(
     <ThemeProvider>
       <DeliverySequence steps={steps} locale="en" />

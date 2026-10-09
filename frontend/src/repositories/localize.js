@@ -22,7 +22,3 @@ export function localizeEntity(value, locale) {
     ]),
   );
 }
-
-export function bySlug(items, slug) {
-  return items.find((item) => item.slug === slug) ?? null;
-}

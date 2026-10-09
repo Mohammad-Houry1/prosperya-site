@@ -3,14 +3,12 @@ import SectionHeader from "../../components/common/SectionHeader.jsx";
 import CaseStudyCard from "../../components/case-study/CaseStudyCard.jsx";
 import SectionSkeleton from "../../components/feedback/SectionSkeleton.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
-import { useCaseStudies } from "../../queries/useContentQueries.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { dragScroll } from "../../motion/gestures.js";
 import styles from "./HomeSections.module.css";
-export default function FeaturedWorkSection() {
+export default function FeaturedWorkSection({ data = [], isLoading, isError, refetch }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const { data = [], isLoading, isError, refetch } = useCaseStudies(locale);
   return (
     <Section>
       <SectionHeader

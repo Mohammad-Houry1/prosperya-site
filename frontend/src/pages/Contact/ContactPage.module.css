@@ -144,11 +144,13 @@
   font-weight: 500;
   transition: color 180ms ease;
 }
+.skeletonSelect {
+  border: 1px solid var(--border-subtle);
+}
 .field:focus-within label {
   color: var(--accent-text);
 }
-.field input,
-.field select,
+.field input:not([type="hidden"]),
 .field textarea {
   width: 100%;
   min-height: 48px;
@@ -163,25 +165,58 @@
     border-color 180ms ease,
     box-shadow 240ms var(--ease-out);
 }
-.field select {
+.field .selectInput {
+  height: 48px;
+  padding-right: 42px;
+  cursor: pointer;
   text-overflow: ellipsis;
 }
-/* Unchosen select reads as a placeholder, like an empty input. */
-.field select:has(option[value=""]:checked) {
+.selectInput::placeholder {
   color: var(--text-tertiary);
+  opacity: 1;
+}
+.selectSection {
+  color: var(--text-secondary);
+}
+.selectDropdown {
+  padding: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+.selectOption {
+  min-height: 44px;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+}
+.selectOption[data-combobox-selected],
+.selectOption[data-combobox-active],
+.selectOption:hover {
+  background: rgba(var(--brand-primary-rgb), 0.1);
+  color: var(--accent-text);
+}
+.selectEmpty {
+  padding: 12px;
+  color: var(--text-tertiary);
+  font-size: 14px;
 }
 .field textarea {
   resize: vertical;
 }
 @media (hover: hover) and (pointer: fine) {
-  .field input:hover,
-  .field select:hover,
+  .field input:not([type="hidden"]):hover,
   .field textarea:hover {
     border-color: var(--border-strong);
   }
 }
-.field input:focus-visible,
-.field select:focus-visible,
+.field input:not([type="hidden"]):focus-visible,
 .field textarea:focus-visible {
   outline: none;
   border-color: var(--brand-primary);

@@ -35,7 +35,7 @@ class WebsiteSeoTest extends WebsiteTestCase
 
     public function test_backend_metadata_overrides_frontend_defaults_in_initial_html_and_json(): void
     {
-        $this->collection('pages')->insertOne($this->record(['slug' => 'home', 'name' => 'Home',
+        $this->collection('seo_pages')->insertOne($this->record(['slug' => 'home', 'name' => 'Home',
             'meta_title' => ['en' => 'Backend title', 'fr' => 'Titre serveur'], 'meta_description' => ['en' => 'Backend description'],
             'meta_image' => ['url' => 'https://cms.example.test/social.jpg'], 'internal_secret' => 'never-public']));
         $this->getJson('/api/seo?path=/en')->assertOk()->assertJsonPath('data.title', 'Backend title')
@@ -52,7 +52,7 @@ class WebsiteSeoTest extends WebsiteTestCase
 
     public function test_escaped_backend_content_cannot_break_html_or_the_metadata_bootstrap(): void
     {
-        $this->collection('pages')->insertOne($this->record(['slug' => 'about',
+        $this->collection('seo_pages')->insertOne($this->record(['slug' => 'about',
             'meta_title' => ['en' => '</title><script>alert(1)</script>'], 'meta_description' => ['en' => '"><script>alert(2)</script>']]));
         $html = $this->get('/en/about')->assertOk()->getContent();
         $this->assertStringNotContainsString('<script>alert(', $html);
@@ -64,7 +64,7 @@ class WebsiteSeoTest extends WebsiteTestCase
 
     public function test_sitemap_uses_only_published_indexable_existing_routes_and_available_locales(): void
     {
-        $this->collection('pages')->insertMany([
+        $this->collection('seo_pages')->insertMany([
             $this->record(['slug' => 'home', 'meta_title' => ['en' => 'Home']]),
             $this->record(['slug' => 'about', 'language' => [$this->ids['en']], 'meta_title' => ['en' => 'About']]),
             $this->record(['slug' => 'expertise', 'status_id' => $this->ids['draft']]),
@@ -113,14 +113,14 @@ class WebsiteSeoTest extends WebsiteTestCase
         $this->collection('corporate_pages')->insertOne($this->record(['slug' => 'privacy-policy', 'title' => ['fr' => 'Confidentialité'],
             'meta_title' => ['fr' => 'SEO vie privée']]));
         $this->get('/fr/insights/erp')->assertOk()->assertSee('<title>SEO article</title>', false)->assertSee('content="article"', false);
-        $this->getJson('/api/seo?path=/fr/politique-de-confidentialite')->assertOk()->assertJsonPath('data.title', 'SEO vie privée');
-        $this->get('/fr/privacy-policy')->assertRedirect('/fr/politique-de-confidentialite');
+        $this->getJson('/api/seo?path=/fr/privacy-policy')->assertOk()->assertJsonPath('data.title', 'SEO vie privée');
+        $this->get('/fr/privacy-policy')->assertOk();
         $this->get('/')->assertRedirect('/en');
     }
 
     public function test_canonical_and_origin_validation_do_not_trust_browser_host_or_unsafe_cms_urls(): void
     {
-        $this->collection('pages')->insertOne($this->record(['slug' => 'about', 'meta_url' => 'javascript:alert(1)']));
+        $this->collection('seo_pages')->insertOne($this->record(['slug' => 'about', 'meta_url' => 'javascript:alert(1)']));
         $this->withHeader('Host', 'attacker.example')->getJson('/api/seo?path=/en/about')->assertOk()
             ->assertJsonPath('data.canonical', 'https://site.example.test/en/about');
         config(['website.public_url' => 'javascript:alert(1)']);
@@ -149,12 +149,12 @@ class WebsiteSeoTest extends WebsiteTestCase
 
     public function test_canonical_overrides_cannot_publish_nonexistent_or_draft_urls(): void
     {
-        $this->collection('pages')->insertMany([
+        $this->collection('seo_pages')->insertMany([
             $this->record(['slug' => 'about', 'meta_url' => '/en/does-not-exist']),
             $this->record(['slug' => 'solutions', 'status_id' => $this->ids['draft']]),
         ]);
         $this->getJson('/api/seo?path=/en/about')->assertOk()->assertJsonPath('data.canonical', 'https://site.example.test/en/about');
-        $this->collection('pages')->updateOne(['slug' => 'about'], ['$set' => ['meta_url' => '/en/solutions']]);
+        $this->collection('seo_pages')->updateOne(['slug' => 'about'], ['$set' => ['meta_url' => '/en/solutions']]);
         $this->getJson('/api/seo?path=/en/about')->assertOk()->assertJsonPath('data.canonical', 'https://site.example.test/en/about');
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
         $this->assertStringNotContainsString('does-not-exist', $xml);
@@ -163,7 +163,7 @@ class WebsiteSeoTest extends WebsiteTestCase
 
     public function test_valid_canonical_aliases_use_the_targets_alternates_and_do_not_duplicate_sitemap_entries(): void
     {
-        $this->collection('pages')->insertOne($this->record(['slug' => 'about', 'meta_url' => '/en/insights/erp']));
+        $this->collection('seo_pages')->insertOne($this->record(['slug' => 'about', 'meta_url' => '/en/insights/erp']));
         $this->collection('articles')->insertOne($this->record(['slug' => 'erp', 'article_title' => ['en' => 'ERP']]));
         $this->getJson('/api/seo?path=/en/about')->assertOk()
             ->assertJsonPath('data.canonical', 'https://site.example.test/en/insights/erp')

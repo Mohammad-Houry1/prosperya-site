@@ -3,9 +3,12 @@ import { Pause, Play } from "lucide-react";
 import Section from "../common/Section.jsx";
 import Eyebrow from "../common/Eyebrow.jsx";
 import ErrorState from "../feedback/ErrorState.jsx";
-import { useCompanyStories } from "../../queries/useCompanyStories.js";
+import { useQuery } from "@tanstack/react-query";
+import { websiteApi } from "../../services/websiteApi.js";
+import ResponsiveImage from "../common/ResponsiveImage.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./CompanyStories.module.css";
+import SectionSkeleton from "../feedback/SectionSkeleton.jsx";
 
 /*
   The client marks. By default they form the Marquee (Home only): one endless
@@ -17,18 +20,25 @@ import styles from "./CompanyStories.module.css";
 export default function ClientCompanies({ still = false }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const query = useCompanyStories(locale);
+  const { data: clients = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ["platforms", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.platforms({ locale }, signal);
+      return response.data || [];
+    },
+  });
   const [paused, setPaused] = useState(false);
-  if (query.isError) return <Section><ErrorState onRetry={query.refetch} /></Section>;
-  if (query.isLoading) return <Section><div className={styles.placeholder} aria-busy="true" aria-label={fr ? "Chargement des entreprises" : "Loading companies"} /></Section>;
-  const clients = query.data?.clients ?? [];
+  if (isError) return <Section><ErrorState onRetry={refetch} /></Section>;
+  if (isLoading) return <Section><SectionSkeleton rows={1} label={fr ? "Chargement des entreprises" : "Loading companies"} /></Section>;
   if (!clients.length) return null;
   const mark = (client, key) => (
     <li key={key} className={styles.mark} data-mark={client.id}>
-      <span className={styles.monogram} aria-hidden="true">
-        {client.name.replace(/[^A-Za-z]/g, "")[0]}
-      </span>
-      {client.name}
+      {client.logo_image?.url ? (
+        <ResponsiveImage src={client.logo_image.url} alt={fr ? `Logo ${client.name}` : `${client.name} logo`}
+          width={client.logo_image.width || undefined} height={client.logo_image.height || undefined} className={styles.logo} />
+      ) : (
+        <><span className={styles.monogram} aria-hidden="true">{client.name.replace(/[^A-Za-z]/g, "")[0]}</span>{client.name}</>
+      )}
     </li>
   );
   const half = (copy) => <ul>{[0, 1].flatMap((round) => clients.map((client) => mark(client, `${copy}-${round}-${client.id}`)))}</ul>;
@@ -36,7 +46,6 @@ export default function ClientCompanies({ still = false }) {
     <Section className={styles.clients}>
       <div className={styles.intro}>
         <Eyebrow>{fr ? "À leurs côtés" : "In good company"}</Eyebrow>
-        {query.data.isDemo && <p>{fr ? "Entreprises fictives · Aperçu de présentation" : "Fictional companies · Layout preview"}</p>}
         {!still && (
           <button
             type="button"

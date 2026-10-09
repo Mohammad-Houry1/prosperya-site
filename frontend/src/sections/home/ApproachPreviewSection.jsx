@@ -4,13 +4,11 @@ import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import ProcessPath from "../../components/company/ProcessPath.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import SectionSkeleton from "../../components/feedback/SectionSkeleton.jsx";
-import { useProcess } from "../../queries/useContentQueries.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
-export default function ApproachPreviewSection() {
+export default function ApproachPreviewSection({ data = [], isPending, isError, refetch }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const { data = [], isPending, isError, refetch } = useProcess(locale);
   return (
     <Section>
       <div className={styles.approach}>

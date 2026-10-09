@@ -1,5 +1,6 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { render, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
+import { render } from "../renderWithQueries.jsx";
 import userEvent from "@testing-library/user-event";
 import { Link, MemoryRouter, useLocation } from "react-router-dom";
 import { useDocumentMeta } from "../../src/hooks/useDocumentMeta.js";

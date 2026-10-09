@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import PageContainer from "../common/PageContainer.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./LegalPageLayout.module.css";
 import CmsRichHtml from "../common/CmsRichHtml.jsx";
+import CorporatePageLinks from "./CorporatePageLinks.jsx";
 
 export default function LegalPageLayout({
   title,
@@ -12,23 +12,10 @@ export default function LegalPageLayout({
 }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const [current, setCurrent] = useState(sections[0]?.id);
-  // Highlight the section being read in the contents list.
-  useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return undefined;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.find((entry) => entry.isIntersecting);
-        if (visible) setCurrent(visible.target.id);
-      },
-      { rootMargin: "-20% 0px -70% 0px" },
-    );
-    sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) observer.observe(element);
-    });
-    return () => observer.disconnect();
-  }, [sections]);
+  const updatedDate = lastUpdated ? new Date(lastUpdated) : null;
+  const formattedDate = updatedDate && !Number.isNaN(updatedDate.getTime())
+    ? new Intl.DateTimeFormat(fr ? "fr-FR" : "en-GB", { dateStyle: "long", timeZone: "UTC" }).format(updatedDate)
+    : null;
   return (
     <article className={styles.page}>
       <PageContainer>
@@ -39,8 +26,8 @@ export default function LegalPageLayout({
           <h1>{title}</h1>
           <CmsRichHtml html={intro} className={styles.intro} imageAlt={title} />
           <p className={styles.meta}>
-            {lastUpdated
-              ? `${fr ? "Mis à jour le" : "Last updated"} ${lastUpdated}`
+            {formattedDate
+              ? <>{fr ? "Mis à jour le" : "Last updated"} <time dateTime={updatedDate.toISOString()}>{formattedDate}</time></>
               : fr
                 ? "Date de publication à confirmer"
                 : "Publication date to be confirmed"}
@@ -49,18 +36,10 @@ export default function LegalPageLayout({
         <div className={styles.grid}>
           <nav
             className={styles.contents}
-            aria-label={fr ? "Sommaire" : "On this page"}
+            aria-label={fr ? "Pages de l’entreprise" : "Corporate pages"}
           >
-            <strong>{fr ? "Sommaire" : "On this page"}</strong>
-            {sections.map((section) => (
-              <a
-                key={section.id}
-                href={`#${section.id}`}
-                aria-current={current === section.id ? "location" : undefined}
-              >
-                {section.title}
-              </a>
-            ))}
+            <strong>{fr ? "Pages de l’entreprise" : "Corporate pages"}</strong>
+            <CorporatePageLinks />
           </nav>
           <div className={styles.body}>
             {sections.map((section) => (

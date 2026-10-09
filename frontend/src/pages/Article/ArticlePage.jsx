@@ -1,3 +1,5 @@
+import { websiteApi } from "../../services/websiteApi.js";
+import { mapInsight } from "../../repositories/insights.repository.js";
 import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, Clock3 } from "lucide-react";
@@ -15,7 +17,7 @@ import Newsletter from "../../components/insight/Newsletter.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
-import { useInsight, useInsightCategories, useInsights } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 
@@ -24,12 +26,40 @@ export default function ArticlePage() {
   const { slug } = useParams();
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const insight = useInsight(locale, slug);
-  const all = useInsights(locale);
-  const categories = useInsightCategories(locale);
-  const item = insight.data;
-  const categoryNames = Object.fromEntries((categories.data ?? []).map((entry) => [entry.id, entry.name]));
+  const { data: insight = null, isLoading: insightIsLoading, isError: insightIsError, refetch: insightRefetch } = useQuery({
+    queryKey: ["insight", locale, slug],
+    queryFn: async ({ signal }) => {
+      try {
+        const response = await websiteApi.article(slug, locale, signal);
+        return mapInsight(response.data);
+      } catch (error) {
+        if (error.status === 404) return null;
+        throw error;
+      }
+    },
+    enabled: Boolean(slug),
+    staleTime: 0,
+  });
+  const { data: articles = { items: [], meta: {} } } = useQuery({
+    queryKey: ["insights", locale, 1, ""],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.articles({ locale, page: 1, per_page: 12 }, signal);
+      return { items: response.data.map(mapInsight), meta: response.meta };
+    },
+    staleTime: 0,
+  });
+  const { data: categoriesData = [] } = useQuery({
+    queryKey: ["insight-categories", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.categories({ locale }, signal);
+      return response.data || [];
+    },
+    staleTime: 0,
+  });
+  const item = insight;
+  const categoryNames = Object.fromEntries((categoriesData ?? []).map((entry) => [entry.id, entry.name]));
   useDocumentMeta({
+    model: "Article",
     title: item ? `${item.seo?.title || item.title} — Prosperya` : fr ? "Prosperya — Analyses" : "Prosperya — Insights",
     description: item?.seo?.description || item?.excerpt,
     canonicalPath: item?.seo?.url || undefined,
@@ -37,11 +67,11 @@ export default function ArticlePage() {
     ogType: item?.seo?.type || "article",
     keywords: item?.seo?.keywords,
   });
-  if (insight.isLoading) return <PageLoader />;
-  if (insight.isError)
+  if (insightIsLoading) return <PageLoader />;
+  if (insightIsError)
     return (
       <Section>
-        <ErrorState onRetry={() => insight.refetch()} />
+        <ErrorState onRetry={() => insightRefetch()} />
       </Section>
     );
   if (!item)
@@ -50,7 +80,7 @@ export default function ArticlePage() {
         <EmptyState title={fr ? "Analyse introuvable" : "Insight not found"} />
       </Section>
     );
-  const others = (all.data?.items ?? []).filter((entry) => entry.id !== item.id).map((entry) => ({ ...entry, category: categoryNames[entry.categoryId] || "" }));
+  const others = (articles?.items ?? []).filter((entry) => entry.id !== item.id).map((entry) => ({ ...entry, category: categoryNames[entry.categoryId] || "" }));
   const related = [
     ...others.filter((entry) => entry.categoryId === item.categoryId),
     ...others.filter((entry) => entry.categoryId !== item.categoryId),

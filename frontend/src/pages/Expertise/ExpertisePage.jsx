@@ -1,3 +1,5 @@
+import { expertiseData } from "../../data/expertise.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import Section from "../../components/common/Section.jsx";
 import Eyebrow from "../../components/common/Eyebrow.jsx";
@@ -8,7 +10,7 @@ import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import CapabilityStory from "./CapabilityStory.jsx";
 import CapabilityIndex from "./CapabilityIndex.jsx";
-import { useCapabilities } from "../../queries/useContentQueries.js";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./ExpertisePage.module.css";
@@ -16,21 +18,26 @@ import styles from "./ExpertisePage.module.css";
 export default function ExpertisePage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const capabilities = useCapabilities(locale);
+  const { isLoading: capabilitiesIsLoading, isError: capabilitiesIsError, refetch: capabilitiesRefetch, data: capabilities = [] } = useQuery({
+    queryKey: ["capabilities", locale],
+    queryFn: async () => {
+      return localizeEntity(expertiseData, locale);
+    },
+  });
   useDocumentMeta({
     title: "Prosperya — Expertise",
     description: fr
       ? "Transformation ERP, implémentation NetSuite, intégration, automatisation, audit et redressement."
       : "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
   });
-  if (capabilities.isLoading) return <PageLoader />;
-  if (capabilities.isError)
+  if (capabilitiesIsLoading) return <PageLoader />;
+  if (capabilitiesIsError)
     return (
       <Section>
-        <ErrorState onRetry={capabilities.refetch} />
+        <ErrorState onRetry={capabilitiesRefetch} />
       </Section>
     );
-  const items = capabilities.data ?? [];
+  const items = capabilities ?? [];
   return (
     <>
       <PageHero
