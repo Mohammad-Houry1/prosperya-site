@@ -60,7 +60,7 @@ Check that the key grants the modules required by each feature: `pages`, `transl
 
 Publish EN/FR content with the correct project/country/language/status assignments. Use FAQ category slugs `approach` and `contact`. Assign footer/sidebar documents to category slug `corporate`; unassigned pages (such as the pictured Cookie Policy) are excluded from those lists but can still be opened directly. Legal storage slugs are `privacy-policy`, `terms-of-use`, `cookie-policy`, and `accessibility`; frontend French paths remain translated. Use the statuses marked published by the CMS; no status slug is hardcoded.
 
-Newsletter/contact writes have been verified in throwaway databases and browser fixtures. No real submissions, CMS records, key grants or statuses were created or changed by this work. Additional corporate pages now use the existing detail template automatically, with SEO route parsing and sitemap support.
+Newsletter/contact writes have been verified in throwaway databases and browser fixtures. Those API tests created no live submissions, key grants or statuses. This release separately adds the user-requested missing Prosperya labels through an insert-only CMS migration. Additional corporate pages use the existing detail template automatically, with SEO route parsing and sitemap support.
 
 The CMS key endpoint was observed returning a valid answer after approximately five seconds. The total request timeout is now ten seconds, with a three-second connection timeout and the existing short cache; key rejection/unavailability still fails closed.
 

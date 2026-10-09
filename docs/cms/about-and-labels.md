@@ -8,16 +8,18 @@
 | Introduction and story body | That page's Content tab: Description and Content |
 | Main heading, story heading, facts, focus, principles, how-we-work heading/body/steps | That page's new About Us tab; all optional and translated |
 | Leadership | Select Users in About Us → About Leadership. Edit names, positions, biographies and avatars in Users; selection order is display order |
-| Hero picture and SEO image | Static Pages → Images → Cover Image / Meta Image |
+| Hero picture | Static Pages → Images → Cover Image |
 | Images for facts, principles and work steps | Image picker in the corresponding repeater row |
 | Client logos and platform names | Platforms |
 | Quotes | Testimonials |
 | Section captions, navigation, buttons, filters, forms, accessibility and error text | Translations, keys beginning `prosperya.` |
-| Normal-route metadata | SEO Pages, as in `../seo-integration.md` |
+| About/normal-route metadata and social image | SEO Pages, as in `../seo-integration.md`; the website currently uses SeoPage for these routes |
 
 No new About module registration is needed. The existing module remains slug `pages`, technical module `Page`, path `/pages`, visible in the CMS. Keep its published status assignment and the relevant editor-role permissions. Grant the website API key `pages`, `users`, `translations`, `platforms`, `testimonials` and `seo_pages`, alongside the modules used elsewhere. Assign the About record and selected public users to the Prosperya project, applicable countries/languages and a published status. The public API retains those scope checks; selecting a private or unpublished user does not expose them.
 
 The public `/api/pages/about?locale=en` endpoint returns only explicit public page fields. `/api/users?ids[]=...` retrieves the chosen profiles, excluding email, credentials, permissions and internal fields. Blank About sections stay hidden. A missing/unpublished/denied About record shows an unavailable state instead of a fictional company profile. Create and publish this record before deploying the website changes.
+
+Static Pages retains its existing SEO fields and Meta Image picker for CMS/API consumers that use Page metadata. This website's normal-route SEO lookup remains SEO Pages; its About content request does not change that contract.
 
 ## Import labels automatically
 
