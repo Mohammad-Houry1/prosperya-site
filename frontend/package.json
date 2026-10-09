@@ -1,22 +1,53 @@
 {
-  "name": "prosperya-web",
+  "name": "prosperya-frontend",
   "private": true,
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "test": "vitest run"
+    "build": "vite build && node scripts/generate-route-manifest.mjs",
+    "preview": "vite preview",
+    "test": "npm run test:core && vitest run",
+    "test:watch": "vitest",
+    "test:browser": "playwright test",
+    "check:routes": "node scripts/check-routes.mjs",
+    "test:core": "node --test tests/core/*.test.js",
+    "lint": "eslint .",
+    "verify:syntax": "node scripts/verify-syntax.mjs",
+    "verify:imports": "node scripts/verify-imports.mjs",
+    "verify": "npm run test:core && npm run verify:syntax && npm run verify:imports && npm run verify:dependencies && node scripts/verify-css.mjs",
+    "verify:dependencies": "node scripts/verify-dependencies.mjs"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@fontsource-variable/inter": "^5.3.0",
+    "@mantine/core": "^8.3.0",
+    "@mantine/hooks": "^8.3.0",
+    "@react-three/drei": "^10.7.0",
+    "@react-three/fiber": "^9.3.0",
+    "@tanstack/react-query": "^5.87.0",
+    "dompurify": "^3.4.16",
+    "gsap": "^3.13.0",
+    "lucide-react": "^0.544.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-router-dom": "^7.8.2",
+    "three": "^0.179.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.2",
-    "vite": "^8.0.16",
-    "vitest": "^4.1.11",
-    "jsdom": "^30.0.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/dom": "^10.4.1"
+    "@eslint/js": "^9.35.0",
+    "@playwright/test": "^1.64.0",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^5.0.2",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4",
+    "vitest": "^3.2.4"
   }
 }

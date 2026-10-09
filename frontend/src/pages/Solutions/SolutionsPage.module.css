@@ -1,0 +1,65 @@
+.solutions,
+.architecture {
+  width: min(calc(100% - 2 * var(--gutter)), var(--container));
+  margin: 0 auto;
+}
+.architecture {
+  margin-top: 20px;
+}
+/* A framed editorial panel: sticky title on the left, content scrolling on the right. */
+.panel {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.24fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.4vw, 36px);
+  padding: clamp(20px, 2.2vw, 28px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--bg-secondary) 70%, transparent);
+}
+.sticky {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-height) + 28px);
+  padding: 8px 4px;
+}
+.sticky h2 {
+  margin: 0;
+  font-size: clamp(22px, 1.9vw, 29px);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-heading);
+}
+.sticky h2 span {
+  display: block;
+}
+.sticky p {
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.rows {
+  display: grid;
+  gap: 16px;
+}
+@media (max-width: 1100px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sticky {
+    position: static;
+  }
+}
+@media (max-width: 640px) {
+  .panel {
+    padding: 14px;
+    border-radius: var(--radius-md);
+  }
+}
+/* Stacked hero: copy above, the four-function strip below it. */
+.hero {
+  padding-bottom: clamp(24px, 3vw, 40px);
+}
+.stripWrap {
+  margin-top: clamp(28px, 3.4vw, 48px);
+}

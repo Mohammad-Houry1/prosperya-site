@@ -15,8 +15,15 @@ class ContactController
     /** Choices for the contact form, from modules the website key grants. */
     public function options(Request $request, PublicContent $content): array
     {
-        $locale = $content->language($request->input('locale'))->code;
-        $options = fn (string $model) => $model::forWebsite($locale)->orderBy('name')->get()
+        $params = $request->validate(['locale' => ['sometimes', 'string', 'max:20']]);
+        $locale = $content->language($params['locale'] ?? null)->code;
+        $filters = $content->filters($locale);
+        $options = fn (string $model) => $model::forWebsite()
+            ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
+            ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
+            ->where('is_active', '!=', false)
+            ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
+            ->orderBy('name')->get()
             ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $row->text('name', $locale)])->all();
 
         return ['data' => [
@@ -32,8 +39,14 @@ class ContactController
     {
         $payload = $request->validated();
         $language = $content->language($payload['locale'] ?? null);
+        $filters = $content->filters($language->code);
         foreach (['project_type' => ProjectType::class, 'project_stage' => ProjectStage::class] as $field => $model) {
-            if (! $model::forWebsite($language->code)->whereKey($payload[$field])->exists()) {
+            if (! $model::forWebsite()
+                ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
+                ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
+                ->where('is_active', '!=', false)
+                ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
+                ->whereKey($payload[$field])->exists()) {
                 throw ValidationException::withMessages([$field => 'Choose an available option.']);
             }
         }
@@ -50,6 +63,6 @@ class ContactController
             'search_key' => mb_strtolower(implode(' ', [$payload['name'], $payload['company_name'], $payload['work_email'], $payload['project_brief']])),
         ])->save();
 
-        return response()->json(['message' => 'Your message has been received.'], 201);
+        return response()->json(['data' => ['accepted' => true], 'message' => 'Your message has been received.'], 201);
     }
 }

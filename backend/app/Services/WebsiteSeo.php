@@ -1,0 +1,209 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Article;
+use App\Models\Base\ContentEntity;
+use App\Models\CorporatePage;
+use App\Models\Page;
+
+final class WebsiteSeo
+{
+    public function __construct(private readonly WebsiteAccess $access, private readonly PublicPayload $payload,
+        private readonly WebsiteRoutes $routes, private readonly PublicContent $content) {}
+
+    public function origin(): string
+    {
+        $value = (string) config('website.public_url');
+        $url = parse_url($value);
+        abort_unless(is_array($url) && in_array($url['scheme'] ?? '', ['http', 'https'], true)
+            && ! empty($url['host']) && ! isset($url['user']) && ! isset($url['pass'])
+            && ! isset($url['query']) && ! isset($url['fragment']) && in_array($url['path'] ?? '', ['', '/'], true), 503);
+
+        return rtrim($value, '/');
+    }
+
+    public function resolve(string $path): array
+    {
+        $origin = $this->origin();
+        $route = $this->routes->parse($path);
+        if (! $route || ! in_array($route['locale'], $this->locales(), true)) {
+            return $this->missing($path);
+        }
+        $record = $this->record($route, $route['locale']);
+        if (! $record) {
+            // The route inventory verifies that these pages exist in the frontend.
+            // Missing SEO must not turn a real page into an HTTP 404.
+            $status = $route['kind'] === 'page' ? 200 : 404;
+
+            return [...$this->missing($route['path']), 'status' => $status,
+                'title' => $status === 200 ? 'Prosperya' : 'Page not found — Prosperya',
+                'ogTitle' => $status === 200 ? 'Prosperya' : 'Page not found — Prosperya',
+                'canonical' => $status === 200 ? $origin.$route['path'] : null];
+        }
+        $metadata = $this->metadata($record, $route);
+        $canonicalRoute = $this->routes->parse(parse_url($metadata['canonical'], PHP_URL_PATH)) ?? $route;
+        $alternates = [];
+        foreach ($this->locales() as $locale) {
+            $alternatePath = $this->routes->path($canonicalRoute['kind'], $canonicalRoute['slug'], $locale);
+            $alternateRoute = [...$canonicalRoute, 'locale' => $locale, 'path' => $alternatePath];
+            $alternateRecord = $this->record($alternateRoute, $locale);
+            if ($alternateRecord && ! str_contains($this->payload->seo($alternateRecord, $locale)['robots'], 'noindex')) {
+                $alternateMetadata = $this->metadata($alternateRecord, $alternateRoute);
+                if ($alternateMetadata['canonical'] === $origin.$alternatePath) {
+                    $alternates[] = ['locale' => $locale, 'url' => $alternateMetadata['canonical']];
+                }
+            }
+        }
+        $metadata['alternates'] = $this->withDefault($alternates);
+
+        return $metadata;
+    }
+
+    /** Only records the key grants and the React router can actually display. */
+    public function sitemapEntries(): array
+    {
+        $entries = [];
+        $entryCount = 0;
+        foreach ($this->locales() as $locale) {
+            $this->content->language($locale);
+            $filters = $this->content->filters($locale);
+            foreach (['page' => Page::class, 'article' => Article::class, 'legal' => CorporatePage::class] as $kind => $model) {
+                if (! $this->granted($model)) {
+                    continue;
+                }
+                foreach ($model::forWebsite()
+                    ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
+                    ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
+                    ->where('is_active', '!=', false)
+                    ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
+                    ->orderBy('_id')->cursor() as $record) {
+                    $slug = trim((string) $record->slug, '/');
+                    if ($kind === 'legal' && ! isset(WebsiteRoutes::LEGAL[$slug])) {
+                        continue;
+                    }
+                    if ($slug === '') {
+                        continue;
+                    }
+                    $path = $this->routes->path($kind, $slug, $locale);
+                    $route = $this->routes->parse($path);
+                    if (! $route || $route['kind'] !== $kind) {
+                        continue;
+                    }
+                    $metadata = $this->metadata($record, $route);
+                    if (str_contains($metadata['robots'], 'noindex') || $metadata['canonical'] !== $this->origin().$route['path']) {
+                        continue;
+                    }
+                    if (! isset($entries[$kind.':'.$slug][$locale])) {
+                        $entryCount++;
+                    }
+                    $entries[$kind.':'.$slug][$locale] = $metadata;
+                    abort_if($entryCount > 50000, 503, 'Sitemap requires an index.');
+                }
+            }
+        }
+        $result = [];
+        foreach ($entries as $translations) {
+            $alternates = $this->withDefault(array_map(fn ($entry) => ['locale' => $entry['locale'], 'url' => $entry['canonical']], array_values($translations)));
+            foreach ($translations as $entry) {
+                $result[] = [...$entry, 'alternates' => $alternates];
+            }
+        }
+
+        return $result;
+    }
+
+    private function metadata(ContentEntity $record, array $route): array
+    {
+        $locale = $route['locale'];
+        $seo = $this->payload->seo($record, $locale);
+        $title = $seo['title'] ?: ($record->text($route['kind'] === 'article' ? 'article_title' : 'title', $locale)
+            ?: $record->text('name', $locale) ?: 'Prosperya');
+        $description = $seo['description'] ?: $record->text($route['kind'] === 'article' ? 'article_small_description' : 'description', $locale);
+        $image = $this->payload->media($record->meta_image, $locale) ?? $this->payload->media($record->cover_image, $locale);
+        $canonical = $this->canonical($seo['url'], $route['path']);
+
+        return ['path' => $route['path'], 'locale' => $locale, 'status' => 200, 'title' => $title,
+            'description' => trim(strip_tags($description)), 'keywords' => $seo['keywords'], 'canonical' => $canonical,
+            'ogTitle' => $title, 'ogDescription' => trim(strip_tags($description)), 'ogImage' => $image['url'] ?? $this->origin().'/og-default.png',
+            'ogType' => $seo['type'] ?: ($route['kind'] === 'article' ? 'article' : 'website'),
+            'robots' => $seo['robots'], 'alternates' => [],
+            'lastModified' => $record->updated_at?->toISOString(),
+            'structuredData' => ['@context' => 'https://schema.org', '@type' => $route['kind'] === 'article' ? 'Article' : 'WebPage',
+                'name' => $title, 'description' => trim(strip_tags($description)), 'url' => $canonical, 'inLanguage' => $locale]];
+    }
+
+    private function record(array $route, string $locale): ?ContentEntity
+    {
+        $model = match ($route['kind']) {
+            'article' => Article::class, 'legal' => CorporatePage::class, default => Page::class
+        };
+        // Static frontend pages still exist when their SEO module is unavailable.
+        // Return the noindex fallback without reading a module the key denies.
+        if (! $this->granted($model)) {
+            return null;
+        }
+        $filters = $this->content->filters($locale);
+        $query = $model::forWebsite()
+            ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
+            ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
+            ->where('is_active', '!=', false)
+            ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
+
+        return $query->whereIn('slug', [$route['slug'], '/'.$route['slug']])->first();
+    }
+
+    private function canonical(string $value, string $path): string
+    {
+        $origin = $this->origin();
+        if (str_starts_with($value, '/') && ! str_starts_with($value, '//')) {
+            $value = $origin.$value;
+        }
+        if (str_starts_with($value, $origin.'/') && filter_var($value, FILTER_VALIDATE_URL)) {
+            $target = $this->routes->parse(parse_url($value, PHP_URL_PATH));
+            $source = $this->routes->parse($path);
+            if ($target && $target['locale'] === ($source['locale'] ?? null)) {
+                $model = match ($target['kind']) {
+                    'article' => Article::class, 'legal' => CorporatePage::class, default => Page::class
+                };
+                $record = $this->granted($model) ? $this->record($target, $target['locale']) : null;
+                if ($record && ! str_contains($this->payload->seo($record, $target['locale'])['robots'], 'noindex')) {
+                    return $origin.$target['path'];
+                }
+            }
+        }
+
+        return $origin.$path;
+    }
+
+    private function missing(string $path): array
+    {
+        return ['path' => $path, 'locale' => str_starts_with($path, '/fr') ? 'fr' : 'en', 'status' => 404,
+            'title' => 'Page not found — Prosperya', 'description' => '', 'keywords' => '', 'canonical' => null,
+            'ogTitle' => 'Page not found — Prosperya', 'ogDescription' => '', 'ogImage' => null, 'ogType' => 'website',
+            'robots' => 'noindex, follow', 'alternates' => [], 'structuredData' => null];
+    }
+
+    private function locales(): array
+    {
+        return array_values(array_intersect(['en', 'fr'], $this->access->grant()['website_settings']['locales'] ?? []));
+    }
+
+    private function granted(string $model): bool
+    {
+        return collect($this->access->grant()['modules'])->contains('model', class_basename($model));
+    }
+
+    private function withDefault(array $alternates): array
+    {
+        $default = $this->access->grant()['website_settings']['default_locale'] ?? 'en';
+        foreach ($alternates as $alternate) {
+            if ($alternate['locale'] === $default) {
+                $alternates[] = ['locale' => 'x-default', 'url' => $alternate['url']];
+                break;
+            }
+        }
+
+        return $alternates;
+    }
+}

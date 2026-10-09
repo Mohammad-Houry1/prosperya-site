@@ -1,0 +1,144 @@
+.frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(var(--brand-primary-rgb), 0.08), transparent 60%),
+    var(--bg-card);
+  overflow: hidden;
+}
+.svg {
+  width: 100%;
+  height: auto;
+}
+.grid {
+  fill: none;
+  stroke: none;
+}
+/* Systems: scattered until the story begins, then structured. */
+.system {
+  transform: var(--scattered);
+  opacity: 0.8;
+  transition:
+    transform 1100ms var(--ease-in-out),
+    opacity 600ms ease;
+  transition-delay: calc(var(--i) * 45ms);
+}
+.system rect {
+  fill: var(--bg-primary);
+  stroke: var(--border-strong);
+  stroke-dasharray: 3 3;
+  transition: stroke 500ms ease;
+}
+.system text {
+  fill: var(--text-secondary);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+.system g {
+  color: var(--text-tertiary);
+}
+.frame:not([data-state="-1"]) .system {
+  transform: var(--slot);
+  opacity: 1;
+}
+.frame:not([data-state="-1"]) .system rect {
+  stroke-dasharray: none;
+}
+/* Connect */
+.linkBase {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset 900ms var(--ease-in-out),
+    opacity 500ms ease;
+  transition-delay: calc(var(--i) * 60ms);
+}
+.frame[data-state="1"] .linkBase,
+.frame[data-state="2"] .linkBase,
+.frame[data-state="3"] .linkBase {
+  stroke-dashoffset: 0;
+}
+.frame[data-state="1"] .system rect,
+.frame[data-state="2"] .system rect,
+.frame[data-state="3"] .system rect {
+  stroke: rgba(var(--brand-primary-rgb), 0.5);
+}
+.frame[data-state="1"] .system g,
+.frame[data-state="2"] .system g,
+.frame[data-state="3"] .system g {
+  color: var(--accent-text);
+}
+/* Automate */
+.packet {
+  fill: var(--accent-text);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.frame[data-state="2"] .packet,
+.frame[data-state="3"] .packet {
+  opacity: 1;
+}
+/* Optimize: redundant systems retire. */
+.frame[data-state="3"] [data-retired="true"] {
+  opacity: 0;
+}
+.frame[data-state="3"] .system[data-retired="true"] {
+  transform: var(--slot) scale(0.9);
+}
+.frame[data-state="3"] .linkBase {
+  stroke-width: 1.6;
+}
+.core {
+  transition: opacity 600ms ease;
+}
+.frame[data-state="-1"] .core {
+  opacity: 0.35;
+}
+.coreHalo {
+  fill: var(--system-glow);
+  opacity: 0.5;
+  filter: blur(14px);
+}
+.coreDisc {
+  fill: var(--bg-primary);
+  stroke: var(--brand-primary);
+  stroke-width: 1.6;
+}
+.coreMark {
+  fill: var(--text-primary);
+}
+.meter {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 10.5px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.meter strong {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0;
+  color: var(--text-primary);
+  transition: opacity 400ms ease;
+}
+.after {
+  display: none;
+}
+.frame[data-state="3"] .before {
+  display: none;
+}
+.frame[data-state="3"] .after {
+  display: inline;
+  color: var(--accent-text);
+}

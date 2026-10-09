@@ -1,0 +1,127 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  padding-top: 8px;
+}
+.filter > span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--accent-text);
+  font-size: 10.5px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.filter div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+.filter button[aria-pressed="true"] {
+  border-color: var(--brand-action);
+  background: var(--brand-action);
+  color: #fff;
+}
+@media (hover: hover) and (pointer: fine) {
+  .filter button:hover {
+    border-color: var(--brand-primary);
+    color: var(--text-primary);
+  }
+  .filter button[aria-pressed="true"]:hover {
+    color: #fff;
+  }
+}
+.filter button:active {
+  transform: scale(0.97);
+}
+.count {
+  margin: 22px 0 0;
+  padding-bottom: 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.band {
+  padding: clamp(28px, 3vw, 44px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  text-align: center;
+}
+.band h2 {
+  margin: 0;
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 300;
+}
+.band ul {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.band li {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+}
+.band li + li {
+  border-left: 1px solid var(--border-subtle);
+}
+.band li svg {
+  color: var(--accent-text);
+}
+.band strong {
+  font-size: clamp(30px, 2.8vw, 42px);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+.band li > span {
+  max-width: 150px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.band > p {
+  margin: 24px 0 0;
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+}
+@media (max-width: 1100px) {
+  .filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .band ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+  .band li:nth-child(4) {
+    border-left: 0;
+  }
+}
+@media (max-width: 560px) {
+  .band ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .band li:nth-child(odd) {
+    border-left: 0;
+  }
+  .band li:nth-child(4) {
+    border-left: 1px solid var(--border-subtle);
+  }
+}

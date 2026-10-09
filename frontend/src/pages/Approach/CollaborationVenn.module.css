@@ -1,0 +1,127 @@
+.venn {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  aspect-ratio: 440 / 340;
+}
+.venn svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.left circle,
+.right circle {
+  fill: rgba(var(--brand-primary-rgb), 0.04);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+/* Circles start apart and meet once the figure is in view. */
+.left,
+.right {
+  transition: transform 1300ms var(--ease-out) 150ms;
+}
+.left {
+  transform: translateX(-46px);
+}
+.right {
+  transform: translateX(46px);
+}
+.lens {
+  fill: rgba(var(--brand-primary-rgb), 0.22);
+  stroke: var(--brand-primary);
+  stroke-width: 1;
+  opacity: 0;
+  transition: opacity 700ms ease 1050ms;
+}
+.arc {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1100ms var(--ease-in-out) 1350ms;
+}
+.arrowHead {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1.2;
+  opacity: 0;
+  transition: opacity 300ms ease 2300ms;
+}
+.venn[data-inview] :is(.left, .right) {
+  transform: none;
+}
+.venn[data-inview] .lens,
+.venn[data-inview] .arrowHead {
+  opacity: 1;
+}
+.venn[data-inview] .arc {
+  stroke-dashoffset: 0;
+}
+.label {
+  position: absolute;
+  display: grid;
+  gap: 4px;
+  width: 24%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  transition: opacity 600ms ease;
+}
+.label strong {
+  font-size: clamp(10px, 0.8vw, 11.5px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+.label span {
+  color: var(--text-secondary);
+  font-size: clamp(11px, 0.9vw, 12.5px);
+  line-height: 1.35;
+}
+.client {
+  left: 24%;
+  top: 41%;
+}
+.prosperya {
+  left: 76%;
+  top: 41%;
+}
+.shared {
+  left: 50%;
+  top: 41%;
+  width: 20%;
+  opacity: 0;
+  transition-delay: 1150ms;
+}
+.shared strong {
+  color: var(--accent-text);
+}
+.loop {
+  left: 50%;
+  top: 95%;
+  width: 46%;
+  opacity: 0;
+  transition-delay: 1900ms;
+}
+.venn[data-inview] :is(.shared, .loop) {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .left,
+  .right {
+    transform: none;
+  }
+  .lens,
+  .arrowHead,
+  .shared,
+  .loop {
+    opacity: 1;
+  }
+  .arc {
+    stroke-dashoffset: 0;
+  }
+}

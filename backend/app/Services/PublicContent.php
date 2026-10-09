@@ -13,6 +13,7 @@ use MongoDB\Laravel\Query\Builder;
  */
 final class PublicContent
 {
+    private array $languages = [];
     public function __construct(private readonly WebsiteAccess $access) {}
 
     /** Live rows of a CMS collection in this site's tenant (reference data such as languages, countries, statuses). */
@@ -39,10 +40,14 @@ final class PublicContent
         $code = $locale ?: ($settings['default_locale'] ?? null);
         abort_unless(is_string($code) && in_array($code, $settings['locales'] ?? [], true), 422, 'Choose an available language.');
 
+        if (isset($this->languages[$code])) {
+            return $this->languages[$code];
+        }
+
         $language = $this->enabled('ref_languages')->where('code', $code)->first();
         abort_unless($language, 422, 'Choose an available language.');
 
-        return $language;
+        return $this->languages[$code] = $language;
     }
 
     /** The site's country from the key, or null: then only country-unassigned content is served. */
@@ -58,11 +63,28 @@ final class PublicContent
         return (string) $country->id;
     }
 
+    /** Suggested values for public endpoints; callers explicitly apply each filter. */
+    public function filters(string $locale): array
+    {
+        $grant = $this->access->grant();
+        $projectId = $grant['project']['id'] ?? null;
+        abort_unless(is_string($projectId) && $projectId !== '', 503, 'Service temporarily unavailable.');
+        $countryId = $this->countryId();
+
+        return [
+            'project' => [$projectId, '*'],
+            'status' => $grant['statuses']['published'],
+            'country' => [...($countryId ? [$countryId] : []), '*', null, []],
+            'language' => [(string) $this->language($locale)->id, '*', null, []],
+        ];
+    }
+
     /** A text field in the requested language: the translations sidecar, then a locale map, then the plain value. */
     public function text(object $record, string $field, string $locale): string
     {
         $default = $this->access->grant()['website_settings']['default_locale'] ?? $locale;
-        $override = (array) (((array) ($record->translations ?? []))[$locale] ?? []);
+        $translations = (array) ($record->translations ?? []);
+        $override = (array) ($translations[$locale] ?? $translations[(string) $this->language($locale)->id] ?? []);
         $value = $override[$field] ?? $record->{$field} ?? '';
         if (is_string($value)) {
             return $value;

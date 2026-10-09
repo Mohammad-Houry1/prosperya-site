@@ -1,0 +1,16 @@
+.wrap {
+  display: grid;
+  gap: 14px;
+}
+.row {
+  height: 84px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary),
+    var(--bg-elevated),
+    var(--bg-secondary)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}

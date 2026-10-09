@@ -14,6 +14,14 @@ class RequireWebsiteAccess
     {
         app(WebsiteAccess::class)->grant();
 
-        return $next($request);
+        $response = $next($request);
+        if ($request->is('api/*')) {
+            // Crawlers may fetch data to render pages; JSON URLs themselves
+            // should not become search results.
+            $response->headers->set('X-Robots-Tag', 'noindex');
+            $response->headers->set('Cache-Control', 'no-store');
+        }
+
+        return $response;
     }
 }

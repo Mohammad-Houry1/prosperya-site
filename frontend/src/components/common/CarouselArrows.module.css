@@ -1,0 +1,32 @@
+.arrows {
+  display: flex;
+  gap: 8px;
+}
+.arrows button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+.arrows button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  .arrows button:not(:disabled):hover {
+    border-color: var(--brand-primary);
+    color: var(--accent-text);
+  }
+}
+.arrows button:not(:disabled):active {
+  transform: scale(0.96);
+}

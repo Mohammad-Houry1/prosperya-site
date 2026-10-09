@@ -18,7 +18,7 @@ extend (`Base\ContentEntity`, `Base\ReferenceEntity`, the traits) is this
 repo's own code under the same names. It asks the CMS, on every request (with
 the answer cached for 60 seconds), whether this site's website key is still
 good and what it may serve, and it limits every query to:
-- the key's tenant and project;
+- the key's tenant and owner permissions (project is an explicit filter);
 - live (not deleted) records;
 - the modules the key grants.
 
@@ -82,7 +82,7 @@ Each repo carries its own copy.
    cd backend && composer install && php artisan key:generate && php artisan serve --port=8001
    cd frontend && npm ci && npm run dev
    ```
-   Production: serve `frontend/dist` and route `/api` to the Laravel app on the same domain. Run `node scripts/verify-public-artifacts.mjs` after every build.
+   Production: route HTML, `/api`, sitemap and robots to Laravel; static assets can come directly from `frontend/dist`. Set `WEBSITE_PUBLIC_URL`. See [frontend-backend-integration.md](frontend-backend-integration.md) and the hosting example. Run `node scripts/verify-public-artifacts.mjs` after every build.
 
 ## Adding a module to a site
 
@@ -92,12 +92,16 @@ Each repo carries its own copy.
 4. Write the endpoint your usual way:
 
 ```php
-$published = Status::query()->where('slug', 'published')->first();
-$language = Language::query()->where('code', $request->input('locale', 'en'))->first();
+$language = $content->language($request->input('locale'));
+$filters = $content->filters($language->code);
 
-$faqs = Faq::query()
-    ->where('status_id', (string) $published->id)
-    ->where('language', (string) $language->id)       // scope fields hold ids, not codes
+$faqs = Faq::forWebsite()
+    ->whereIn('project', $filters['project'])
+    ->whereIn('status', $filters['status'])
+    ->whereIn('country', $filters['country'])
+    ->whereIn('language', $filters['language'])       // IDs, snapshots, and shared records
+    ->where('is_active', '!=', false)
+    ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
     ->with('category')                                 // the CMS model's relations
     ->orderBy('sort_order')
     ->get()
@@ -107,7 +111,7 @@ $faqs = Faq::query()
     ]);
 ```
 
-Or let the CMS settings decide with `Faq::forWebsite($locale)`. It filters on published statuses, active and not-scheduled records, the allowed languages, the key's country, and the "own records only" limit when the key issuer has one.
+`forWebsite()` checks the key without filtering project, status, country or language. All content selection stays explicit in your query. For exact matches, use `->where('project', $projectId)->where('status', $statusId)->where('country', $countryId)->where('language', $languageId)`. `PublicContent::filters()` only supplies the key's suggested values; it does not modify queries. Tenant/module/deletion/owner safeguards remain automatic. Public endpoints must explicitly select their publication and visibility rules, as above.
 
 ## Rules
 

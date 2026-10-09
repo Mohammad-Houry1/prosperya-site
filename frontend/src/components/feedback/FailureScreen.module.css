@@ -1,0 +1,81 @@
+.page {
+  min-height: 100svh;
+  padding: clamp(24px, 4vw, 52px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  justify-self: start;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+.brandDot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand-primary); }
+.content {
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 510px);
+  padding-block: 36px;
+  text-align: center;
+  animation: arrive var(--motion-standard) var(--ease-out) both;
+}
+.eyebrow {
+  margin: 10px 0 16px;
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.content h1 {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 550;
+  line-height: 1.08;
+  letter-spacing: var(--tracking-display);
+}
+.content h1:focus { outline: none; }
+.description { margin: 20px auto 28px; max-width: 400px; font-size: 16px; line-height: 1.65; color: var(--text-secondary); }
+.actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.retry, .home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-out), background-color var(--motion-fast) ease;
+}
+.retry { background: var(--brand-action); color: #fff; }
+.home { color: var(--text-primary); border-color: var(--border-subtle); background: var(--bg-elevated); }
+.retry:focus-visible, .home:focus-visible, .brand:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 4px; }
+.note { margin: 0; text-align: center; color: var(--text-tertiary); font-size: 12px; line-height: 1.5; }
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@media (hover: hover) and (pointer: fine) {
+  .retry:hover { background: var(--brand-action-hover); transform: translateY(-2px); }
+  .home:hover { background: var(--bg-secondary); transform: translateY(-2px); }
+}
+.retry:active, .home:active { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .content { animation-name: fade; }
+  .retry, .home, .retry:hover, .home:hover { transition-property: background-color; transform: none; }
+}

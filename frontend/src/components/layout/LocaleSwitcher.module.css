@@ -1,0 +1,32 @@
+.switcher {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+.switcher a {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  min-height: 40px;
+  color: var(--text-tertiary);
+  transition: color 160ms ease;
+}
+.switcher a + a::before {
+  content: "/";
+  position: absolute;
+  transform: translateX(-17px);
+  color: var(--border-strong);
+  pointer-events: none;
+}
+.switcher a + a {
+  position: relative;
+}
+.switcher a[aria-current] {
+  color: var(--text-primary);
+}
+@media (hover: hover) and (pointer: fine) {
+  .switcher a:hover {
+    color: var(--text-primary);
+  }
+}

@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  scrollbar-gutter: stable;
+  background: var(--bg-primary);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  min-width: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition:
+    background-color 320ms ease,
+    color 320ms ease;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 300;
+  line-height: 1.12;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+::selection {
+  background: var(--selection-bg);
+}
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+#root {
+  min-height: 100vh;
+}
+.skipLink {
+  position: fixed;
+  left: 16px;
+  top: -80px;
+  z-index: 9999;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+.skipLink:focus {
+  top: 16px;
+}
+.visuallyHidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+/* Horizontal scrollers wired with dragScroll (src/motion/gestures.js). */
+[data-draggable] {
+  cursor: grab;
+}
+[data-dragging] {
+  cursor: grabbing;
+  scroll-snap-type: none !important;
+  scroll-behavior: auto !important;
+  user-select: none;
+}
+[data-dragging] > * {
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+.cms-label-alert { padding: 8px 24px; background: var(--bg-secondary); color: var(--text-secondary); text-align: center; font-size: 13px; }
+.cms-label-alert button { margin-left: 12px; border: 0; background: none; color: var(--accent-text); text-decoration: underline; cursor: pointer; }

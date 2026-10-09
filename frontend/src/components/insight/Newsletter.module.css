@@ -1,0 +1,102 @@
+.newsletter {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+.newsletter > svg {
+  color: var(--accent-text);
+}
+.newsletter h2 {
+  margin: 0;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 300;
+}
+.newsletter p {
+  max-width: 440px;
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.form input {
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-right: 0;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 180ms ease;
+}
+.form input:focus-visible {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+.form input[aria-invalid="true"] {
+  border-color: #cf6565;
+}
+.form button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--brand-action);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+.form button:hover {
+  background: var(--brand-action-hover);
+}
+.form button svg {
+  transition: transform 260ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .form button:hover svg {
+    transform: translateX(4px);
+  }
+}
+.newsletter .status {
+  grid-column: 1 / -1;
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+.status[data-state="done"] {
+  color: var(--accent-text);
+}
+.status[data-state="invalid"] {
+  color: #cf6565;
+}
+@media (max-width: 1100px) {
+  .newsletter {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .form {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 640px) {
+  .newsletter {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .newsletter > svg {
+    display: none;
+  }
+  .newsletter .status {
+    text-align: left;
+  }
+}

@@ -1,0 +1,17 @@
+.section {
+  position: relative;
+  padding-block: var(--section-space);
+}
+.section + .section {
+  border-top: 1px solid var(--border-subtle);
+}
+.soft {
+  background: var(--bg-secondary);
+}
+.inverse {
+  background: var(--bg-inverse);
+  color: var(--text-inverse);
+}
+.flush {
+  padding-block: 0;
+}

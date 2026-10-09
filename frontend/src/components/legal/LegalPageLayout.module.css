@@ -1,0 +1,98 @@
+.page {
+  padding: clamp(48px, 7vw, 100px) 0;
+}
+.header {
+  max-width: 780px;
+  margin-bottom: 56px;
+}
+.eyebrow {
+  color: var(--accent-text);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.header h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: var(--tracking-heading);
+  margin: 18px 0;
+}
+.intro {
+  color: var(--text-secondary);
+  max-width: 58ch;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.meta {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+.notice {
+  padding: 16px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  line-height: 1.6;
+  font-size: 0.875rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 2fr);
+  gap: clamp(32px, 7vw, 100px);
+}
+.contents {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-height) + 36px);
+  display: grid;
+  font-size: 0.875rem;
+}
+.contents strong {
+  margin-bottom: 8px;
+}
+.contents a {
+  padding: 8px 0 8px 16px;
+  border-left: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition:
+    color 180ms ease,
+    border-color 240ms ease;
+}
+.contents a[aria-current] {
+  border-left-color: var(--brand-primary);
+  color: var(--text-primary);
+}
+.contents a:hover {
+  color: var(--accent-text);
+}
+.body {
+  max-width: 72ch;
+}
+.body section {
+  scroll-margin-top: 100px;
+  margin-bottom: 40px;
+}
+.body h2 {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.body p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .contents {
+    position: static;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 24px;
+  }
+  .header {
+    margin-bottom: 32px;
+  }
+}

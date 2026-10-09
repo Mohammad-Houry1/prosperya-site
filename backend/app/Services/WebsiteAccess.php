@@ -35,7 +35,7 @@ final class WebsiteAccess
 
         if (! is_array($grant)) {
             try {
-                $response = Http::timeout(3)->connectTimeout(3)->acceptJson()
+                $response = Http::timeout(10)->connectTimeout(3)->acceptJson()
                     ->withHeaders(['X-Api-Key' => $key])->get($url.'/api/website-key');
             } catch (Throwable) {
                 abort(503, 'Service temporarily unavailable.');

@@ -115,7 +115,7 @@ class ContentApiTest extends TestCase
         $this->getJson('/api/articles?category=hidden')->assertNotFound();
     }
 
-    /** The copied CMS models, queried the usual Eloquent way, stay inside the key's tenant and project. */
+    /** Tenant access is automatic; project and status are explicit caller filters. */
     public function test_copied_models_query_like_eloquent_inside_the_key_scope(): void
     {
         $articles = DB::connection('mongodb')->getDatabase()->selectCollection('articles');
@@ -128,8 +128,9 @@ class ContentApiTest extends TestCase
 
         $published = \App\Models\Status::query()->where('slug', 'published')->first();
         $this->assertNotNull($published);
-        $this->assertSame(['mine'], \App\Models\Article::query()->where('status_id', (string) $published->id)->pluck('slug')->all());
-        $this->assertEqualsCanonicalizing(['mine', 'my-draft'], \App\Models\Article::query()->pluck('slug')->all());
+        $this->assertSame(['mine'], \App\Models\Article::forWebsite()->where('project', $this->ids['project'])
+            ->where('status', (string) $published->id)->pluck('slug')->all());
+        $this->assertEqualsCanonicalizing(['mine', 'my-draft', 'other-project'], \App\Models\Article::query()->pluck('slug')->all());
     }
 
     public function test_a_module_the_key_does_not_grant_is_not_served(): void

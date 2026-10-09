@@ -1,0 +1,39 @@
+.lanes {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.track {
+  stroke: var(--border-strong);
+  stroke-dasharray: 2 6;
+  transition: stroke 600ms ease;
+}
+.station {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+  stroke-dasharray: 3 3;
+  transition:
+    stroke 600ms ease,
+    stroke-dasharray 600ms ease;
+}
+.heading {
+  fill: var(--text-tertiary);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+}
+.laneName {
+  fill: var(--text-secondary);
+  font-size: 13px;
+}
+.packet {
+  fill: var(--accent-text);
+  filter: drop-shadow(0 0 6px rgba(var(--brand-primary-rgb), 0.7));
+}
+.lanes[data-automated="true"] .track {
+  stroke: rgba(var(--brand-primary-rgb), 0.55);
+  stroke-dasharray: none;
+}
+.lanes[data-automated="true"] .station {
+  stroke: rgba(var(--brand-primary-rgb), 0.6);
+  stroke-dasharray: none;
+}

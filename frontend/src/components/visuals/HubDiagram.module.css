@@ -1,0 +1,172 @@
+.hub {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 640 / 460;
+  container-type: inline-size;
+}
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.star {
+  fill: var(--brand-primary);
+  opacity: 0.5;
+}
+.twinkle {
+  fill: var(--accent-text);
+  --twinkle-low: 0.2;
+  --twinkle-high: 0.95;
+  animation: twinkle 4.8s ease-in-out infinite;
+}
+.orbit {
+  fill: none;
+  stroke: var(--system-line);
+  stroke-dasharray: 2 7;
+  animation: orbitIn 1.6s var(--ease-out) both;
+}
+@keyframes orbitIn {
+  from {
+    opacity: 0;
+  }
+}
+.ray line {
+  stroke: var(--system-line);
+  stroke-width: 0.8;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.2s var(--ease-in-out) both;
+  animation-delay: calc(200ms + var(--i) * 45ms);
+}
+.ray circle {
+  fill: var(--accent-text);
+  opacity: 0;
+  animation: dotIn 600ms var(--ease-out) both;
+  animation-delay: calc(900ms + var(--i) * 45ms);
+}
+.spoke line {
+  stroke: var(--brand-primary);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.55;
+  animation: draw 1.1s var(--ease-in-out) both;
+  animation-delay: calc(120ms + var(--i) * 70ms);
+  transition:
+    opacity 220ms ease,
+    stroke-width 220ms ease;
+}
+.spoke circle {
+  fill: var(--accent-text);
+  transition: r 220ms var(--ease-out);
+}
+.spoke[data-active="true"] line {
+  opacity: 1;
+  stroke-width: 1.6;
+}
+.spoke[data-active="true"] circle {
+  r: 4.5;
+}
+.halo {
+  fill: var(--system-glow);
+  opacity: 0.45;
+  filter: blur(18px);
+}
+.core {
+  fill: var(--bg-primary);
+  stroke: var(--brand-primary);
+  stroke-width: 1.6;
+}
+.mark {
+  fill: var(--text-primary);
+}
+.centerText {
+  fill: var(--text-primary);
+  font-size: 21px;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+.nodes {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  font-size: clamp(8.5px, 1.72cqw, 11px);
+  animation: nodeIn 700ms var(--ease-out) both;
+  animation-delay: calc(300ms + var(--i) * 70ms);
+}
+/* Default label chip; pages can render links or buttons with .label too. */
+.label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+  min-width: 8em;
+  padding: 0.85em 1.2em;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+  color: var(--text-primary);
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  line-height: 1.45;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    border-color 220ms ease,
+    color 220ms ease,
+    background-color 220ms ease;
+}
+.label svg {
+  flex: none;
+  color: var(--text-tertiary);
+}
+.node[data-active="true"] .label {
+  border-color: rgba(var(--brand-primary-rgb), 0.6);
+  background: color-mix(in srgb, var(--bg-card) 86%, var(--brand-primary));
+}
+.node[data-active="true"] .label svg {
+  color: var(--accent-text);
+}
+/* Narrow containers: nodes collapse to luminous points (page repeats the content). */
+@container (max-width: 460px) {
+  .hide .label {
+    width: 9px;
+    min-width: 0;
+    height: 9px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    border-color: var(--brand-primary);
+    background: var(--bg-primary);
+    color: transparent;
+    font-size: 0;
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dotIn {
+  to {
+    opacity: 0.9;
+  }
+}
+@keyframes nodeIn {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}

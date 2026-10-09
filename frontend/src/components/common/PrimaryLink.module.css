@@ -1,0 +1,67 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 450;
+  letter-spacing: 0.005em;
+  line-height: 1.3;
+  white-space: nowrap;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 120ms var(--ease-out);
+}
+.link svg {
+  flex: none;
+  transition: transform 260ms var(--ease-out);
+}
+.solid {
+  background: var(--brand-action);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+/* Text link: "Learn more →" */
+.text {
+  min-height: 44px;
+  padding: 0;
+  gap: 10px;
+  color: var(--accent-text);
+  font-size: 13px;
+  border: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .solid:hover {
+    background: var(--brand-action-hover);
+  }
+  .ghost:hover {
+    border-color: var(--text-secondary);
+    background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  }
+  .text:hover {
+    color: var(--text-primary);
+  }
+  .link:hover svg {
+    transform: translateX(4px);
+  }
+}
+.link:active {
+  transform: scale(0.98);
+}
+@media (prefers-reduced-motion: reduce) {
+  .link:hover svg,
+  .link:active {
+    transform: none;
+  }
+}

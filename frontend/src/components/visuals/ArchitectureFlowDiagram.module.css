@@ -1,0 +1,184 @@
+.wrap {
+  min-width: 0;
+}
+.diagram {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.columnTitle {
+  fill: var(--text-tertiary);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+}
+.panel {
+  fill: color-mix(in srgb, var(--bg-card) 70%, transparent);
+  stroke: var(--border-subtle);
+}
+.row {
+  fill: var(--bg-card);
+  stroke: var(--border-subtle);
+}
+.icon {
+  color: var(--text-tertiary);
+}
+.rowText,
+.module {
+  fill: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.outcome {
+  fill: var(--text-primary);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.box {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+}
+.boxText {
+  fill: var(--text-primary);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+}
+.dotted {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-dasharray: 2 4;
+}
+.rail {
+  fill: rgba(var(--brand-primary-rgb), 0.1);
+  stroke: var(--brand-primary);
+  stroke-width: 1;
+}
+.lane {
+  stroke: rgba(var(--brand-primary-rgb), 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.platform {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+}
+.platformName {
+  fill: var(--text-primary);
+  font-size: 22px;
+  font-weight: 300;
+}
+.divider {
+  stroke: var(--border-subtle);
+}
+
+/* Staged reveal: sources → connectors → rail → platform → outcomes. */
+.stage {
+  opacity: 0.25;
+  transition: opacity 700ms ease;
+}
+.s1 {
+  transition-delay: calc(var(--i) * 60ms);
+}
+.s2 {
+  transition-delay: 500ms;
+}
+.s3 {
+  transition-delay: 850ms;
+}
+.s4 {
+  transition-delay: calc(1250ms + var(--i) * 60ms);
+}
+.flow path {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.7;
+  transition: stroke-dashoffset 1000ms var(--ease-in-out);
+  transition-delay: calc(var(--d) + var(--i) * 70ms);
+}
+.flow > circle:not(.packet) {
+  fill: var(--accent-text);
+  opacity: 0;
+  transition: opacity 400ms ease;
+  transition-delay: calc(var(--d) + var(--i) * 70ms);
+}
+/* Packets travel their path twice once the diagram is in view, then fade out. */
+.packet {
+  fill: var(--accent-text);
+  opacity: 0;
+  offset-rotate: 0deg;
+}
+.wrap[data-inview] .packet {
+  animation: packet var(--dur) ease-in-out 1500ms 2 both;
+}
+@keyframes packet {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+.wrap[data-inview] .stage {
+  opacity: 1;
+}
+.wrap[data-inview] .flow path {
+  stroke-dashoffset: 0;
+}
+.wrap[data-inview] .flow > circle {
+  opacity: 1;
+}
+
+/* Phones: the same flow as a vertical sequence. */
+.compact {
+  display: none;
+}
+@media (max-width: 760px) {
+  .diagram {
+    display: none;
+  }
+  .compact {
+    display: grid;
+    gap: 26px;
+    margin: 0;
+    padding: 0 0 0 22px;
+    list-style: none;
+    border-left: 1px solid var(--brand-primary);
+  }
+  .compact li {
+    position: relative;
+  }
+  .compact li::before {
+    content: "";
+    position: absolute;
+    left: -27px;
+    top: 5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 1px solid var(--brand-primary);
+  }
+  .compactHub::before {
+    background: var(--brand-primary) !important;
+  }
+  .compact span {
+    color: var(--accent-text);
+    font-size: 11px;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .compact p {
+    margin: 8px 0 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}

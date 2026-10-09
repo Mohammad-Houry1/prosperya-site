@@ -1,0 +1,161 @@
+/* One screen, never pinned: copy | framed Hub panel. */
+.hero {
+  --resolve: 0;
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: calc(100svh - var(--header-height));
+  padding-block: clamp(20px, 3vh, 36px);
+}
+.resolved {
+  --resolve: 1;
+}
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(28px, 3.6vw, 56px);
+  align-items: center;
+}
+.copy {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+.title {
+  margin: 22px 0 0;
+  font-size: clamp(38px, 4vw, 60px);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+}
+/* The second line resolves to the accent once the architecture is orchestrated. */
+.claimEnd {
+  display: block;
+  color: color-mix(
+    in srgb,
+    var(--accent-text) calc(var(--resolve) * 100%),
+    var(--text-primary)
+  );
+}
+.lead {
+  max-width: 430px;
+  margin: 26px 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-body-large);
+  line-height: 1.55;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+.audiences {
+  margin-top: clamp(40px, 6vh, 64px);
+}
+.audiences > span {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.audiences ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.audiences li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.audiences svg {
+  color: var(--text-tertiary);
+}
+
+.panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: clamp(440px, calc(100svh - var(--header-height) - 72px), 760px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(ellipse 70% 60% at 55% 48%, rgba(var(--brand-primary-rgb), 0.12), transparent 70%),
+    var(--bg-secondary);
+  animation: panelIn 1200ms var(--ease-out) 120ms both;
+}
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+}
+.visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.status {
+  position: absolute;
+  left: 20px;
+  bottom: 18px;
+  display: grid;
+  justify-items: start;
+}
+.status span {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+.gone {
+  display: none !important;
+}
+.statusAfter {
+  visibility: hidden;
+  color: var(--text-primary) !important;
+}
+.statusAfter i {
+  background: var(--brand-primary);
+  box-shadow: 0 0 0 5px rgba(var(--brand-primary-rgb), 0.14);
+}
+@media (max-width: 980px) {
+  .hero {
+    min-height: 0;
+    padding-block: clamp(28px, 6vw, 48px);
+  }
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .title {
+    font-size: clamp(40px, 10.5vw, 72px);
+  }
+  .panel {
+    height: auto;
+    aspect-ratio: 600 / 440;
+  }
+}
+@media (max-width: 560px) {
+  .audiences ul {
+    gap: 10px 18px;
+  }
+}

@@ -1,0 +1,65 @@
+.illustration {
+  position: relative;
+  width: 244px;
+  max-width: 100%;
+  aspect-ratio: 1.22;
+  margin-inline: auto;
+  color: var(--accent-text);
+}
+.compact { width: 148px; }
+.halo {
+  position: absolute;
+  inset: 9% 14%;
+  border: 1px dashed var(--system-line);
+  border-radius: 50%;
+  background: var(--bg-secondary);
+}
+.buddy {
+  position: absolute;
+  inset: 9% 19%;
+  display: grid;
+  place-items: center;
+}
+.buddy svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: bob 1600ms var(--ease-in-out) 2;
+}
+.face { fill: var(--bg-elevated); }
+.antenna { fill: var(--brand-primary); }
+.cheek { fill: var(--system-glow); }
+.eyes {
+  transform-origin: 72px 70px;
+  animation: blink 1600ms var(--ease-in-out) 2;
+}
+.satellite {
+  position: absolute;
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: 15px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-soft);
+  animation: drift 1600ms var(--ease-in-out) 2;
+}
+.plug { left: 4%; top: 28%; }
+.compass { right: 4%; bottom: 18%; animation-delay: 60ms; }
+.sparkles { position: absolute; right: 15%; top: 6%; }
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-5px) rotate(-3deg); }
+}
+@keyframes drift {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(4px) rotate(5deg); }
+}
+@keyframes blink {
+  0%, 40%, 54%, 100% { transform: scaleY(1); }
+  47% { transform: scaleY(0.18); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .buddy svg, .eyes, .satellite { animation: none; }
+}

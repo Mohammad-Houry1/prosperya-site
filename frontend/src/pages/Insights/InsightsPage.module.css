@@ -1,0 +1,101 @@
+/* Masthead: the title runs the full measure; a rule draws under the lead to close it. */
+.masthead {
+  padding-bottom: clamp(28px, 3vw, 44px);
+}
+.title {
+  max-width: 21ch;
+  font-size: clamp(48px, 7.4vw, 118px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+.rule {
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, var(--brand-primary), var(--border-subtle) 60%);
+}
+.featured {
+  display: grid;
+  gap: 16px;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: clamp(32px, 4vw, 56px);
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+.tabs button {
+  min-height: 44px;
+  padding: 10px 22px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease;
+}
+.tabs button[aria-pressed="true"] {
+  border-color: var(--brand-primary);
+  color: var(--accent-text);
+  background: rgba(var(--brand-primary-rgb), 0.08);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tabs button:hover {
+    color: var(--text-primary);
+  }
+}
+.tabs button:active {
+  transform: scale(0.97);
+}
+.count {
+  margin: 18px 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-align: center;
+}
+/* Asymmetric journal: the first story takes two columns. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 32px 0;
+}
+.pagination button {
+  padding: 10px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.pagination button:disabled { opacity: 0.45; cursor: default; }
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .tabs button {
+    flex: none;
+  }
+}

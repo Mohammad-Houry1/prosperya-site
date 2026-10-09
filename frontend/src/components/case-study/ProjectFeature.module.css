@@ -1,0 +1,205 @@
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+  gap: clamp(28px, 4.5vw, 72px);
+  align-items: center;
+  padding-block: clamp(40px, 5vw, 72px);
+}
+.feature + .feature {
+  border-top: 1px solid var(--border-subtle);
+}
+.right .media {
+  order: 2;
+}
+.media {
+  position: relative;
+  aspect-ratio: 1.35;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: #07131a;
+}
+.mediaInner {
+  position: absolute;
+  inset: -6% 0;
+}
+.mediaInner img,
+.mediaInner svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mediaInner img {
+  filter: saturate(0.6) brightness(0.72);
+}
+.bigIndex {
+  position: absolute;
+  left: 24px;
+  bottom: 12px;
+  color: rgba(238, 243, 242, 0.9);
+  font-size: clamp(64px, 8vw, 128px);
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  mix-blend-mode: overlay;
+}
+.index {
+  display: block;
+  color: var(--accent-text);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.index b {
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+.body h3 {
+  margin: 16px 0 0;
+  font-size: clamp(32px, 3.4vw, 52px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: var(--tracking-display);
+}
+.statement {
+  margin: 14px 0 0;
+  color: var(--text-primary);
+  font-size: clamp(17px, 1.35vw, 20px);
+  line-height: 1.45;
+}
+.description {
+  margin: 12px 0 0;
+  max-width: 460px;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.meta {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 16px 0;
+  border-block: 1px solid var(--border-subtle);
+}
+.meta div {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 16px;
+  font-size: 12.5px;
+}
+.meta dt {
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  padding-top: 2px;
+}
+.meta dd {
+  margin: 0;
+  color: var(--text-secondary);
+}
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 18px 32px;
+  margin-top: 26px;
+}
+.lead strong {
+  display: block;
+  color: var(--accent-text);
+  font-size: clamp(56px, 6vw, 96px);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.lead > span,
+.minor > span {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+}
+.minor strong {
+  display: block;
+  font-size: 24px;
+  font-weight: 300;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 18px;
+  color: var(--accent-text);
+  font-size: 13px;
+}
+.link svg {
+  transition: transform 260ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link:hover svg {
+    transform: translateX(4px);
+  }
+  .feature:has(.link:hover) .mediaInner {
+    scale: 1.02;
+  }
+}
+.mediaInner {
+  transition: scale 900ms var(--ease-out);
+}
+/* Full-width chapter: the picture spans the grid, the story sits beneath in three columns. */
+.wide {
+  grid-template-columns: minmax(0, 1fr);
+}
+.wide .media {
+  aspect-ratio: 2.4;
+}
+/* Children: index, title, statement, description, meta, metrics, link. */
+.wide .body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "index statement metrics"
+    "title description metrics"
+    "title meta link";
+  grid-template-rows: auto auto 1fr;
+  column-gap: clamp(24px, 3vw, 48px);
+  align-items: start;
+}
+.wide .index {
+  grid-area: index;
+}
+.wide .body h3 {
+  grid-area: title;
+}
+.wide .statement {
+  grid-area: statement;
+  margin-top: 0;
+}
+.wide .description {
+  grid-area: description;
+}
+.wide .meta {
+  grid-area: meta;
+}
+.wide .metrics {
+  grid-area: metrics;
+  margin-top: 0;
+}
+.wide .link {
+  grid-area: link;
+}
+@media (max-width: 900px) {
+  .feature {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .right .media {
+    order: 0;
+  }
+  .wide .body {
+    display: block;
+  }
+  .wide .media {
+    aspect-ratio: 1.5;
+  }
+}

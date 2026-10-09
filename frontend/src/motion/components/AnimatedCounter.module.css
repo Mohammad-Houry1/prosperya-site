@@ -1,0 +1,10 @@
+.counter {
+  display: inline-grid;
+  font-variant-numeric: tabular-nums;
+}
+.counter > * {
+  grid-area: 1 / 1;
+}
+.sizer {
+  visibility: hidden;
+}

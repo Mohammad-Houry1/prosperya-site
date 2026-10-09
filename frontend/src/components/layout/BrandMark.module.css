@@ -1,0 +1,24 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+.brand strong {
+  font-weight: 500;
+}
+.symbol {
+  width: 24px;
+  height: 26px;
+  color: var(--text-primary);
+  transition: transform 420ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .brand:hover .symbol {
+    transform: translate(2px, -2px);
+  }
+}

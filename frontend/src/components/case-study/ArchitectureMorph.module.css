@@ -1,0 +1,184 @@
+/* Pinned stage: ~1.6 viewports of scroll drive the transformation. */
+.track {
+  height: 240svh;
+}
+.stage {
+  position: sticky;
+  top: var(--header-height);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  height: calc(100svh - var(--header-height));
+  min-height: 560px;
+  padding-block: 24px;
+}
+.svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.status {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+}
+.status ol {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.status li {
+  padding: 7px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition:
+    color 300ms ease,
+    border-color 300ms ease,
+    background-color 300ms ease;
+}
+.status[data-phase="0"] li:nth-child(1),
+.status[data-phase="1"] li:nth-child(2),
+.status[data-phase="2"] li:nth-child(3) {
+  border-color: var(--brand-primary);
+  color: var(--text-primary);
+  background: rgba(var(--brand-primary-rgb), 0.1);
+}
+.status p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: opacity 400ms ease;
+}
+.captionAfter {
+  display: none;
+}
+.status[data-phase="2"] .captionBefore {
+  display: none;
+}
+.status[data-phase="2"] .captionAfter {
+  display: block;
+}
+.tangle {
+  stroke: var(--text-tertiary);
+  stroke-dasharray: 3 5;
+  opacity: 0.7;
+}
+.spoke {
+  stroke: var(--brand-primary);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+}
+.packet {
+  fill: var(--accent-text);
+  filter: drop-shadow(0 0 5px rgba(var(--brand-primary-rgb), 0.9));
+}
+.halo {
+  fill: var(--system-glow);
+  opacity: 0.5;
+  filter: blur(20px);
+}
+.core {
+  fill: var(--bg-primary);
+  stroke: var(--brand-primary);
+  stroke-width: 1.6;
+}
+.coreName {
+  fill: var(--text-primary);
+  font-size: 22px;
+  font-weight: 300;
+  text-anchor: middle;
+}
+.coreSub {
+  fill: var(--accent-text);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-anchor: middle;
+}
+.oldNode {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+  stroke-dasharray: 3 3;
+}
+.newNode {
+  fill: var(--bg-card);
+  stroke: rgba(var(--brand-primary-rgb), 0.55);
+}
+.nodeText {
+  fill: var(--text-primary);
+  font-size: 12px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+[data-before],
+[data-after] {
+  transform-box: view-box;
+}
+/* Static: before and after as two framed panels. */
+.static {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.panel {
+  margin: 0;
+  padding: 22px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+.panel figcaption {
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+}
+.panel figcaption span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent-text);
+  font-size: 10.5px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.panel .svg {
+  height: auto;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chips li {
+  padding: 9px 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.chipsAfter li {
+  border-style: solid;
+  border-color: rgba(var(--brand-primary-rgb), 0.5);
+  color: var(--text-primary);
+}
+.chipsAfter .chipCore {
+  flex-basis: 100%;
+  border-color: var(--brand-primary);
+  background: rgba(var(--brand-primary-rgb), 0.12);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@media (max-width: 900px) {
+  .static {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

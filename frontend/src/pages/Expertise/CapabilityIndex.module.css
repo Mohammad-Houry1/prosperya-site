@@ -1,0 +1,112 @@
+.index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.row {
+  position: relative;
+}
+/* Each rule draws from the left as its row arrives. */
+.row::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--border-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1100ms var(--ease-in-out) var(--reveal-delay);
+}
+.row[data-inview]::before {
+  transform: none;
+}
+.link {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 24px;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 16px 18px 4px;
+  color: var(--text-primary);
+}
+/* Hover fill sweeps in from the row's left edge. */
+.link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(var(--brand-primary-rgb), 0.14), rgba(var(--brand-primary-rgb), 0.02));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 520ms var(--ease-out);
+}
+.number {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  transition: color 220ms ease;
+}
+.text {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  transition: transform 420ms var(--ease-out);
+}
+.text strong {
+  font-size: clamp(19px, 1.7vw, 25px);
+  font-weight: 350;
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.2;
+}
+.text span {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.arrow {
+  color: var(--text-tertiary);
+  transform: translate(-6px, 6px);
+  opacity: 0.5;
+  transition:
+    transform 420ms var(--ease-out),
+    opacity 220ms ease,
+    color 220ms ease;
+}
+.link:focus-visible::before {
+  transform: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .link:hover::before {
+    transform: none;
+  }
+  .link:hover .number,
+  .link:hover .arrow {
+    color: var(--accent-text);
+  }
+  .link:hover .text {
+    transform: translateX(8px);
+  }
+  .link:hover .arrow {
+    transform: none;
+    opacity: 1;
+  }
+}
+.link:active .text {
+  transform: translateX(8px) scale(0.99);
+}
+@media (max-width: 640px) {
+  .link {
+    grid-template-columns: 32px minmax(0, 1fr) 20px;
+    gap: 12px;
+    padding-block: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row::before {
+    transform: none;
+    transition: none;
+  }
+}

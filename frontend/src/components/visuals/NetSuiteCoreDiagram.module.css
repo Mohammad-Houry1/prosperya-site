@@ -1,0 +1,159 @@
+.wrap {
+  min-width: 0;
+}
+.diagram {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.boundary {
+  fill: none;
+  stroke: var(--border-subtle);
+  stroke-dasharray: 2 6;
+}
+.base {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+}
+.live {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 900ms var(--ease-in-out);
+}
+.packet {
+  fill: var(--accent-text);
+  opacity: 0;
+  transition: opacity 400ms ease 500ms;
+}
+.port {
+  fill: var(--text-tertiary);
+  transition:
+    fill 400ms ease,
+    filter 400ms ease;
+}
+.module rect {
+  fill: var(--bg-card);
+  stroke: var(--border-strong);
+  transition: stroke 400ms ease;
+}
+.module text {
+  fill: var(--text-secondary);
+  font-size: 12.5px;
+  transition: fill 400ms ease;
+}
+[data-module][data-active="true"] .live {
+  stroke-dashoffset: 0;
+}
+[data-module][data-active="true"] .packet {
+  opacity: 1;
+}
+[data-module][data-active="true"] .port {
+  fill: var(--brand-primary);
+  filter: drop-shadow(0 0 4px rgba(var(--brand-primary-rgb), 0.8));
+}
+[data-module][data-active="true"] .module rect {
+  stroke: rgba(var(--brand-primary-rgb), 0.55);
+}
+[data-module][data-active="true"] .module text {
+  fill: var(--text-primary);
+}
+.orbit {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1;
+  stroke-dasharray: 1 5;
+  opacity: 0.5;
+}
+.disc {
+  fill: var(--bg-primary);
+  stroke: var(--border-strong);
+  stroke-width: 1.4;
+  transition:
+    stroke 500ms ease,
+    filter 500ms ease;
+}
+.core[data-active="true"] .disc {
+  stroke: var(--brand-primary);
+  filter: drop-shadow(0 0 18px rgba(var(--brand-primary-rgb), 0.35));
+}
+.coreLabel {
+  fill: var(--text-primary);
+  font-size: 23px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+.coreSub {
+  fill: var(--accent-text);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+}
+
+/* Phones: the same platform as a vertical stack. */
+.compact {
+  display: none;
+}
+@media (max-width: 700px) {
+  .diagram {
+    display: none;
+  }
+  .compact {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+  }
+  .compactCore {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    width: 128px;
+    height: 128px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    transition:
+      border-color 500ms ease,
+      box-shadow 500ms ease;
+  }
+  .compactCore strong {
+    font-size: 20px;
+    font-weight: 300;
+  }
+  .compactCore span {
+    color: var(--accent-text);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .compactCore[data-active="true"] {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 32px rgba(var(--brand-primary-rgb), 0.25);
+  }
+  .compact ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .compact li {
+    padding: 11px 12px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 3px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    transition:
+      border-color 400ms ease,
+      color 400ms ease;
+  }
+  .compact li[data-active="true"] {
+    border-style: solid;
+    border-color: rgba(var(--brand-primary-rgb), 0.55);
+    color: var(--text-primary);
+  }
+}

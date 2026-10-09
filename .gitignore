@@ -12,3 +12,8 @@ frontend/dist/
 frontend/.env
 .phpunit.result.cache
 *.log
+**/node_modules/
+**/dist/
+**/.env.local
+**/.env.*.local
+.verification/

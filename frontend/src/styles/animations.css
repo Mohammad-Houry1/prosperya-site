@@ -1,0 +1,109 @@
+/*
+  Entrance reveals, for cards and visuals only: text (headings, body copy,
+  form fields) never waits on a reveal (docs/adr/0001-no-repeat-rules.md).
+  Variants: "card" fades up, "image" unmasks, "fade", "scale", "line" draws.
+  useRevealObserver (src/motion/useRevealObserver.js) sets data-inview once.
+  --i staggers siblings (70ms apart, capped) so groups never arrive at once.
+*/
+[data-reveal] {
+  --reveal-delay: min(calc(var(--i, 0) * 70ms), 490ms);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 720ms var(--ease-out) var(--reveal-delay),
+    transform 900ms var(--ease-out) var(--reveal-delay);
+}
+[data-reveal="fade"] {
+  transform: none;
+}
+[data-reveal="scale"] {
+  transform: scale(0.97);
+}
+/* Horizontal rules and connectors draw from their origin. */
+[data-reveal="line"] {
+  opacity: 1;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1100ms var(--ease-in-out) var(--reveal-delay);
+}
+/* Image mask: the frame opens upward while the picture settles from 1.08. */
+[data-reveal="image"] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1100ms var(--ease-in-out) var(--reveal-delay);
+}
+[data-reveal="image"] img,
+[data-reveal="image"] [data-reveal-media] {
+  transform: scale(1.08);
+  transition: transform 1600ms var(--ease-out) var(--reveal-delay);
+}
+[data-reveal][data-inview] {
+  opacity: 1;
+  transform: none;
+}
+[data-reveal="image"][data-inview] {
+  clip-path: inset(0 0 0 0);
+}
+[data-reveal="image"][data-inview] img,
+[data-reveal="image"][data-inview] [data-reveal-media] {
+  transform: none;
+}
+/* SplitText line masks inherit the heading's line box. */
+.split-line-mask {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+@media (prefers-reduced-motion: reduce), print {
+  [data-reveal],
+  [data-reveal="image"],
+  [data-reveal="image"] img,
+  [data-reveal="image"] [data-reveal-media] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
+/* Route change: a short opacity settle only — never a blocking transition, never a transform (keeps position:fixed children intact). */
+.page-enter {
+  animation: pageEnter 420ms var(--ease-out) both;
+}
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes statusPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: var(--twinkle-low, 0.25);
+  }
+  50% {
+    opacity: var(--twinkle-high, 0.9);
+  }
+}
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
