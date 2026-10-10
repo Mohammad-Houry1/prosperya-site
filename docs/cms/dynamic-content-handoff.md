@@ -34,6 +34,7 @@ not have a dedicated CMS field; those are identified below rather than hidden.
 | Approach | `approaches` | `Approach` | `/approaches` |
 | SEO Pages | `seo_pages` | `SeoPage` | `/seo_pages` |
 | Static Pages | `pages` | `Page` | `/pages` |
+| Platform Categories | `platform_categories` | `PlatformCategory` | `/platform_categories` |
 
 The previous read-only CMS check found Solutions, Expertise, Approach and SEO
 Pages already registered. Work / Case Studies was missing then. Check for an
@@ -48,6 +49,18 @@ intended country/languages on the content records.
 No new About, Industries, Clients, Methodology or Delivery Principles module
 is needed. Industries and clients currently belong to Case Study fields;
 methodology and principles belong to Approach.
+
+Platform Categories has since been restored as a supporting module. Platforms
+now stores one optional `platform_category` ID, with a category selector and
+list filter in the CMS. The category implementation retains the original
+`ref_platform_categories` collection, translated name/description and standard
+scopes/status/slug. Register it if absent and configure editor permissions and
+content statuses. No category records or Platform links were automatically
+created. The website's current platform payload still returns name/logo only;
+to display categories, copy the updated Platform and PlatformCategory models,
+resolve publicly visible categories, expose safe category data explicitly and
+grant `platform_categories` to the website key. Preserve this site's access
+layers and do not expose a category merely because a Platform references it.
 
 ## 3. Where each website page gets its content
 
