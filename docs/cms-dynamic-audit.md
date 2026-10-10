@@ -1,5 +1,11 @@
 # CMS integration completion audit
 
+> Historical integration audit: the current `staging` branch intentionally
+> restored bundled content as its offline authoring reference. The connected
+> runtime claims below do not describe current staging. Use
+> [staging-authoring-map.md](cms/staging-authoring-map.md) for the current CMS
+> fields, page mapping and remaining integration work.
+
 Verified locally on 2026-10-10. The existing CMS integration has been completed in this checkout. No production deployment or live editorial changes were performed.
 
 ## Connected content
