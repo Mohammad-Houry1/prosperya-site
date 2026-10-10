@@ -8,6 +8,7 @@ import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import CTASection from "../../components/common/CTASection.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
+import EmptyState from "../../components/feedback/EmptyState.jsx";
 import CapabilityIndex from "./CapabilityIndex.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
@@ -25,7 +26,7 @@ export default function ExpertisePage() {
     },
   });
   useDocumentMeta({
-    title: "Prosperya — Expertise",
+    title: `${t("nav.expertise")} — Prosperya`,
     description: t("pages.expertise.expertise-page.erp-transformation-netsuite-implementation-integration-automation-audit-51a3ca"),
   });
   if (capabilitiesIsLoading) return <PageLoader />;
@@ -46,10 +47,10 @@ export default function ExpertisePage() {
             {t("pages.expertise.expertise-page.we-help-enterprises-design-connect-and-optimize-2b00c4")}
           </p>
         }
-        visual={<CapabilityIndex items={items} locale={locale} />}
+        visual={items.length > 0 ? <CapabilityIndex items={items} locale={locale} /> : null}
       />
       <Section>
-        <ol
+        {items.length > 0 ? <ol
           className={styles.rows}
           aria-label={t("nav.expertise")}
         >
@@ -92,11 +93,12 @@ export default function ExpertisePage() {
               <CmsImage media={item.image} className={styles.image} sizes="(max-width: 700px) 100vw, 30vw" />
             </li>
           ))}
-        </ol>
+        </ol> : <EmptyState />}
         <CTASection
           variant="split"
           showSecondButton={false}
           title={t("pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66")}
+          description={t("pages.expertise.expertise-page.describe-the-problem-we-will-point-you-b40a3b")}
         />
       </Section>
     </>

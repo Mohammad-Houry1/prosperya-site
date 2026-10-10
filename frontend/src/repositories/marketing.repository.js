@@ -5,7 +5,7 @@ const metrics = value => rows(value).map((row, index) => ({ id: String(index), v
 export const adaptSections = value => rows(value).map((row, index) => ({ id: String(index), title: text(row.section_title), description: text(row.section_description), image: row.section_image }));
 
 export function adaptExpertise(record) {
-  return { ...record, title: text(record.expertise_title), detailTitle: text(record.expertise_title),
+  return { ...record, title: text(record.expertise_title), detailTitle: text(record.expertise_detail_title) || text(record.expertise_title),
     tagline: text(record.expertise_tagline), summary: text(record.expertise_summary), description: text(record.expertise_description),
     sections: adaptSections(record.sections), image: record.expertise_image, outcomes: rows(record.expertise_outcomes),
     capabilities: rows(record.expertise_capabilities), steps: rows(record.expertise_steps), metrics: metrics(record.metrics),

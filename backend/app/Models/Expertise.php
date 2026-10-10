@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AnimatedVisualType;
 use App\Models\Base\ContentEntity;
 use App\Models\Concerns\Trashable;
 use App\Rules\CmsMedia;
@@ -27,7 +28,7 @@ class Expertise extends ContentEntity
         [CaseStudy::class, 'related_expertise', 'Case Studies'],
     ];
 
-    public array $searchable = ['name', 'slug', 'expertise_title', 'expertise_tagline', 'expertise_summary', 'expertise_description', 'meta_title', 'meta_keywords', 'meta_url', 'meta_description'];
+    public array $searchable = ['expertise_detail_title', 'name', 'slug', 'expertise_title', 'expertise_tagline', 'expertise_summary', 'expertise_description', 'meta_title', 'meta_keywords', 'meta_url', 'meta_description'];
 
     public array $fields = [
         ['key' => 'expertise_image', 'name' => 'Image', 'type' => 'image', 'width' => '90px'],
@@ -71,6 +72,8 @@ class Expertise extends ContentEntity
             'status' => [...$sometimes, 'required'],
             'featured' => ['sometimes', 'boolean'],
             'expertise_title' => LocaleMap::rules(max: 255),
+            'expertise_animation_type' => ['nullable', 'string', Rule::enum(AnimatedVisualType::class)],
+            'expertise_detail_title' => LocaleMap::rules(max: 255),
             'expertise_tagline' => LocaleMap::rules(max: 255),
             'expertise_summary' => LocaleMap::rules(),
             'expertise_description' => LocaleMap::rules(),

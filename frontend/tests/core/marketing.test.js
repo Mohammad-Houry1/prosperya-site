@@ -17,3 +17,11 @@ test('methodology descriptions stay ordered and are not guessed into deliverable
   assert.deepEqual(adaptMethodology([{methodology_title:'Stage',methodology_buttons:['A'],methodology_descriptions:['One','Two']}])[0].descriptions,['One','Two']);
   assert.deepEqual(adaptMethodology([]),[]);
 });
+
+test('expertise keeps its short card title and separate authored full heading', () => {
+  const record = adaptExpertise({ expertise_title: 'Connect', expertise_detail_title: 'Systems Integration' });
+  assert.equal(record.title, 'Connect');
+  assert.equal(record.detailTitle, 'Systems Integration');
+  assert.equal(adaptExpertise({ expertise_title: 'Existing title' }).detailTitle, 'Existing title');
+  assert.equal(adaptExpertise({ expertise_title: 'Titre FR', expertise_detail_title: '' }).detailTitle, 'Titre FR');
+});

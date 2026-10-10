@@ -11,7 +11,7 @@ final class MarketingPayload
     private array $related = [];
 
     private const TEXT = [
-        Expertise::class => ['expertise_title', 'expertise_tagline', 'expertise_summary', 'expertise_description', 'expertise_metrics_note'],
+        Expertise::class => ['expertise_title', 'expertise_detail_title', 'expertise_tagline', 'expertise_summary', 'expertise_description', 'expertise_metrics_note'],
         Solution::class => ['solution_title', 'solution_tagline', 'solution_description', 'solution_statement', 'solution_lead', 'solution_friction_title', 'solution_metrics_note'],
         CaseStudy::class => ['case_study_title', 'case_study_client', 'case_study_industry', 'case_study_duration', 'case_study_summary', 'case_study_description', 'case_study_challenge', 'case_study_solution', 'case_study_results', 'case_study_before_title', 'case_study_after_title', 'case_study_metrics_note'],
         Approach::class => ['approach_title', 'approach_description', 'collaboration_title', 'principles_title', 'diagram_client_title', 'diagram_client_description', 'diagram_shared_title', 'diagram_shared_description', 'diagram_company_title', 'diagram_company_description', 'diagram_value_title', 'diagram_value_description'],

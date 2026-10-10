@@ -51,6 +51,31 @@ class MarketingContentTest extends WebsiteTestCase
         $this->assertSame([$second, $first], array_column($response->json('data.related_expertise'), 'id'));
     }
 
+    public function test_expertise_listing_exposes_localized_full_titles_in_cms_order(): void
+    {
+        $this->collection('expertise')->insertMany([
+            $this->record(['slug' => 'second', 'order' => 2,
+                'expertise_title' => ['en' => 'Connect', 'fr' => 'Connecter'],
+                'expertise_detail_title' => ['en' => 'Systems Integration', 'fr' => 'Intégration des systèmes'],
+                'expertise_tagline' => ['fr' => 'Des systèmes connectés'],
+                'expertise_summary' => ['fr' => 'Résumé CMS'],
+                'expertise_capabilities' => [['fr' => 'Service CMS']],
+                'internal_secret' => 'not-public']),
+            $this->record(['slug' => 'first', 'order' => 1, 'expertise_title' => ['fr' => 'Premier'],
+                'expertise_detail_title' => ['en' => 'English-only heading']]),
+            $this->record(['slug' => 'scheduled', 'order' => 0, 'published_at' => now()->addDay()]),
+        ]);
+        $this->getJson('/api/expertise?locale=fr')->assertOk()->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.slug', 'first')
+            ->assertJsonPath('data.0.expertise_detail_title', '')
+            ->assertJsonPath('data.1.expertise_title', 'Connecter')
+            ->assertJsonPath('data.1.expertise_detail_title', 'Intégration des systèmes')
+            ->assertJsonPath('data.1.expertise_capabilities.0', 'Service CMS')
+            ->assertDontSee('not-public');
+        $this->getJson('/api/expertise/second?locale=en')->assertOk()
+            ->assertJsonPath('data.expertise_detail_title', 'Systems Integration');
+    }
+
     public function test_page_architecture_and_canonical_dictionary_are_public_without_text_fallbacks(): void
     {
         $this->collection('pages')->insertOne($this->record(['slug' => 'home', 'architecture_column_1' => [['en' => 'CRM', 'fr' => 'CRM FR']]]));

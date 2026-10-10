@@ -25,12 +25,12 @@ export default function ExpertiseDetailPage() {
     const response = await websiteApi.expertise({ locale }, signal);
     return (response.data || []).map(adaptExpertise);
   } });
-  useDocumentMeta({ model: "Expertise", title: page ? `${page.title} — Prosperya` : "Prosperya — Expertise" });
+  useDocumentMeta({ model: "Expertise", title: page ? `${page.detailTitle} — Prosperya` : "Prosperya — Expertise" });
   if (isLoading) return <PageLoader />;
   if (isError) return <Section><ErrorState onRetry={refetch} /></Section>;
   if (!page) return <Section><EmptyState title={t("pages.expertise-detail.expertise-detail-page.expertise-not-found-6043fe")} /></Section>;
   const related = capabilities
     .filter((item) => item.slug !== slug)
     .map((item) => ({ id: item.id, slug: item.slug, title: item.detailTitle || item.title }));
-  return <ExpertisePageContent page={page} related={related} locale={locale} />;
+  return <ExpertisePageContent page={{ ...page, title: page.detailTitle }} related={related} locale={locale} />;
 }
