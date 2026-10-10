@@ -280,7 +280,7 @@
   },
   {
     "key": "prosperya.components.case-study.project-feature.view-case-study-2050cc",
-    "group": "ui",
+    "group": "pages",
     "source": "View case study",
     "translations": {
       "en": "View case study",
@@ -3537,15 +3537,6 @@
     }
   },
   {
-    "key": "prosperya.pages.expertise.expertise-page.built-to-connect-5ea962",
-    "group": "pages",
-    "source": "Built to connect.",
-    "translations": {
-      "en": "Built to connect.",
-      "fr": "Conçu pour connecter."
-    }
-  },
-  {
     "key": "prosperya.pages.expertise.expertise-page.capabilities-that-drive-measurable-results-ad246d",
     "group": "pages",
     "source": "Capabilities that drive measurable results.",
@@ -3555,66 +3546,12 @@
     }
   },
   {
-    "key": "prosperya.pages.expertise.expertise-page.describe-the-problem-we-will-point-you-b40a3b",
-    "group": "pages",
-    "source": "Describe the problem. We will point you to the right starting point.",
-    "translations": {
-      "en": "Describe the problem. We will point you to the right starting point.",
-      "fr": "Décrivez le problème : nous vous indiquerons le bon point de départ."
-    }
-  },
-  {
-    "key": "prosperya.pages.expertise.expertise-page.designed-to-scale-4d2442",
-    "group": "pages",
-    "source": "Designed to scale.",
-    "translations": {
-      "en": "Designed to scale.",
-      "fr": "Pensé pour grandir."
-    }
-  },
-  {
-    "key": "prosperya.pages.expertise.expertise-page.erp-transformation-netsuite-implementation-integration-automation-audit-51a3ca",
-    "group": "pages",
-    "source": "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
-    "translations": {
-      "en": "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
-      "fr": "Transformation ERP, implémentation NetSuite, intégration, automatisation, audit et redressement."
-    }
-  },
-  {
-    "key": "prosperya.pages.expertise.expertise-page.explore-our-approach-de10c8",
-    "group": "pages",
-    "source": "Explore our approach",
-    "translations": {
-      "en": "Explore our approach",
-      "fr": "Découvrir notre approche"
-    }
-  },
-  {
     "key": "prosperya.pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66",
     "group": "pages",
     "source": "Not sure which capability you need?",
     "translations": {
       "en": "Not sure which capability you need?",
       "fr": "Vous hésitez entre plusieurs expertises ?"
-    }
-  },
-  {
-    "key": "prosperya.pages.expertise.expertise-page.our-architecture-approach-37ec21",
-    "group": "pages",
-    "source": "Our architecture approach",
-    "translations": {
-      "en": "Our architecture approach",
-      "fr": "Notre approche d’architecture"
-    }
-  },
-  {
-    "key": "prosperya.pages.expertise.expertise-page.our-architecture-framework-unifies-your-enterprise-systems-46a34d",
-    "group": "pages",
-    "source": "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth.",
-    "translations": {
-      "en": "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth.",
-      "fr": "Notre cadre d’architecture unifie systèmes, données et processus pour créer une fondation résiliente et évolutive."
     }
   },
   {
@@ -4131,15 +4068,6 @@
     }
   },
   {
-    "key": "prosperya.pages.work.work-page.across-these-engagements-measured-by-impact-042bbc",
-    "group": "pages",
-    "source": "Across these engagements. Measured by impact.",
-    "translations": {
-      "en": "Across these engagements. Measured by impact.",
-      "fr": "Sur ces missions. Mesuré par l’impact."
-    }
-  },
-  {
     "key": "prosperya.pages.work.work-page.all-capabilities-3d897f",
     "group": "pages",
     "source": "All capabilities",
@@ -4155,15 +4083,6 @@
     "translations": {
       "en": "All industries",
       "fr": "Tous les secteurs"
-    }
-  },
-  {
-    "key": "prosperya.pages.work.work-page.erp-transformation-integration-and-connected-operations-through-732c8a",
-    "group": "pages",
-    "source": "ERP transformation, integration and connected operations through illustrative engagements.",
-    "translations": {
-      "en": "ERP transformation, integration and connected operations through illustrative engagements.",
-      "fr": "Des exemples de transformation ERP, d’intégration et d’opérations connectées."
     }
   },
   {
@@ -4194,48 +4113,12 @@
     }
   },
   {
-    "key": "prosperya.pages.work.work-page.home-ded702",
-    "group": "pages",
-    "source": "Home",
-    "translations": {
-      "en": "Home",
-      "fr": "Accueil"
-    }
-  },
-  {
-    "key": "prosperya.pages.work.work-page.illustrative-figures-from-the-engagements-above-9e82b7",
-    "group": "pages",
-    "source": "Illustrative figures from the engagements above.",
-    "translations": {
-      "en": "Illustrative figures from the engagements above.",
-      "fr": "Chiffres illustratifs issus des missions présentées."
-    }
-  },
-  {
-    "key": "prosperya.pages.work.work-page.illustrative-results-not-verified-ea3ab3",
-    "group": "pages",
-    "source": "illustrative, results not verified",
-    "translations": {
-      "en": "illustrative, results not verified",
-      "fr": "missions illustratives, résultats non vérifiés"
-    }
-  },
-  {
     "key": "prosperya.pages.work.work-page.real-challenges-explicit-decisions-measured-outcomes-see-b93c0c",
     "group": "pages",
     "source": "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work.",
     "translations": {
       "en": "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work.",
       "fr": "Des défis réels, des décisions explicites, des résultats mesurés. Découvrez comment une architecture prend forme — des exemples illustratifs de notre façon de travailler."
-    }
-  },
-  {
-    "key": "prosperya.pages.work.work-page.tell-us-where-you-are-we-will-cb70c5",
-    "group": "pages",
-    "source": "Tell us where you are. We will tell you what a first step could look like.",
-    "translations": {
-      "en": "Tell us where you are. We will tell you what a first step could look like.",
-      "fr": "Dites-nous où vous en êtes : nous vous dirons à quoi pourrait ressembler un premier pas."
     }
   },
   {
@@ -4668,24 +4551,6 @@
     "translations": {
       "en": "Let’s talk about your {solution}.",
       "fr": "Parlons de votre {solution}."
-    }
-  },
-  {
-    "key": "prosperya.work.count_many",
-    "group": "pages",
-    "source": "{count} engagements",
-    "translations": {
-      "en": "{count} engagements",
-      "fr": "{count} projets"
-    }
-  },
-  {
-    "key": "prosperya.work.count_one",
-    "group": "pages",
-    "source": "{count} engagement",
-    "translations": {
-      "en": "{count} engagement",
-      "fr": "{count} projet"
     }
   }
 ]

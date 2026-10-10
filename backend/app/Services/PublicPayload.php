@@ -17,6 +17,30 @@ final class PublicPayload
 {
     public function __construct(private readonly PublicContent $content) {}
 
+    public function caseStudyCard(\App\Models\CaseStudy $record, string $locale): array
+    {
+        return ['id' => (string) $record->id, 'slug' => $record->slug,
+            'title' => $record->text('case_study_title', $locale) ?: $record->text('name', $locale),
+            'summary' => $record->text('case_study_summary', $locale),
+            'industry' => $record->text('case_study_industry', $locale),
+            'client' => $record->text('case_study_client', $locale),
+            'image' => $this->media($record->case_study_image, $locale),
+            'expertise_ids' => array_values(array_filter(array_map(fn ($value) => $this->referenceId($value),
+                (array) $record->related_expertise))), 'featured' => (bool) $record->featured];
+    }
+
+    public function expertiseCard(\App\Models\Expertise $record, string $locale): array
+    {
+        return ['id' => (string) $record->id, 'slug' => $record->slug,
+            'title' => $record->text('expertise_title', $locale) ?: $record->text('name', $locale),
+            'tagline' => $record->text('expertise_tagline', $locale),
+            'summary' => $record->text('expertise_summary', $locale),
+            'image' => $this->media($record->expertise_image, $locale),
+            'capabilities' => array_values(array_filter(array_map(fn ($value) => $this->content->text(
+                (object) ['value' => $value], 'value', $locale), (array) $record->expertise_capabilities),
+                fn ($value) => trim($value) !== '')), 'featured' => (bool) $record->featured];
+    }
+
     public function referenceId(mixed $value): ?string
     {
         if (is_array($value) && array_is_list($value)) {

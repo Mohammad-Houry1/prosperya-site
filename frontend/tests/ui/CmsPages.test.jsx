@@ -12,6 +12,8 @@ import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 beforeEach(() => {
+  vi.spyOn(websiteApi, "caseStudies").mockResolvedValue({ data: [{ id: "work", slug: "cms-work", title: "CMS Work" }] });
+  vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: {} });
   vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { title: "CMS About", about_users: [] } });
   vi.spyOn(websiteApi, "testimonials").mockImplementation(async ({ locale }) => ({ data: [{
@@ -33,11 +35,15 @@ function renderPage(page, locale = "en", route = "/*", pathname = `/${locale}`) 
 test.each([
   ["about", "en", AboutPage], ["about", "fr", AboutPage],
   ["work", "en", WorkPage], ["work", "fr", WorkPage],
-])("%s renders CMS testimonials and platforms in %s", async (_name, locale, Page) => {
+])("%s renders CMS content and testimonials in %s", async (name, locale, Page) => {
   renderPage(<Page />, locale);
   await screen.findByText(locale === "fr" ? /Nos équipes travaillent ensemble/ : /Our teams work together/);
   expect(websiteApi.testimonials).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
-  expect(websiteApi.platforms).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
+  if (name === "about") expect(websiteApi.platforms).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
+  else {
+    expect(await screen.findByRole("heading", { name: "CMS Work" })).toBeInTheDocument();
+    expect(websiteApi.caseStudies).toHaveBeenCalledWith({ locale, page: 1, per_page: 50 }, expect.any(AbortSignal));
+  }
 });
 
 test("insights renders API articles with their category and pagination", async () => {

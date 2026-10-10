@@ -11,6 +11,7 @@ use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MarketingListingController;
 use Illuminate\Support\Facades\Route;
 
 // Add this site's endpoints here, inside the group: every one of them then
@@ -27,6 +28,8 @@ Route::middleware(['website.access', 'throttle:content'])->group(function () {
     Route::get('/faq-categories', [FaqController::class, 'getCategories']);
     Route::get('/testimonials', [TestimonialController::class, 'getTestimonials']);
     Route::get('/platforms', [PlatformController::class, 'getPlatforms']);
+    Route::get('/case-studies', [MarketingListingController::class, 'work']);
+    Route::get('/expertise', [MarketingListingController::class, 'expertise']);
     Route::get('/pages/{slug}', [PageController::class, 'getPage']);
     Route::get('/users', [UserController::class, 'getUsers']);
     Route::get('/users/{slug}', [UserController::class, 'getUsers']);
