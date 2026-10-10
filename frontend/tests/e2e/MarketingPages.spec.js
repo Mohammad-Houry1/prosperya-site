@@ -1,5 +1,24 @@
 import { expect, test } from "@playwright/test";
 import { mockCms } from "./cmsFixtures.js";
+test("Home and About keep their platform categories separate when navigating", async ({ page }) => {
+  await mockCms(page);
+  const categories = [];
+  await page.route("**/api/platforms?**", (route) => {
+    const category = new URL(route.request().url()).searchParams.get("category");
+    categories.push(category);
+    return route.fulfill({ json: { data: [{ id: category, slug: category, name: category === "clients" ? "CMS Client" : "CMS Partner", logo_image: null }] } });
+  });
+  await page.goto("/en");
+  await expect(page.locator('main [data-mark="clients"]').first()).toBeVisible();
+  await page.locator("header").getByRole("link", { name: "About", exact: true }).click();
+  await expect(page.locator("main h1")).toHaveText("CMS About");
+  await expect(page.locator('main [data-mark="we-work-with"]')).toBeVisible();
+  await expect(page.locator("main")).not.toContainText("CMS Client");
+  expect(categories).toContain("clients");
+  expect(categories).toContain("we-work-with");
+  expect(categories).not.toContain(null);
+});
+
 for (const locale of ["en", "fr"]) {
   test(`CMS marketing routes and arbitrary slugs render in ${locale} without mobile overflow`, async ({ page }) => {
     const errors = [];

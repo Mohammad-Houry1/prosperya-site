@@ -27,7 +27,7 @@ abstract class WebsiteTestCase extends TestCase
             'corporate_pages' => 'CorporatePage', 'translations' => 'Translation', 'newsletters' => 'Newsletter',
             'project_types' => 'ProjectType', 'project_stages' => 'ProjectStage', 'contact_forms' => 'ContactForm',
             'testimonials' => 'Testimonial', 'faqs' => 'Faq', 'faq_categories' => 'FaqCategory',
-            'platforms' => 'Platform', 'corporate_page_categories' => 'CorporatePageCategory'] as $slug => $model) {
+            'platforms' => 'Platform', 'platform_categories' => 'PlatformCategory', 'corporate_page_categories' => 'CorporatePageCategory'] as $slug => $model) {
             $modules[] = ['id' => $this->ids[$slug.'_module'] = (string) new ObjectId, 'slug' => $slug,
                 'model' => $model, 'record_scope' => 'all', 'owner_column' => 'author_id'];
         }

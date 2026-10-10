@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Platform;
+use App\Models\PlatformCategory;
 use App\Services\PublicContent;
 use App\Services\PublicPayload;
 use Illuminate\Http\Request;
@@ -16,12 +17,28 @@ class PlatformController
             'category' => ['sometimes', 'string', 'max:255'], 'category_id' => ['sometimes', 'string', 'regex:/^[a-f0-9]{24}$/i']]);
         $locale = $content->language($params['locale'] ?? null)->code;
         $filters = $content->filters($locale);
-        $page = Platform::forWebsite()
+        $query = Platform::forWebsite()
             ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
             ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
             ->where('is_active', '!=', false)
-            ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
-            ->orderBy('sort_order')->orderBy('_id')->paginate(min(50, (int) ($params['per_page'] ?? 50)));
+            ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
+        if (isset($params['category']) || isset($params['category_id'])) {
+            $categories = PlatformCategory::forWebsite()
+                ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
+                ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
+                ->where('is_active', '!=', false)
+                ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
+            if (isset($params['category'])) {
+                $categories->where('slug', $params['category']);
+            }
+            if (isset($params['category_id'])) {
+                $categories->whereKey($params['category_id']);
+            }
+            $category = $categories->first();
+            abort_unless($category, 404, 'No public platform category matches the requested category for this website and language.');
+            $query->where('platform_category', (string) $category->id);
+        }
+        $page = $query->orderBy('sort_order')->orderBy('_id')->paginate(min(50, (int) ($params['per_page'] ?? 50)));
 
         return ['data' => $page->getCollection()->map(fn ($row) => $payload->platform($row, $locale)),
             'meta' => $payload->pagination($page)];

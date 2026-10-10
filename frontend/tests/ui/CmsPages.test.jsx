@@ -39,7 +39,7 @@ test.each([
   renderPage(<Page />, locale);
   await screen.findByText(locale === "fr" ? /Nos équipes travaillent ensemble/ : /Our teams work together/);
   expect(websiteApi.testimonials).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
-  expect(websiteApi.platforms).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
+  expect(websiteApi.platforms).toHaveBeenCalledWith({ locale, ...(_name === "about" ? { category: "we-work-with" } : {}) }, expect.any(AbortSignal));
 });
 
 test("insights renders API articles with their category and pagination", async () => {

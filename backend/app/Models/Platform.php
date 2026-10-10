@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Base\ContentEntity;
 use App\Models\Concerns\Trashable;
 use App\Rules\CmsMedia;
+use App\Support\CurrentTenant;
+use Illuminate\Validation\Rule;
 
 /**
  * Company and platform logos displayed in configurable order.
@@ -29,6 +31,7 @@ class Platform extends ContentEntity
     public array $fields = [
         ['key' => 'logo_image', 'name' => 'Company Logo', 'type' => 'image', 'width' => '90px'],
         ['key' => 'name', 'name' => 'Platform', 'width' => '30%', 'sortable' => true, 'localized' => true],
+        ['key' => 'platform_category', 'name' => 'Category', 'type' => 'object', 'source' => 'platform_categories', 'getter' => 'getPlatformCategoriesList'],
         [
             'key' => 'status',
             'name' => 'Status',
@@ -63,6 +66,7 @@ class Platform extends ContentEntity
     public array $filters = [
         ['key' => 'project', 'name' => 'All Projects', 'type' => 'select', 'source' => 'projects', 'getter' => 'getProjectsList'],
         ['key' => 'status', 'name' => 'All Status', 'type' => 'select', 'source' => 'statuses', 'module' => 'platforms', 'getter' => 'getStatusesList'],
+        ['key' => 'platform_category', 'name' => 'All Categories', 'type' => 'select', 'source' => 'platform_categories', 'getter' => 'getPlatformCategoriesList'],
     ];
 
     public function validationRules(string $tenantId): array
@@ -72,6 +76,8 @@ class Platform extends ContentEntity
         return [
             'name' => [...$sometimes, 'required', 'string', 'max:40'],
             'logo_image' => ['nullable', CmsMedia::uploadable()],
+            'platform_category' => ['nullable', 'string', 'regex:/^[a-f0-9]{24}$/',
+                Rule::exists(PlatformCategory::class, '_id')->where(fn ($query) => $query->where('tenant_id', $tenantId)->whereNull('deleted_at'))],
             'status' => [...$sometimes, 'required'],
         ];
     }
@@ -91,5 +97,21 @@ class Platform extends ContentEntity
             ->orderBy('name')
             ->get(['_id', 'name', 'translations', 'code'])
             ->toArray();
+    }
+
+    public function getPlatformCategoriesList(): array
+    {
+        $tenantId = CurrentTenant::id();
+        if (! $tenantId) {
+            return [];
+        }
+
+        return PlatformCategory::query()->where('tenant_id', $tenantId)->whereNull('deleted_at')
+            ->orderBy('name')->get(['_id', 'name', 'translations', 'project', 'country', 'language'])->all();
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(PlatformCategory::class, 'platform_category');
     }
 }

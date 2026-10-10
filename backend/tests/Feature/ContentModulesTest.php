@@ -7,6 +7,32 @@ use Tests\WebsiteTestCase;
 
 class ContentModulesTest extends WebsiteTestCase
 {
+    public function test_platform_categories_separate_clients_from_we_work_with(): void
+    {
+        $clients = (string) new ObjectId;
+        $partners = (string) new ObjectId;
+        $hidden = (string) new ObjectId;
+        $this->collection('ref_platform_categories')->insertMany([
+            $this->record(['_id' => new ObjectId($clients), 'slug' => 'clients']),
+            $this->record(['_id' => new ObjectId($partners), 'slug' => 'we-work-with']),
+            $this->record(['_id' => new ObjectId($hidden), 'slug' => 'hidden', 'status_id' => $this->ids['draft']]),
+            $this->record(['slug' => 'foreign', 'project' => [(string) new ObjectId]]),
+        ]);
+        $this->collection('platforms')->insertMany([
+            $this->record(['name' => 'Client', 'platform_category' => $clients]),
+            $this->record(['name' => 'Partner', 'platform_category' => ['_id' => $partners]]),
+            $this->record(['name' => 'Draft', 'platform_category' => $clients, 'status_id' => $this->ids['draft']]),
+            $this->record(['name' => 'Uncategorized']),
+        ]);
+        $this->getJson('/api/platforms?category=clients')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'Client');
+        $this->getJson('/api/platforms?category=we-work-with')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'Partner');
+        $this->getJson('/api/platforms?category_id='.$partners)->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'Partner');
+        foreach (['hidden', 'foreign', 'missing'] as $slug) {
+            $this->getJson('/api/platforms?category='.$slug)->assertNotFound();
+        }
+        $this->getJson('/api/platforms')->assertOk()->assertJsonCount(3, 'data');
+    }
+
     public function test_module_lists_are_localized_paginated_filtered_and_public_only(): void
     {
         foreach (['testimonials', 'platforms', 'faqs', 'corporate_pages'] as $table) {

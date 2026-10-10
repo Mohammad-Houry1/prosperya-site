@@ -17,12 +17,12 @@ import SectionSkeleton from "../feedback/SectionSkeleton.jsx";
   seamless at -50%. Hover does not stop it; only the button does. `still`
   lays the same marks out in a static row (About).
 */
-export default function ClientCompanies({ still = false }) {
+export default function ClientCompanies({ still = false, category = "clients" }) {
   const {locale, t } = useLocale();
   const { data: clients = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ["platforms", locale],
+    queryKey: ["platforms", locale, category],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.platforms({ locale }, signal);
+      const response = await websiteApi.platforms({ locale, category }, signal);
       return response.data || [];
     },
   });

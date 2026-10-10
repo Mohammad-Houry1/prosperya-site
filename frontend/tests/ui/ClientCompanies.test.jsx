@@ -40,6 +40,7 @@ const movingTrack = () => screen.getAllByAltText("Foot Locker logo").at(-1).clos
 test("the Home marquee can be paused and resumed", async () => {
   renderStrip();
   await screen.findAllByAltText("Foot Locker logo");
+  expect(websiteApi.platforms).toHaveBeenCalledWith({ locale: "en", category: "clients" }, expect.any(AbortSignal));
   const control = screen.queryByRole("button", { name: /pause client logos/i });
   expect(control).toBeInTheDocument();
   expect(getComputedStyle(movingTrack()).animationPlayState).not.toBe("paused");
@@ -50,8 +51,9 @@ test("the Home marquee can be paused and resumed", async () => {
 });
 
 test("the still client row shows each mark once, with nothing to pause", async () => {
-  renderStrip({ still: true });
+  renderStrip({ still: true, category: "we-work-with" });
   const logo = await screen.findByAltText("Foot Locker logo");
+  expect(websiteApi.platforms).toHaveBeenCalledWith({ locale: "en", category: "we-work-with" }, expect.any(AbortSignal));
   expect(screen.getAllByAltText("Foot Locker logo")).toHaveLength(1);
   expect(logo).toHaveAttribute("src", "https://media.example.test/foot-locker.jpg");
   expect(logo).toHaveAttribute("loading", "lazy");

@@ -38,8 +38,8 @@ export default function AboutPage() {
     queryFn: async ({ signal }) => (await websiteApi.testimonials({ locale }, signal)).data || [],
   });
   const { data: platforms = [] } = useQuery({
-    queryKey: ["platforms", locale],
-    queryFn: async ({ signal }) => (await websiteApi.platforms({ locale }, signal)).data || [],
+    queryKey: ["platforms", locale, "we-work-with"],
+    queryFn: async ({ signal }) => (await websiteApi.platforms({ locale, category: "we-work-with" }, signal)).data || [],
   });
   useDocumentMeta({ title: `${t("about.page_title")} — Prosperya`, description: "" });
 
@@ -75,7 +75,7 @@ export default function AboutPage() {
         {page.cover_image?.url && <figure className={styles.photo} data-reveal="image"><CmsImage media={page.cover_image} priority /></figure>}
       </PageContainer>
     </section>
-    <ClientCompanies still />
+    <ClientCompanies still category="we-work-with" />
     {(hasStory || facts.length > 0) && <Section>
       <div className={`${styles.story} ${!hasStory || facts.length === 0 ? styles.singleColumn : ""}`}>
         {hasStory && <div>

@@ -49,7 +49,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <ClientCompanies />
+      <ClientCompanies category="clients" />
       <CapabilitiesSection data={capabilities.filter(row => row.featured)} isLoading={capabilitiesIsLoading} isError={capabilitiesIsError} refetch={capabilitiesRefetch} />
       <PlatformStorySection page={home} isPending={homeIsPending} isError={homeIsError} refetch={homeRefetch} />
       <FeaturedWorkSection data={studies.filter(row => row.featured)} isLoading={studiesIsLoading} isError={studiesIsError} refetch={studiesRefetch} />
