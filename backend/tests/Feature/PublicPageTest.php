@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Page;
+use App\Models\CorporatePage;
 use App\Services\PublicContent;
 use App\Services\PublicPayload;
 use App\Services\WebsiteAccess;
@@ -14,6 +15,51 @@ use Tests\TestCase;
 
 class PublicPageTest extends TestCase
 {
+    public function test_corporate_about_payload_localizes_blocks_and_exposes_only_public_fields(): void
+    {
+        $page = new CorporatePage;
+        $id = '6ac8886280862f68e40a2864';
+        $page->setRawAttributes(['_id' => '6ac8886280862f68e40a2865', 'slug' => 'about-prosperya',
+            'name' => 'About Prosperya', 'title' => ['fr' => 'À propos'],
+            'cover_image' => ['url' => '/about.webp', 'alt' => ['fr' => 'Notre bureau']],
+            'about_users' => [$id, strtoupper($id), 'a-slug'],
+            'corporate_content_items' => [['en' => 'English focus', 'fr' => 'Focus français'], []],
+            'our_story_title' => ['fr' => 'Notre histoire'], 'our_story_description' => ['fr' => '<p>Ensemble.</p>'],
+            'our_story_blocks' => [['story_block_title' => ['fr' => 'Bureau'],
+                'story_block_description' => ['fr' => '<p>Beyrouth.</p>'], 'story_block_image' => ['url' => '/office.svg'],
+                'private_note' => 'secret']],
+            'how_we_work_title' => ['fr' => 'Notre travail'], 'how_we_work_description' => ['fr' => '<p>Notre méthode.</p>'],
+            'how_we_work_blocks' => [['work_block_title' => ['fr' => 'Découvrir'],
+                'work_block_description' => ['fr' => '<p>Comprendre.</p>'], 'work_block_image' => ['url' => 'javascript:alert(1)']]],
+            'sections' => [['title' => ['fr' => 'Clarté'], 'description' => ['fr' => '<p>Notre principe.</p>'],
+                'section_image' => ['url' => '/principle.svg']]],
+            'internal_secret' => 'private', 'email' => 'private']);
+        $data = app(PublicPayload::class)->corporatePage($page, 'fr');
+        $this->assertSame('À propos', $data['title']);
+        $this->assertSame([$id], $data['about_users']);
+        $this->assertSame(['Focus français'], $data['corporate_content_items']);
+        $this->assertSame('Notre bureau', $data['cover_image']['alt']);
+        $this->assertSame('Notre histoire', $data['our_story_title']);
+        $this->assertSame('<p>Ensemble.</p>', $data['our_story_description']);
+        $this->assertSame(['story_block_title' => 'Bureau', 'story_block_description' => '<p>Beyrouth.</p>',
+            'story_block_image' => ['url' => 'https://cms.example.test/office.svg', 'alt' => '', 'width' => null, 'height' => null]], $data['our_story_blocks'][0]);
+        $this->assertSame('Notre travail', $data['how_we_work_title']);
+        $this->assertSame('<p>Notre méthode.</p>', $data['how_we_work_description']);
+        $this->assertSame('<p>Comprendre.</p>', $data['how_we_work_blocks'][0]['work_block_description']);
+        $this->assertNull($data['how_we_work_blocks'][0]['work_block_image']);
+        $this->assertSame('https://cms.example.test/principle.svg', $data['sections'][0]['section_image']['url']);
+        foreach (['internal_secret', 'email', 'leadership'] as $private) {
+            $this->assertArrayNotHasKey($private, $data);
+        }
+        $summary = app(PublicPayload::class)->corporatePage($page, 'fr', false);
+        $this->assertArrayNotHasKey('our_story_blocks', $summary);
+        $this->assertArrayNotHasKey('about_users', $summary);
+        $empty = app(PublicPayload::class)->corporatePage(new CorporatePage, 'fr');
+        foreach (['sections', 'corporate_content_items', 'about_users', 'our_story_blocks', 'how_we_work_blocks'] as $field) {
+            $this->assertSame([], $empty[$field]);
+        }
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

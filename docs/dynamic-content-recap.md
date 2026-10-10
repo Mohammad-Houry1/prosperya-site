@@ -5,7 +5,7 @@ remaining website connections and complete implementation checklist, see
 [the 2026-10-10 handoff](cms/dynamic-content-handoff.md). Live permission checks
 reported below are historical observations, not a fresh grant audit.
 
-Updated on 2026-10-09. The website layout and existing routes remain in place. A connected section needs its module granted to the website key and published content in the CMS before it appears live.
+Updated on 2026-10-10. The website layout and existing routes remain in place. A connected section needs its module granted to the website key and published content in the CMS before it appears live.
 
 ## Implemented
 
@@ -15,9 +15,9 @@ Updated on 2026-10-09. The website layout and existing routes remain in place. A
 | Testimonials | `/api/testimonials` | About and Work testimonials |
 | FAQs and categories | `/api/faqs`, `/api/faq-categories` | Approach and Contact accordions; topic is the category slug |
 | Platforms | `/api/platforms` | Home/About client logo strips, About platform names and platform labels used by Work/case-study layouts |
-| Public users | `/api/users`, `/api/users/{slug}` | About leadership reads the Users selected on its Page, in selection order |
-| Static Pages | `/api/pages/{slug}` | About intro/story, facts, focus, principles, work steps and hero image from published Page slug `about` |
-| Corporate pages and categories | `/api/corporate-pages?category=corporate`, `/api/corporate-pages/{slug}`, `/api/corporate-page-categories` | Shared footer/sidebar category links and translated detail pages by slug |
+| Public users | `/api/users`, `/api/users/{slug}` | About leadership reads the Users selected on Corporate Pages → About Prosperya, in selection order |
+| Static Pages | `/api/pages/{slug}` | Legacy public page API; `/about` now reads Corporate Pages |
+| Corporate pages and categories | `/api/corporate-pages?category=corporate`, `/api/corporate-pages/{slug}`, `/api/corporate-page-categories` | About content from slug `about-prosperya`, plus shared footer/sidebar category links and translated detail pages by slug |
 | Contact choices and submissions | `/api/contact/options`, `/api/contact` | CMS project types/stages, validation errors and accepted-submission feedback |
 | Newsletter | `/api/newsletter` | Insights signup with validation, duplicate handling and rate-limit feedback |
 | Shared translations | `/api/labels` | Fixed website UI copy, captions, navigation, forms, buttons and diagrams; paginated dictionary with EN/FR fallbacks |
@@ -55,7 +55,7 @@ Both EN and FR versions have the same remaining scope.
 | Legal and `/corporate/:slug` routes | Corporate body, navigation, SEO and labels | Route/layout structure remains implementation |
 | Global layout | Fixed translated navigation, footer and CTA labels | Navigation structure remains implementation |
 
-Key remaining record sources: `frontend/src/data/expertise.data.js`, `expertiseDetails.data.js`, `solutions.data.js`, `caseStudies.data.js`, `caseStudyDetails.data.js` and the process records in `company.data.js`. Contact's `projectInquiry.data.js` remains the form schema; it is not a list of CMS records. Hardcoded leadership and unused About copy have been removed. See [About and labels setup](cms/about-and-labels.md) for CMS tabs, website-key grants, import commands and remaining modules.
+Key remaining record sources: `frontend/src/data/expertise.data.js`, `expertiseDetails.data.js`, `solutions.data.js`, `caseStudies.data.js`, `caseStudyDetails.data.js` and the process records in `company.data.js`. Contact's `projectInquiry.data.js` remains the form schema; it is not a list of CMS records. Hardcoded leadership and unused About copy have been removed. See [About and labels setup](cms/about-and-labels.md) for Corporate Page tabs, website-key grants, import commands and remaining modules.
 
 ## Live CMS setup still required
 

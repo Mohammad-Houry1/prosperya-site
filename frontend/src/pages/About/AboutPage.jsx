@@ -27,8 +27,8 @@ function CmsImage({ media, fallbackAlt = "", ...props }) {
 export default function AboutPage() {
   const { locale, t } = useLocale();
   const pageQuery = useQuery({
-    queryKey: ["page", "about", locale],
-    queryFn: async ({ signal }) => (await websiteApi.page("about", locale, signal)).data,
+    queryKey: ["corporate-page", "about-prosperya", locale],
+    queryFn: async ({ signal }) => (await websiteApi.corporatePage("about-prosperya", locale, signal)).data,
     retry: false,
   });
   const page = pageQuery.data;
@@ -62,19 +62,19 @@ export default function AboutPage() {
     /></Section>;
   }
 
-  const facts = rowsWithContent(page.about_facts, ["fact_title", "fact_value", "fact_image"]);
-  const principles = rowsWithContent(page.about_principles, ["principle_title", "principle_description", "principle_image"]);
-  const steps = rowsWithContent(page.about_steps, ["step_title", "step_description", "step_image"]);
-  const focus = (Array.isArray(page.about_focus) ? page.about_focus : []).filter(hasText);
-  const hasStory = hasText(page.about_story_title) || hasText(page.content);
-  const hasWork = hasText(page.about_work_title) || hasText(page.about_work_description);
+  const facts = rowsWithContent(page.our_story_blocks, ["story_block_title", "story_block_description", "story_block_image"]);
+  const principles = rowsWithContent(page.sections, ["title", "description", "section_image"]);
+  const steps = rowsWithContent(page.how_we_work_blocks, ["work_block_title", "work_block_description", "work_block_image"]);
+  const focus = (Array.isArray(page.corporate_content_items) ? page.corporate_content_items : []).filter(hasText);
+  const hasStory = hasText(page.our_story_title) || hasText(page.our_story_description);
+  const hasWork = hasText(page.how_we_work_title) || hasText(page.how_we_work_description);
 
   return <>
     <section className={styles.hero}>
       <PageContainer className={`${styles.heroGrid} ${!page.cover_image?.url ? styles.singleColumn : ""}`}>
         <div>
           <Eyebrow>{t("about.eyebrow", { en: "About Prosperya", fr: "À propos de Prosperya" })}</Eyebrow>
-          {hasText(page.about_title) && <RevealText as="h1" onLoad className={styles.title}>{page.about_title}</RevealText>}
+          {hasText(page.title) && <RevealText as="h1" onLoad className={styles.title}>{page.title}</RevealText>}
           {hasText(page.description) && <CmsRichHtml html={page.description} className={styles.lead} />}
           <div className={styles.actions}>
             <PrimaryLink to={`/${locale}/contact`}>{t("about.start_conversation", { en: "Start a conversation", fr: "Démarrer une conversation" })}</PrimaryLink>
@@ -89,12 +89,12 @@ export default function AboutPage() {
       <div className={`${styles.story} ${!hasStory || facts.length === 0 ? styles.singleColumn : ""}`}>
         {hasStory && <div>
           <Eyebrow>{t("about.story_eyebrow", { en: "Our story", fr: "Notre histoire" })}</Eyebrow>
-          {hasText(page.about_story_title) && <h2 className={styles.h2}>{page.about_story_title}</h2>}
-          {hasText(page.content) && <CmsRichHtml html={page.content} className={styles.paragraph} />}
+          {hasText(page.our_story_title) && <h2 className={styles.h2}>{page.our_story_title}</h2>}
+          {hasText(page.our_story_description) && <CmsRichHtml html={page.our_story_description} className={styles.paragraph} />}
         </div>}
-        {facts.length > 0 && <dl className={styles.facts} data-reveal="card">{facts.map((fact, index) => <div key={index} className={!fact.fact_image?.url ? styles.factText : undefined}>
-          <CmsImage media={fact.fact_image} className={styles.factImage} />
-          <dt>{fact.fact_title}</dt><dd>{fact.fact_value}</dd>
+        {facts.length > 0 && <dl className={styles.facts} data-reveal="card">{facts.map((fact, index) => <div key={index} className={!fact.story_block_image?.url ? styles.factText : undefined}>
+          <CmsImage media={fact.story_block_image} className={styles.factImage} />
+          <dt>{fact.story_block_title}</dt><dd><CmsRichHtml html={fact.story_block_description} className={styles.richSmall} /></dd>
         </div>)}</dl>}
       </div>
     </Section>}
@@ -114,9 +114,9 @@ export default function AboutPage() {
     {principles.length > 0 && <Section>
       <Eyebrow>{t("about.principles_eyebrow", { en: "Our principles", fr: "Nos principes" })}</Eyebrow>
       <ul className={styles.principles}>{principles.map((principle, index) => <li key={index}>
-        <CmsImage media={principle.principle_image} className={styles.sectionImage} />
-        {hasText(principle.principle_title) && <strong>{principle.principle_title}</strong>}
-        {hasText(principle.principle_description) && <CmsRichHtml html={principle.principle_description} className={styles.richSmall} />}
+        <CmsImage media={principle.section_image} className={styles.sectionImage} />
+        {hasText(principle.title) && <strong>{principle.title}</strong>}
+        {hasText(principle.description) && <CmsRichHtml html={principle.description} className={styles.richSmall} />}
       </li>)}</ul>
     </Section>}
     {(platforms.length > 0 || focus.length > 0) && <Section>
@@ -135,14 +135,14 @@ export default function AboutPage() {
       <div className={`${styles.how} ${!hasWork || steps.length === 0 ? styles.singleColumn : ""}`}>
         {hasWork && <div>
           <Eyebrow>{t("about.how_eyebrow", { en: "How we work", fr: "Notre façon de travailler" })}</Eyebrow>
-          {hasText(page.about_work_title) && <h2 className={styles.h2}>{page.about_work_title}</h2>}
-          {hasText(page.about_work_description) && <CmsRichHtml html={page.about_work_description} className={styles.paragraph} />}
+          {hasText(page.how_we_work_title) && <h2 className={styles.h2}>{page.how_we_work_title}</h2>}
+          {hasText(page.how_we_work_description) && <CmsRichHtml html={page.how_we_work_description} className={styles.paragraph} />}
           <PrimaryLink to={`/${locale}/approach`} variant="text">{t("about.explore_approach", { en: "Explore our approach", fr: "Découvrir notre approche" })}</PrimaryLink>
         </div>}
         {steps.length > 0 && <ol className={styles.steps}>{steps.map((step, index) => <li key={index}>
-          {step.step_image?.url ? <CmsImage media={step.step_image} className={styles.sectionImage} /> : <span className={styles.stepNumber}>{String(index + 1).padStart(2, "0")}</span>}
-          {hasText(step.step_title) && <h3>{step.step_title}</h3>}
-          {hasText(step.step_description) && <CmsRichHtml html={step.step_description} className={styles.richSmall} />}
+          {step.work_block_image?.url ? <CmsImage media={step.work_block_image} className={styles.sectionImage} /> : <span className={styles.stepNumber}>{String(index + 1).padStart(2, "0")}</span>}
+          {hasText(step.work_block_title) && <h3>{step.work_block_title}</h3>}
+          {hasText(step.work_block_description) && <CmsRichHtml html={step.work_block_description} className={styles.richSmall} />}
         </li>)}</ol>}
       </div>
     </Section>}

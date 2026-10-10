@@ -100,13 +100,13 @@
   border-radius: var(--radius-md);
   background: var(--bg-card);
 }
-.facts div {
+.facts > div {
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr);
   column-gap: 14px;
   padding: 18px 0;
 }
-.facts div + div {
+.facts > div + div {
   border-top: 1px solid var(--border-subtle);
 }
 .facts svg {

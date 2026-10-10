@@ -2,24 +2,40 @@
 
 ## Where to edit
 
+Use **Corporate Pages → About Prosperya** (slug `about-prosperya`) for `/en/about`
+and `/fr/about`. No additional module registration is needed.
+
 | Website content | CMS location |
 | --- | --- |
-| About Us `/en/about`, `/fr/about` | Static Pages (`pages`), one published record with slug `about` |
-| Introduction and story body | That page's Content tab: Description and Content |
-| Main heading, story heading, facts, focus, principles, how-we-work heading/body/steps | That page's new About Us tab; all optional and translated |
-| Leadership | Select Users in About Us → About Leadership. Edit names, positions, biographies and avatars in Users; selection order is display order |
-| Hero picture | Static Pages → Images → Cover Image |
-| Images for facts, principles and work steps | Image picker in the corresponding repeater row |
+| Hero heading and introduction | Corporate Page Content → Title and Description |
+| Focus items | Corporate Page Content → Focus Items; add compact translated inputs |
+| Story heading, description and blocks | Our Story; each block has translated Title, rich Description and Image / Icon |
+| Work heading, description and blocks | How We Work; each block has translated Title, rich Description and Image / Icon |
+| Principles | Repeater → Content Sections: translated Title, rich Description and Section Image / Icon |
+| Leadership selection | Corporate Page Properties → About Leadership; selection order is display order |
+| Leadership names, positions, biographies and avatars | Users |
+| Hero picture | Images → Cover Image |
 | Client logos and platform names | Platforms |
 | Quotes | Testimonials |
 | Section captions, navigation, buttons, filters, forms, accessibility and error text | Translations, keys beginning `prosperya.` |
-| About/normal-route metadata and social image | SEO Pages, as in `../seo-integration.md`; the website currently uses SeoPage for these routes |
+| About metadata and social image | SEO Pages record slug `about`, as in `../seo-integration.md` |
 
-No new About module registration is needed. The existing module remains slug `pages`, technical module `Page`, path `/pages`, visible in the CMS. Keep its published status assignment and the relevant editor-role permissions. Grant the website API key `pages`, `users`, `translations`, `platforms`, `testimonials` and `seo_pages`, alongside the modules used elsewhere. Assign the About record and selected public users to the Prosperya project, applicable countries/languages and a published status. The public API retains those scope checks; selecting a private or unpublished user does not expose them.
+Grant the website API key `corporate_pages`, `users`, `translations`, `platforms`,
+`testimonials` and `seo_pages`, alongside modules used elsewhere. Assign the
+corporate record and selected public users to Prosperya and the applicable
+countries/languages with a published status. Selecting a private or unpublished
+user does not expose them.
 
-The public `/api/pages/about?locale=en` endpoint returns only explicit public page fields. `/api/users?ids[]=...` retrieves the chosen profiles, excluding email, credentials, permissions and internal fields. Blank About sections stay hidden. A missing/unpublished/denied About record shows an unavailable state instead of a fictional company profile. Create and publish this record before deploying the website changes.
+`/api/corporate-pages/about-prosperya?locale=en` returns explicit public fields.
+`/api/users?ids[]=...` returns selected public profiles, excluding email,
+credentials, permissions and internal fields. Blank sections stay hidden; denied
+or unpublished corporate content shows an unavailable state. Static Pages is no
+longer the `/about` content source; its existing data remains available to other
+consumers. Existing corporate introduction, cover image and section content are
+preserved; fill the new tabs and select leadership users on this record.
 
-Static Pages retains its existing SEO fields and Meta Image picker for CMS/API consumers that use Page metadata. This website's normal-route SEO lookup remains SEO Pages; its About content request does not change that contract.
+Corporate Pages retains its own SEO fields and Meta Image for corporate detail
+routes. `/about` remains a normal route and uses SEO Pages for its metadata.
 
 ## Import labels automatically
 

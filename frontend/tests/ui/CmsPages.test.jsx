@@ -13,7 +13,7 @@ import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 beforeEach(() => {
   vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: {} });
-  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: { about_title: "CMS About", about_users: [] } });
+  vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { title: "CMS About", about_users: [] } });
   vi.spyOn(websiteApi, "testimonials").mockImplementation(async ({ locale }) => ({ data: [{
     id: "testimonial", quote: locale === "fr" ? "Nos équipes travaillent ensemble." : "Our teams work together.",
     name: "Alex", role: "Operations", company: "Example",

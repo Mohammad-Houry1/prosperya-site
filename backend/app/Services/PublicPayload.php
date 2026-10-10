@@ -41,20 +41,9 @@ final class PublicPayload
             'bio' => $record->text('bio', $locale), 'avatar' => $this->media($record->avatar, $locale)];
     }
 
-    /** About is authored in Pages; linked people are read separately through the public Users API. */
+    /** Legacy Static Page content; About now uses the Corporate Page detail payload. */
     public function page(Page $page, string $locale): array
     {
-        $localizedRows = fn (mixed $rows, array $fields, string $imageField) => array_values(array_map(
-            function ($row) use ($fields, $imageField, $locale) {
-                $row = (object) $row;
-                $result = [];
-                foreach ($fields as $field) {
-                    $result[$field] = $this->content->text($row, $field, $locale);
-                }
-                $result[$imageField] = $this->media($row->{$imageField} ?? null, $locale);
-
-                return $result;
-            }, (array) $rows));
         $userIds = array_map(fn ($value) => $this->referenceId($value), (array) $page->about_users);
 
         return ['id' => (string) $page->id, 'slug' => $page->slug,
@@ -64,14 +53,14 @@ final class PublicPayload
             'about_story_title' => $page->text('about_story_title', $locale),
             'about_users' => array_values(array_unique(array_map('strtolower', array_filter($userIds,
                 fn ($id) => is_string($id) && preg_match('/^[a-f0-9]{24}$/i', $id))))),
-            'about_facts' => $localizedRows($page->about_facts, ['fact_title', 'fact_value'], 'fact_image'),
+            'about_facts' => $this->localizedRows($page->about_facts, ['fact_title', 'fact_value'], 'fact_image', $locale),
             'about_focus' => array_values(array_filter(array_map(fn ($value) => $this->content->text(
                 (object) ['value' => $value], 'value', $locale), (array) $page->about_focus), fn ($value) => trim($value) !== '')),
-            'about_principles' => $localizedRows($page->about_principles,
-                ['principle_title', 'principle_description'], 'principle_image'),
+            'about_principles' => $this->localizedRows($page->about_principles,
+                ['principle_title', 'principle_description'], 'principle_image', $locale),
             'about_work_title' => $page->text('about_work_title', $locale),
             'about_work_description' => $page->text('about_work_description', $locale),
-            'about_steps' => $localizedRows($page->about_steps, ['step_title', 'step_description'], 'step_image'),
+            'about_steps' => $this->localizedRows($page->about_steps, ['step_title', 'step_description'], 'step_image', $locale),
         ];
     }
 
@@ -106,15 +95,43 @@ final class PublicPayload
 
     public function corporatePage(CorporatePage $page, string $locale, bool $detail = true): array
     {
+        $userIds = array_map(fn ($value) => $this->referenceId($value), (array) $page->about_users);
+
         return ['id' => (string) $page->id, 'slug' => $page->slug,
             'title' => $page->text('title', $locale) ?: $page->text('name', $locale),
             'description' => $page->text('description', $locale),
-            ...($detail ? ['sections' => array_map(fn ($section) => [
-                'title' => $this->content->text((object) $section, 'title', $locale),
-                'description' => $this->content->text((object) $section, 'description', $locale),
-            ], (array) $page->sections)] : []),
+            ...($detail ? [
+                'sections' => $this->localizedRows($page->sections, ['title', 'description'], 'section_image', $locale),
+                'cover_image' => $this->media($page->cover_image, $locale),
+                'corporate_content_items' => array_values(array_filter(array_map(fn ($value) => $this->content->text(
+                    (object) ['value' => $value], 'value', $locale), (array) $page->corporate_content_items), fn ($value) => trim($value) !== '')),
+                'about_users' => array_values(array_unique(array_map('strtolower', array_filter($userIds,
+                    fn ($id) => is_string($id) && preg_match('/^[a-f0-9]{24}$/i', $id))))),
+                'our_story_title' => $page->text('our_story_title', $locale),
+                'our_story_description' => $page->text('our_story_description', $locale),
+                'our_story_blocks' => $this->localizedRows($page->our_story_blocks,
+                    ['story_block_title', 'story_block_description'], 'story_block_image', $locale),
+                'how_we_work_title' => $page->text('how_we_work_title', $locale),
+                'how_we_work_description' => $page->text('how_we_work_description', $locale),
+                'how_we_work_blocks' => $this->localizedRows($page->how_we_work_blocks,
+                    ['work_block_title', 'work_block_description'], 'work_block_image', $locale),
+            ] : []),
             'meta_image' => $this->media($page->meta_image, $locale), 'seo' => $this->seo($page, $locale),
             'updated_at' => $page->updated_at?->toISOString()];
+    }
+
+    private function localizedRows(mixed $rows, array $fields, string $imageField, string $locale): array
+    {
+        return array_values(array_map(function ($row) use ($fields, $imageField, $locale) {
+            $row = (object) $row;
+            $result = [];
+            foreach ($fields as $field) {
+                $result[$field] = $this->content->text($row, $field, $locale);
+            }
+            $result[$imageField] = $this->media($row->{$imageField} ?? null, $locale);
+
+            return $result;
+        }, (array) $rows));
     }
 
     /** Keep the public article fields explicit; CMS snapshots are not public records. */

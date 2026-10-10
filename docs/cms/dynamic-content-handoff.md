@@ -54,7 +54,8 @@ Platform Categories has since been restored as a supporting module. Platforms
 now stores one optional `platform_category` ID, with a category selector and
 list filter in the CMS. The category implementation retains the original
 `ref_platform_categories` collection, translated name/description and standard
-scopes/status/slug. Register it if absent and configure editor permissions and
+scopes/status/slug. It was registered live with Active/Inactive statuses on
+2026-10-10. For another installation, register it if absent and configure editor permissions and
 content statuses. No category records or Platform links were automatically
 created. The website's current platform payload still returns name/logo only;
 to display categories, copy the updated Platform and PlatformCategory models,
@@ -69,7 +70,7 @@ Paths below follow `/en/...` and `/fr/...`; Home is `/en` or `/fr`.
 | Page | CMS source | Website connection today | Remaining action |
 | --- | --- | --- | --- |
 | Home | Translations, Platforms, Expertise, Case Studies, Approach; optionally Static Pages Architecture | Labels and client logos connected; authored record lists still local | Fetch real Expertise, featured Case Studies and Approach; connect Architecture if displaying the supplied four-column section |
-| About `/about` | Static Pages record slug `about`, selected Users, Platforms, Testimonials | Connected | Enter/publish content, select public users, check grants |
+| About `/about` | Corporate Pages record slug `about-prosperya`, selected Users, Platforms, Testimonials | Connected | Enter/publish content, select public users, check grants |
 | Approach `/approach` | Approach record slug `approach` recommended, FAQs category `approach`, Translations | FAQs and labels connected; Approach records unconnected | Add Approach public API and connect every authored section |
 | Expertise `/expertise` | Expertise records, Translations | Records local | List API and UI mapping |
 | Expertise `/expertise/:slug` | Same Expertise record, Detail Sections, related content | Records local | Detail API; preserve existing rich-text sections and visual template |
@@ -116,37 +117,49 @@ foundation graphic rather than that exact supplied architecture diagram.
 Implement the intended section or deliberately adapt the existing graphic;
 do not claim the four columns are connected today.
 
-`PublicPayload::page()` currently exposes About fields only. It does not expose
+`PublicPayload::page()` exposes the legacy Static Page About fields only. It does not expose
 the Architecture fields or generic `sections`, despite those fields existing in
 the copied Page model. Extend its explicit payload before connecting Home or
 other Static Page sections. The existing `/api/pages/{slug}` route can be reused.
 
 ### About Us
 
-Use **Static Pages**, published record slug `about`.
+Use **Corporate Pages → About Prosperya**, published record slug `about-prosperya`.
+The website keeps `/en/about` and `/fr/about`; it reads
+`/api/corporate-pages/about-prosperya?locale=en` (or `fr`). No new module is needed.
 
 | Website slot | CMS tab / stored field |
 | --- | --- |
-| Hero heading | About Us → `about_title` (localized Name is the fallback) |
-| Hero introduction | Content → `description` |
+| Hero heading | Corporate Page Content → `title` (localized Name is the fallback) |
+| Hero introduction | Corporate Page Content → `description` |
 | Hero photograph | Images → `cover_image` |
-| Story heading / body | About Us → `about_story_title`; Content → `content` |
-| Facts | About Us → `about_facts`: `fact_title`, `fact_value`, `fact_image` |
-| Focus list | About Us → `about_focus` |
-| Principles | About Us → `about_principles`: `principle_title`, `principle_description`, `principle_image` |
-| How we work | `about_work_title`, `about_work_description`, `about_steps` with `step_title`, `step_description`, `step_image` |
-| Leadership | About Leadership → `about_users`, selected existing User IDs |
+| Story heading / body | Our Story → `our_story_title`, `our_story_description` |
+| Story blocks | Our Story → `our_story_blocks`: `story_block_title`, `story_block_description`, `story_block_image` |
+| Focus list | Corporate Page Content → Focus Items (`corporate_content_items`), compact translated inputs, no accordion |
+| Principles | Repeater → `sections`: existing `title`, `description`, `section_image` |
+| How we work heading / body | How We Work → `how_we_work_title`, `how_we_work_description` |
+| Work blocks | How We Work → `how_we_work_blocks`: `work_block_title`, `work_block_description`, `work_block_image` |
+| Leadership | Corporate Page Properties → About Leadership (`about_users`), selected existing User IDs |
 | Each leader's name/position/bio/avatar | Users, through the site's public User serializer |
 | Client logos / platform names | Platforms |
 | Quotes | Testimonials |
 | Fixed captions/buttons | Translations |
 | Website metadata | SEO Pages record slug `about` under the current SEO contract |
 
+Titles, rich descriptions and compact inputs are translated. The two new tabs
+each include their own title/description and an ordered title/description/image
+repeater. SVG and raster block images are optional and remain in the block.
+The current corporate record already has introduction, cover image and a section;
+the new fields do not overwrite them. No live Static Page slug `about` existed at
+the 2026-10-10 source-switch check, so there was no old About content to migrate.
+
 Selected user order is the display order. The public User API exposes public
 profile fields only. Do not copy the CMS authentication User model into the
-website. Private/unpublished/out-of-scope selections must remain excluded.
+website. Private/unpublished/out-of-scope selections remain excluded. CMS
+deletion checks both Corporate Page and existing Static Page user references.
 Empty About sections stay hidden; unavailable records do not fall back to
-invented profiles.
+invented profiles. The legacy Static Page About fields remain available for other
+consumers, but this website no longer reads them for `/about`.
 
 ### Solutions
 
@@ -288,14 +301,14 @@ behavior remain implementation. Configure a default status for new submissions.
 Corporate Pages owns legal/document text and its content-section repeater. Shared
 footer/sidebar links use Corporate Page Categories slug `corporate`. Storage
 slugs include `privacy-policy`, `terms-of-use`, `cookie-policy`, `accessibility`.
-Marketing About `/about` is a Static Page, separate from corporate document
-`about-prosperya`. Existing French legal routes remain translated.
+Marketing About `/about` reads the same Corporate Page `about-prosperya`
+through its dedicated About layout. Existing French legal routes remain translated.
 
-The website's `PublicPayload::corporatePage()` currently serializes section
-`title` and `description` only. The CMS field is `sections[].section_image`;
-sync the current CorporatePage content model and expose that field explicitly
-if displaying the requested section icons;
-the existence of a CMS media picker alone does not display it on the website.
+The website's Corporate Page detail payload explicitly exposes translated
+`sections[].section_image`, the cover image, both new block lists, the compact
+focus values and selected public User IDs. The list payload omits these detail
+fields. About displays section icons and new block images; the generic legal
+template still displays section title/description only.
 
 ## 4. Labels: what the editor does
 
@@ -404,7 +417,7 @@ admin CRUD routes. Keep server credentials out of browser configuration.
    needed, extend the existing module consistently in model/Create/Edit and
    serializer. Preserve distinct source data during any migration.
 7. Expose Static Page Architecture/sections and connect the intended Home
-   architecture section. Expose Corporate Page section images if used. Apply
+   architecture section. Apply
    the separate Images-tab convention to Approach.
 8. Implement the SEO source change coherently, including initial HTML and
    sitemaps for arbitrary public CMS slugs. Preserve older URLs where possible.
@@ -435,7 +448,7 @@ topology in code. `projectInquiry.data.js` is a form schema, not missing content
    `articles`, `article_categories`, `faqs`, `faq_categories`, `corporate_pages`,
    `corporate_page_categories`, `project_types`, `project_stages`, `contact_forms`,
    `newsletters`, with appropriate project/country/language access.
-4. Enter translated content and public media. Publish About slug `about`, the
+4. Enter translated content and public media. Publish Corporate Page About slug `about-prosperya`, the
    chosen Approach record, real Solutions/Expertise/Case Studies, FAQ categories
    `approach` and `contact`, and corporate navigation category `corporate`.
 5. Select existing Users for About, Platforms for technology relations and
