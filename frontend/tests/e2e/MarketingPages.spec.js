@@ -17,3 +17,18 @@ for (const locale of ["en", "fr"]) {
     expect(errors).toEqual([]);
   });
 }
+
+test("footer expertise and solutions follow the CMS lists, including arbitrary new slugs", async ({ page }) => {
+  await mockCms(page);
+  await page.goto("/en");
+  const expertise = page.locator("footer").getByRole("navigation", { name: "Expertise", exact: true });
+  const solutions = page.locator("footer").getByRole("navigation", { name: "Solutions", exact: true });
+  await expect(expertise.locator('a[href="/en/expertise/new-cms-expertise"]')).toHaveText("CMS Expertise: new-cms-expertise");
+  await expect(expertise.getByRole("link").first()).toHaveAttribute("href", "/en/expertise");
+  await expect(expertise.getByRole("link")).toHaveCount(8);
+  await expect(solutions.getByRole("link", { name: "CMS Solution" })).toHaveAttribute("href", "/en/solutions/new-cms-solution");
+  await expect(solutions.getByRole("link")).toHaveCount(1);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expertise.scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

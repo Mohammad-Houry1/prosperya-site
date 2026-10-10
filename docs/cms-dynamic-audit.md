@@ -52,3 +52,9 @@ Before the user's request to keep verification local, the configured key granted
 - Desktop expertise and mobile case-study screenshots were visually inspected. Browser submissions used mocked endpoints only.
 
 Review fixes cover relationship order, scoped testimonial attribution, HTML/media rendering, omission of empty authored sections, metrics notes and arbitrary diagram node counts. Deferred minor cleanup: unused historical fixture datasets/copy files and the two development fast-refresh warnings. Source-only verification cannot confirm unpopulated live editorial content.
+
+## Footer update
+
+The footer Expertise column keeps its fixed overview link, then lists the public CMS Expertise records in CMS order. Solutions lists public CMS Solution records in CMS order. Both use inline queries and the same locale-specific caches as their listing pages. Company/resources links and the header remain fixed routes with CMS labels, as requested.
+
+One remaining display-text exception was found in `NetSuiteCoreDiagram.jsx`: its EN/FR module names and default central NetSuite label are still embedded in code. Other diagrams use CMS text but retain fixed item slots/geometry; the Home hero retains five audience slots and fixed icons. These were identified, not changed as part of the footer request.

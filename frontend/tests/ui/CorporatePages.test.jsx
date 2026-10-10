@@ -20,6 +20,8 @@ function renderPage(locale = "en") {
   </QueryClientProvider>);
 }
 beforeEach(() => {
+  vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
+  vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "corporatePages").mockResolvedValue({ data: pages, meta: { last_page: 1 } });
   vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { ...pages[0],
     updated_at: "2026-10-09T08:02:04.596000Z", description: "<p>CMS introduction</p>", sections: [{ title: "CMS section", description: "<p>CMS body</p>" }], seo: {} } });

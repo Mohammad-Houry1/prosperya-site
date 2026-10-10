@@ -1,39 +1,29 @@
 import { Link, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { websiteApi } from "../../services/websiteApi.js";
+import { adaptExpertise, adaptSolution } from "../../repositories/marketing.repository.js";
 import BrandMark from "./BrandMark.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { replaceLocaleInPath } from "../../i18n/locale.js";
 import CorporatePageLinks from "../legal/CorporatePageLinks.jsx";
 import styles from "./SiteFooter.module.css";
-const sections = (t) => [
+const sections = (t, expertise, solutions) => [
   {
     key: "expertise",
     title: t("nav.expertise"),
     links: [
       ["expertise", t("footer.expertise_overview")],
-      [
-        "expertise/erp-transformation",
-        t("footer.erp_transformation"),
-      ],
-      [
-        "expertise/netsuite-implementation",
-        t("footer.netsuite_implementation"),
-      ],
-      [
-        "expertise/systems-integration",
-        t("footer.systems_integration"),
-      ],
-      ["expertise/erp-rescue", t("footer.erp_rescue")],
+      ...expertise.filter(item => item.slug && item.title).map(item => [
+        `expertise/${encodeURIComponent(item.slug)}`, item.title,
+      ]),
     ],
   },
   {
     key: "solutions",
     title: t("nav.solutions"),
-    links: [
-      ["solutions/finance", t("footer.finance")],
-      ["solutions/operations", t("footer.operations")],
-      ["solutions/supply-chain", t("footer.supply_chain")],
-      ["solutions/data-analytics", t("footer.data_analytics")],
-    ],
+    links: solutions.filter(item => item.slug && item.title).map(item => [
+      `solutions/${encodeURIComponent(item.slug)}`, item.title,
+    ]),
   },
   {
     key: "company",
@@ -56,6 +46,20 @@ const sections = (t) => [
 export default function SiteFooter() {
   const { locale, t } = useLocale();
   const location = useLocation();
+  const { data: expertise = [] } = useQuery({
+    queryKey: ["capabilities", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.expertise({ locale }, signal);
+      return (response.data || []).map(adaptExpertise);
+    },
+  });
+  const { data: solutions = [] } = useQuery({
+    queryKey: ["solutions", locale],
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.solutions({ locale }, signal);
+      return (response.data || []).map(adaptSolution);
+    },
+  });
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -65,7 +69,7 @@ export default function SiteFooter() {
             <p>{t("footer.statement")}</p>
             <span>{t("footer.location")}</span>
           </div>
-          {sections(t).map((section) => (
+          {sections(t, expertise, solutions).map((section) => (
             <nav
               key={section.key}
               aria-label={section.title}
