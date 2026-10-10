@@ -5,6 +5,12 @@ finishing `prosperya-site`, and an editing guide for the CMS owner.
 
 ## 1. Actual status
 
+Solutions now has Related Articles and an Animation tab with translated compact
+lists for adding/removing diagram boxes and workflow steps. The website still
+needs to consume these fields and derive its layout from their counts; see
+[the exact animation integration handoff](solutions-animation-handoff.md).
+The four shared architecture lists belong to Static Pages → solutions → Architecture.
+
 The CMS has implementations for Solutions, Work / Case Studies, Expertise and
 Approach. Creating a Module Management entry activates an implementation; it
 does not build a website API or connect a React page automatically.

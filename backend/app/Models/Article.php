@@ -24,7 +24,7 @@ class Article extends ContentEntity
 
     public bool $reordering = true;
 
-    public array $dependents = [];
+    public array $dependents = [[Solution::class, 'related_articles', 'Solutions']];
 
     public array $searchable = ['name', 'slug', 'article_title', 'article_small_description', 'article_description', 'meta_title', 'meta_description', 'meta_keywords', 'meta_url'];
 
