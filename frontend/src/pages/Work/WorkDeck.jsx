@@ -1,27 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Pause, Play } from "lucide-react";
+import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import CaseVisual from "../../components/case-study/CaseVisual.jsx";
 import styles from "./WorkDeck.module.css";
 
 export default function WorkDeck({ studies, locale }) {
   const [selectedId, setSelectedId] = useState(null);
+  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const reducedMotion = useReducedMotion();
   const selected = studies.find(study => study.id === selectedId) || studies[0];
-  if (!selected) return null;
   const index = studies.indexOf(selected);
-  return <div className={styles.deck}>
-    <Link to={`/${locale}/work/${selected.slug}`} className={styles.feature}>
-      <div className={styles.media} aria-hidden="true"><CaseVisual study={selected} priority sizes="(min-width: 900px) 50vw, 100vw" /></div>
-      <div className={styles.caption} aria-live="polite">
-        <span className={styles.kicker}>{locale === "fr" ? "Projet à découvrir" : "Project spotlight"}<span>{String(index + 1).padStart(2, "0")} / {String(studies.length).padStart(2, "0")}</span></span>
-        <strong>{selected.name || selected.title}</strong>
-        <span className={styles.bottom}>{selected.industryName || selected.category}<ArrowUpRight size={22} strokeWidth={1.3} aria-hidden="true" /></span>
-      </div>
-    </Link>
+  const rotating = studies.length > 1 && !paused && !hovered && !focused && !reducedMotion;
+
+  useEffect(() => {
+    if (!rotating) return undefined;
+    const timer = window.setTimeout(() => setSelectedId(studies[(index + 1) % studies.length].id), 5000);
+    return () => window.clearTimeout(timer);
+  }, [rotating, index, studies]);
+
+  if (!selected) return null;
+  return <div className={styles.deck}
+    onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    onFocus={() => setFocused(true)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
+    <div className={styles.slides}>
+      {studies.map((study, i) => <Link key={study.id} to={`/${locale}/work/${study.slug}`} className={styles.feature}
+        data-active={selected.id === study.id} aria-hidden={selected.id !== study.id} tabIndex={selected.id === study.id ? 0 : -1}>
+        <div className={styles.media} aria-hidden="true"><CaseVisual study={study} priority={i === 0} sizes="(min-width: 900px) 50vw, 100vw" /></div>
+        <div className={styles.caption}>
+          <span className={styles.kicker}>{locale === "fr" ? "Projet à découvrir" : "Project spotlight"}<span>{String(i + 1).padStart(2, "0")} / {String(studies.length).padStart(2, "0")}</span></span>
+          <strong>{study.name || study.title}</strong>
+          <span className={styles.bottom}>{study.industryName || study.category}<ArrowUpRight size={22} strokeWidth={1.3} aria-hidden="true" /></span>
+        </div>
+      </Link>)}
+    </div>
     <div className={styles.selector} role="group" aria-label={locale === "fr" ? "Choisir un projet" : "Choose a project"}>
       {studies.map((study, i) => <button type="button" key={study.id} aria-pressed={selected.id === study.id} onClick={() => setSelectedId(study.id)} aria-label={study.name || study.title}>
         <span>{String(i + 1).padStart(2, "0")}</span><span>{study.industryName || study.category}</span>
       </button>)}
     </div>
+    {studies.length > 1 && !reducedMotion && <button type="button" className={styles.playback} onClick={() => setPaused(value => !value)}>
+      {paused ? <Play size={12} aria-hidden="true" /> : <Pause size={12} aria-hidden="true" />}
+      {paused ? (locale === "fr" ? "Reprendre le défilement" : "Resume slideshow") : (locale === "fr" ? "Mettre en pause" : "Pause slideshow")}
+    </button>}
   </div>;
 }

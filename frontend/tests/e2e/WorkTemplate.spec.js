@@ -1,6 +1,27 @@
 import { expect, test } from "@playwright/test";
 import { caseStudiesData } from "../../src/data/caseStudies.data.js";
 
+test("work spotlight automatically loops and pauses on hover", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.clock.install();
+  await page.goto("/en/work");
+  const selectors = page.getByRole("group", { name: "Choose a project" }).getByRole("button");
+  await expect(selectors).toHaveCount(4);
+  for (let i = 0; i < 4; i++) {
+    await expect(selectors.nth(i)).toHaveAttribute("aria-pressed", "true");
+    await page.clock.fastForward(5000);
+  }
+  await expect(selectors.first()).toHaveAttribute("aria-pressed", "true");
+  await selectors.last().hover();
+  await page.clock.fastForward(5000);
+  await expect(selectors.first()).toHaveAttribute("aria-pressed", "true");
+  await selectors.last().click();
+  await page.mouse.move(0, 0);
+  await selectors.last().blur();
+  await page.clock.fastForward(5000);
+  await expect(selectors.first()).toHaveAttribute("aria-pressed", "true");
+});
+
 for (const locale of ["en", "fr"]) {
   test(`every work detail follows one template in ${locale}`, async ({ page }) => {
     const requests = [];
