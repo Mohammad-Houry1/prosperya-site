@@ -4777,5 +4777,14 @@
       "en": "HR",
       "fr": "RH"
     }
-  }
+  },
+  { "key": "prosperya.search.title", "group": "website", "source": "Search", "translations": { "en": "Search", "fr": "Rechercher" } },
+  { "key": "prosperya.search.label", "group": "website", "source": "What are you looking for?", "translations": { "en": "What are you looking for?", "fr": "Que recherchez-vous ?" } },
+  { "key": "prosperya.search.initial", "group": "website", "source": "Search expertise, solutions, projects and insights.", "translations": { "en": "Search expertise, solutions, projects and insights.", "fr": "Recherchez une expertise, une solution, un projet ou un article." } },
+  { "key": "prosperya.search.minimum", "group": "website", "source": "Enter at least two characters.", "translations": { "en": "Enter at least two characters.", "fr": "Saisissez au moins deux caractères." } },
+  { "key": "prosperya.search.empty", "group": "website", "source": "No matching results. Try another search.", "translations": { "en": "No matching results. Try another search.", "fr": "Aucun résultat. Essayez une autre recherche." } },
+  { "key": "prosperya.search.results", "group": "website", "source": "{count} results", "translations": { "en": "{count} results", "fr": "{count} résultats" } },
+  { "key": "prosperya.search.previous", "group": "website", "source": "Previous results", "translations": { "en": "Previous results", "fr": "Résultats précédents" } },
+  { "key": "prosperya.search.next", "group": "website", "source": "Next results", "translations": { "en": "Next results", "fr": "Résultats suivants" } },
+  { "key": "prosperya.search.close", "group": "website", "source": "Close search", "translations": { "en": "Close search", "fr": "Fermer la recherche" } }
 ]

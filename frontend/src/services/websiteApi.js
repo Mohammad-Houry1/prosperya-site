@@ -31,6 +31,7 @@ async function request(path, { query = {}, data, signal } = {}) {
 }
 
 export const websiteApi = {
+  search: (query, signal) => request('search', { query, signal }),
   expertise: (query, signal) => request('expertise', { query, signal }),
   expertiseDetail: (slug, locale, signal) => request(`expertise/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
   solutions: (query, signal) => request('solutions', { query, signal }),

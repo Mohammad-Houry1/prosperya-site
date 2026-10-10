@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 // Add this site's endpoints here, inside the group: every one of them then
 // checks the website key first. Module slugs are the CMS's (Module Management).
 Route::middleware(['website.access', 'throttle:content'])->group(function () {
+    Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search']);
     Route::get('/expertise/{slug?}', [\App\Http\Controllers\ExpertiseController::class, 'getExpertise']);
     Route::get('/solutions/{slug?}', [\App\Http\Controllers\SolutionController::class, 'getSolutions']);
     Route::get('/case-studies/{slug?}', [\App\Http\Controllers\CaseStudyController::class, 'getCaseStudies']);

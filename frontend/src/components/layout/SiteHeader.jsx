@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import BrandMark from "./BrandMark.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import LocaleSwitcher from "./LocaleSwitcher.jsx";
+import SiteSearch from "./SiteSearch.jsx";
 import PrimaryLink from "../common/PrimaryLink.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./SiteHeader.module.css";
@@ -49,6 +50,7 @@ export default function SiteHeader() {
           ))}
         </nav>
         <div className={styles.actions}>
+          <SiteSearch />
           <div className={styles.desktopActions}>
             <LocaleSwitcher />
             <ThemeSwitcher />
