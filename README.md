@@ -112,6 +112,8 @@ docker run --rm -v "$PWD/backend:/app" -w /app -e MONGODB_TEST_URI="mongodb://ho
 
 `staging` is the hardcoded reference website. Its frontend restores the populated design from `c5bc27b`, including the shared expertise template and animations. Run only `npm run dev` in `frontend` to browse it; no backend or CMS connection is needed. All supplemental content comes from `frontend/src/data/staging.data.js`. Client testimonials and legal documents are explicitly marked reference text; insight layouts reuse original expertise copy. Contact and newsletter submissions are disabled.
 
+The staging Work listing uses a responsive two-column project grid with industry/expertise filters. The Expertise listing uses numbered editorial rows for every local reference record. Both retain their hero cards and existing detail pages, with compact contact links below the listings.
+
 These branches intentionally have different content sources. Do not merge the static staging frontend into production. Make future CMS integration changes on `production` (or a branch based on it). Keep staging as the visual/content reference while authoring the CMS.
 
 To switch versions locally, stop the frontend server, commit any changes, switch branches and restart `npm run dev`.

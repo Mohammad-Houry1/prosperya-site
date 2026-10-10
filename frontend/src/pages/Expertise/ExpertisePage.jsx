@@ -1,14 +1,12 @@
 import { expertiseData } from "../../data/expertise.data.js";
 import { localizeEntity } from "../../repositories/localize.js";
 import PageHero from "../../components/common/PageHero.jsx";
+import { Link } from "react-router-dom";
+import ResponsiveImage from "../../components/common/ResponsiveImage.jsx";
 import Section from "../../components/common/Section.jsx";
-import Eyebrow from "../../components/common/Eyebrow.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
-import CTASection from "../../components/common/CTASection.jsx";
-import ArchitectureFlowDiagram from "../../components/visuals/ArchitectureFlowDiagram.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
-import CapabilityStory from "./CapabilityStory.jsx";
 import CapabilityIndex from "./CapabilityIndex.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
@@ -52,37 +50,25 @@ export default function ExpertisePage() {
         }
         visual={<CapabilityIndex items={items} locale={locale} />}
       />
-      <CapabilityStory items={items.slice(0, 4)} locale={locale} />
       <Section>
-        <div className={styles.architecture}>
-          <div className={styles.architectureCopy}>
-            <Eyebrow>{fr ? "Notre approche d’architecture" : "Our architecture approach"}</Eyebrow>
-            <h2>
-              {fr ? "Conçu pour connecter." : "Built to connect."}
-              <span>{fr ? "Pensé pour grandir." : "Designed to scale."}</span>
-            </h2>
-            <p>
-              {fr
-                ? "Notre cadre d’architecture unifie systèmes, données et processus pour créer une fondation résiliente et évolutive."
-                : "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth."}
-            </p>
-            <PrimaryLink to={`/${locale}/approach`} variant="text">
-              {fr ? "Découvrir notre approche" : "Explore our approach"}
-            </PrimaryLink>
-          </div>
-          <ArchitectureFlowDiagram />
+        <ol className={styles.rows} aria-label={fr ? "Toutes les expertises" : "All expertise"}>
+          {items.map((item, index) => <li key={item.id} className={styles.row} data-reveal="card" style={{ "--i": index }}>
+            <span className={styles.number}>{String(index + 1).padStart(2, "0")}</span>
+            <div className={styles.copy}>
+              <h2><Link to={`/${locale}/expertise/${item.slug}`}>{item.detailTitle || item.title}</Link></h2>
+              {item.description && <p className={styles.tagline}>{item.description}</p>}
+              {item.summary && <p className={styles.summary}>{item.summary}</p>}
+              {item.services?.length > 0 && <ul className={styles.capabilities}>{item.services.map((service) => <li key={service}>{service}</li>)}</ul>}
+              <PrimaryLink to={`/${locale}/expertise/${item.slug}`} variant="text">{fr ? "Explorer cette expertise" : "Explore this expertise"}</PrimaryLink>
+            </div>
+            {item.image?.src && <ResponsiveImage src={item.image.src} alt={item.image.alt || ""} width={item.image.width} height={item.image.height} className={styles.image} sizes="(max-width: 700px) 100vw, 30vw" />}
+          </li>)}
+        </ol>
+        <div className={styles.contact}>
+          <p>{fr ? "Vous hésitez entre plusieurs expertises ?" : "Not sure which capability you need?"}</p>
+          <PrimaryLink to={`/${locale}/contact`} variant="text">{fr ? "Parler à un expert" : "Talk to an expert"}</PrimaryLink>
         </div>
       </Section>
-      <CTASection
-        variant="card"
-        title={fr ? "Vous hésitez entre plusieurs expertises ?" : "Not sure which capability you need?"}
-        description={
-          fr
-            ? "Décrivez le problème : nous vous indiquerons le bon point de départ."
-            : "Describe the problem. We will point you to the right starting point."
-        }
-        secondary={{ path: "contact", label: fr ? "Parler à un expert" : "Talk to an expert" }}
-      />
     </>
   );
 }

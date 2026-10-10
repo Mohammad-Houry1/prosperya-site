@@ -4,14 +4,13 @@ import { expertiseData } from "../../data/expertise.data.js";
 import { localizeEntity } from "../../repositories/localize.js";
 import { stagingContent } from "../../services/stagingContent.js";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import ResponsiveImage from "../../components/common/ResponsiveImage.jsx";
+import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import Section from "../../components/common/Section.jsx";
-import CTASection from "../../components/common/CTASection.jsx";
-import ProjectFeature from "../../components/case-study/ProjectFeature.jsx";
 import Testimonials from "../../components/company/Testimonials.jsx";
-import SystemIcon from "../../components/system/SystemIcon.jsx";
-import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
@@ -20,8 +19,6 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import WorkDeck from "./WorkDeck.jsx";
 import styles from "./WorkPage.module.css";
-
-const METRIC_ICONS = { markets: "network", flows: "link", entities: "building", manual: "zap", close: "refresh", handoffs: "refresh", issues: "search", priority: "target" };
 
 function Filter({ label, value, options, onChange }) {
   return (
@@ -65,16 +62,6 @@ export default function WorkPage() {
       return localizeEntity(expertiseData, locale);
     },
   });
-  const { data: platformRows = [] } = useQuery({
-    queryKey: ["platforms", locale],
-    queryFn: async ({ signal }) => {
-      const response = await stagingContent.platforms({ locale }, signal);
-      return response.data || [];
-    },
-  });
-  const platforms = platformRows.map((platform) => ({
-    ...platform, id: platform.slug || platform.id, category: "",
-  }));
   const [industry, setIndustry] = useState("all");
   const [capability, setCapability] = useState("all");
   useDocumentMeta({
@@ -91,7 +78,6 @@ export default function WorkPage() {
       </Section>
     );
   const capabilityNames = Object.fromEntries((capabilities ?? []).map((c) => [c.id, c.detailTitle]));
-  const platformNames = Object.fromEntries(platforms.map((p) => [p.id, p.name]));
   const industries = [...new Map(data.filter((s) => s.industry).map((s) => [s.industry, s.industryName]))];
   const capabilityIds = [...new Set(data.flatMap((s) => s.expertiseIds))];
   const filtered = data.filter(
@@ -99,7 +85,6 @@ export default function WorkPage() {
       (industry === "all" || study.industry === industry) &&
       (capability === "all" || study.expertiseIds.includes(capability)),
   );
-  const stats = data.flatMap((study) => study.metrics).filter((metric) => METRIC_ICONS[metric.id]).slice(0, 6);
   return (
     <>
       <PageHero
@@ -108,8 +93,8 @@ export default function WorkPage() {
         lead={
           <p>
             {fr
-              ? "Des défis réels, des décisions explicites, des résultats mesurés. Découvrez comment une architecture prend forme — des exemples illustratifs de notre façon de travailler."
-              : "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work."}
+              ? "Découvrez nos exemples de transformation ERP et d’opérations connectées — des missions illustratives de notre façon de travailler."
+              : "Explore ERP transformation and connected operations through illustrative engagements that show how we work."}
           </p>
         }
         visual={<WorkDeck studies={data} locale={locale} />}
@@ -134,49 +119,33 @@ export default function WorkPage() {
           {fr ? "missions illustratives, résultats non vérifiés" : "illustrative, results not verified"}
         </p>
         {filtered.length ? (
-          <div className={styles.features2}>
+          <div className={styles.projectGrid} aria-label={fr ? "Projets" : "Projects"}>
             {filtered.map((study, index) => (
-              <ProjectFeature
-                key={study.id}
-                study={study}
-                index={index}
-                locale={locale}
-                capabilityNames={capabilityNames}
-                platformNames={platformNames}
-              />
+              <article key={study.id} className={styles.project} data-reveal="card" style={{ "--i": index }}>
+                {study.image?.src && <Link to={`/${locale}/work/${study.slug}`} className={styles.projectImage} tabIndex={-1} aria-hidden="true">
+                  <ResponsiveImage src={study.image.src} alt="" width={study.image.width} height={study.image.height} sizes="(max-width: 700px) 100vw, 50vw" />
+                </Link>}
+                <div className={styles.projectCopy}>
+                  {study.industryName && <span className={styles.industry}>{study.industryName}</span>}
+                  <h2><Link to={`/${locale}/work/${study.slug}`}>{study.name || study.title}</Link></h2>
+                  {study.description && <p>{study.description}</p>}
+                  {study.client && <span className={styles.client}>{study.client}</span>}
+                  <PrimaryLink to={`/${locale}/work/${study.slug}`} variant="text">{fr ? "Voir le cas client" : "View case study"}</PrimaryLink>
+                </div>
+              </article>
             ))}
           </div>
         ) : (
           <EmptyState />
         )}
       </PageContainer>
-      <Section>
-        <div className={styles.band}>
-          <h2>{fr ? "Sur ces missions. Mesuré par l’impact." : "Across these engagements. Measured by impact."}</h2>
-          <ul>
-            {stats.map((metric, index) => (
-              <li key={`${metric.id}-${index}`}>
-                <SystemIcon name={METRIC_ICONS[metric.id]} size={28} strokeWidth={1.2} />
-                <strong>
-                  <AnimatedCounter value={metric.value} />
-                </strong>
-                <span>{metric.label}</span>
-              </li>
-            ))}
-          </ul>
-          <p>{fr ? "Chiffres illustratifs issus des missions présentées." : "Illustrative figures from the engagements above."}</p>
+      <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} variant="rail" />
+      <Section className={styles.contactSection}>
+        <div className={styles.contact}>
+          <p>{fr ? "Un défi comparable ?" : "Facing a similar challenge?"}</p>
+          <PrimaryLink to={`/${locale}/contact`} variant="text">{fr ? "Parlons de votre projet" : "Let’s talk about your project"}</PrimaryLink>
         </div>
       </Section>
-      <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} variant="rail" />
-      <CTASection
-        variant="band"
-        title={fr ? "Un défi comparable ?" : "Facing a similar challenge?"}
-        description={
-          fr
-            ? "Dites-nous où vous en êtes : nous vous dirons à quoi pourrait ressembler un premier pas."
-            : "Tell us where you are. We will tell you what a first step could look like."
-        }
-      />
     </>
   );
 }

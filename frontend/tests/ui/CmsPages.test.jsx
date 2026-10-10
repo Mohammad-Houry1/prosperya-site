@@ -30,11 +30,11 @@ function renderPage(page, locale = "en", route = "/*", pathname = `/${locale}`) 
 test.each([
   ["about", "en", AboutPage], ["about", "fr", AboutPage],
   ["work", "en", WorkPage], ["work", "fr", WorkPage],
-])("%s renders CMS testimonials and platforms in %s", async (_name, locale, Page) => {
+])("%s renders reference testimonials in %s", async (_name, locale, Page) => {
   renderPage(<Page />, locale);
   await screen.findByText(locale === "fr" ? /Nos équipes travaillent ensemble/ : /Our teams work together/);
   expect(stagingContent.testimonials).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
-  expect(stagingContent.platforms).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
+  if (_name === "about") expect(stagingContent.platforms).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
 });
 
 test("insights renders API articles with their category and pagination", async () => {
