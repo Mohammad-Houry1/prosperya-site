@@ -24,7 +24,7 @@ class SeoModelSelectionTest extends TestCase
 
     public function test_model_names_are_allowlisted_and_must_match_the_route(): void
     {
-        $this->assertSame(['SeoPage', 'Article', 'CorporatePage'], WebsiteSeo::modelNames());
+        $this->assertSame(['SeoPage', 'Article', 'CorporatePage', 'CaseStudy', 'Expertise'], WebsiteSeo::modelNames());
         $this->getJson('/api/seo?path=/en/insights&model=User')->assertUnprocessable()->assertJsonValidationErrors('model');
         $this->getJson('/api/seo?path=/en/insights&model=Article')->assertUnprocessable();
         $this->getJson('/api/seo?path=/en/corporate/about-prosperya&model=SeoPage')->assertUnprocessable();

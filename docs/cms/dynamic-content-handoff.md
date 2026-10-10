@@ -21,10 +21,11 @@ use the existing CMS images and summaries, and hide absent optional content.
 The website key must grant Case Studies and Expertise. Work filters use each
 record's translated industry and published Expertise relationships.
 
-**The website is not fully dynamic yet.** Solutions still uses local records,
-and Work/Expertise detail pages retain their existing data sources and designs.
-New CMS slugs need detail-page integration before their links can show CMS detail
-content; matching an existing slug preserves the current detail destination.
+Work and Expertise detail routes now also read scoped CMS APIs, support new
+slugs, and retain their existing designs. Their SEO comes from the record's own
+SEO tab. See [the editing guide](work-expertise-listings.md) for exact fields.
+
+**The website is not fully dynamic yet.** Solutions still uses local records.
 Approach still imports local
 methodology records and renders several lists from translated presentation copy.
 Home still reads the same local Expertise, Case Study and process datasets.
@@ -88,11 +89,11 @@ Paths below follow `/en/...` and `/fr/...`; Home is `/en` or `/fr`.
 | About `/about` | Corporate Pages record slug `about-prosperya`, selected Users, Platforms, Testimonials | Connected | Enter/publish content, select public users, check grants |
 | Approach `/approach` | Approach record slug `approach` recommended, FAQs category `approach`, Translations | FAQs and labels connected; Approach records unconnected | Add Approach public API and connect every authored section |
 | Expertise `/expertise` | Expertise records, Translations | CMS listing connected | Configure API grants and content |
-| Expertise `/expertise/:slug` | Same Expertise record, Detail Sections, related content | Records local | Detail API; preserve existing rich-text sections and visual template |
+| Expertise `/expertise/:slug` | Same Expertise record, Detail Sections, other published Expertise | CMS connected | Configure API grants and content |
 | Solutions `/solutions` | Solutions records, related Expertise/Case Studies, Translations | Records local | List API and UI mapping |
 | Solution `/solutions/:slug` | Same Solution record and its story/outcomes/metrics/relations | Records local | Detail API and relationship resolution |
 | Work `/work` | Case Studies, Expertise filters, Testimonials, Translations | CMS listing connected | Configure API grants and content |
-| Case Study `/work/:slug` | Same Case Study, its Platforms and selected Testimonial | Main record local | Detail API, images, architecture, metrics and selected public quote |
+| Case Study `/work/:slug` | Same Case Study, its Platforms and selected Testimonial | CMS connected | Configure API grants and content |
 | Insights `/insights` | Articles and Article Categories; Newsletters for signup | Connected | Populate/publish records and category grants |
 | Article `/insights/:slug` | Article record, its images/content/SEO | Connected | Populate/publish records |
 | Contact `/contact` | Project Types, Project Stages, Contact Forms, FAQs category `contact`, Translations | Connected | Configure choices/default submission status/grants |

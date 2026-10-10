@@ -2988,24 +2988,6 @@
     }
   },
   {
-    "key": "prosperya.pages.case-study.case-study-page.illustrative-engagement-unverified-results-094592",
-    "group": "pages",
-    "source": "Illustrative engagement · unverified results",
-    "translations": {
-      "en": "Illustrative engagement · unverified results",
-      "fr": "Mission illustrative · résultats non vérifiés"
-    }
-  },
-  {
-    "key": "prosperya.pages.case-study.case-study-page.illustrative-quote-45e8ad",
-    "group": "pages",
-    "source": "Illustrative quote",
-    "translations": {
-      "en": "Illustrative quote",
-      "fr": "Citation illustrative"
-    }
-  },
-  {
     "key": "prosperya.pages.case-study.case-study-page.industry-b26ab6",
     "group": "pages",
     "source": "Industry",
@@ -4551,6 +4533,24 @@
     "translations": {
       "en": "Let’s talk about your {solution}.",
       "fr": "Parlons de votre {solution}."
+    }
+  },
+  {
+    "key": "prosperya.work.detail.client",
+    "group": "pages",
+    "source": "Client",
+    "translations": {
+      "en": "Client",
+      "fr": "Client"
+    }
+  },
+  {
+    "key": "prosperya.work.detail.duration",
+    "group": "pages",
+    "source": "Duration",
+    "translations": {
+      "en": "Duration",
+      "fr": "Durée"
     }
   }
 ]

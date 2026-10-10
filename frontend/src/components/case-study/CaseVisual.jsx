@@ -6,7 +6,7 @@ export default function CaseVisual({ study, priority = false, alt = "", sizes })
   if (study.image)
     return (
       <ResponsiveImage
-        src={study.image.src}
+        src={study.image.url || study.image.src}
         width={study.image.width}
         height={study.image.height}
         alt={alt}
@@ -14,5 +14,6 @@ export default function CaseVisual({ study, priority = false, alt = "", sizes })
         sizes={sizes}
       />
     );
-  return <CoverArt variant={study.cover} seed={study.id.length * 7} />;
+  const seed = [...String(study.id || study.slug || "")].reduce((value, letter) => (value * 31 + letter.charCodeAt(0)) % 2147483647, 7);
+  return <CoverArt variant={study.cover} seed={seed} />;
 }

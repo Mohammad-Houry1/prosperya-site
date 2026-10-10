@@ -46,7 +46,7 @@ function frame(p, afterCount) {
   };
 }
 
-function Diagram({ before, after, progress, svgRef, labels }) {
+function Diagram({ before, after, progress, svgRef, labels, coreName }) {
   const f = frame(progress, after.length);
   return (
     <svg ref={svgRef} viewBox="0 0 1000 470" className={styles.svg} role="img" aria-label={labels.aria}>
@@ -67,7 +67,7 @@ function Diagram({ before, after, progress, svgRef, labels }) {
       <g data-core style={{ opacity: f.core }}>
         <circle cx={CORE[0]} cy={CORE[1]} r="96" className={styles.halo} />
         <circle cx={CORE[0]} cy={CORE[1]} r="68" className={styles.core} />
-        <text x={CORE[0]} y={CORE[1] - 6} className={styles.coreName}>NetSuite</text>
+        <text x={CORE[0]} y={CORE[1] - 6} className={styles.coreName}>{coreName || labels.core}</text>
         <text x={CORE[0]} y={CORE[1] + 18} className={styles.coreSub}>{labels.core}</text>
       </g>
       {before.map((name, i) => {
@@ -95,7 +95,8 @@ function Diagram({ before, after, progress, svgRef, labels }) {
 export default function ArchitectureMorph({ detail, labels }) {
   const reduced = useReducedMotion();
   const compact = useMediaQuery("(max-width: 900px)");
-  const staticMode = reduced || compact;
+  const dense = detail.before.length > BEFORE_AT.length || detail.after.length > 8;
+  const staticMode = reduced || compact || dense;
   const section = useRef(null);
   const svg = useRef(null);
   const status = useRef(null);
@@ -174,15 +175,15 @@ export default function ArchitectureMorph({ detail, labels }) {
               <span>{title}</span>
               {caption}
             </figcaption>
-            {compact ? (
+            {compact || dense ? (
               <ul className={`${styles.chips} ${p ? styles.chipsAfter : ""}`}>
-                {p ? <li className={styles.chipCore}>NetSuite</li> : null}
+                {p ? <li className={styles.chipCore}>{detail.coreName || labels.core}</li> : null}
                 {(p ? detail.after : detail.before).map((name) => (
                   <li key={name}>{name}</li>
                 ))}
               </ul>
             ) : (
-              <Diagram before={detail.before} after={detail.after} progress={p} labels={labels} />
+              <Diagram before={detail.before} after={detail.after} progress={p} labels={labels} coreName={detail.coreName} />
             )}
           </figure>
         ))}
@@ -200,7 +201,7 @@ export default function ArchitectureMorph({ detail, labels }) {
           <p className={styles.captionBefore}>{detail.beforeCaption}</p>
           <p className={styles.captionAfter}>{detail.afterCaption}</p>
         </div>
-        <Diagram before={detail.before} after={detail.after} progress={0} svgRef={svg} labels={labels} />
+        <Diagram before={detail.before} after={detail.after} progress={0} svgRef={svg} labels={labels} coreName={detail.coreName} />
       </div>
     </div>
   );

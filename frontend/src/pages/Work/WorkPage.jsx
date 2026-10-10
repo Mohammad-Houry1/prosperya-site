@@ -16,6 +16,7 @@ import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./WorkPage.module.css";
+import WorkDeck from "./WorkDeck.jsx";
 
 export default function WorkPage() {
   const { locale, t } = useLocale();
@@ -33,7 +34,7 @@ export default function WorkPage() {
   const filtered = rows.filter((row) => (!selectedIndustry || row.industry === selectedIndustry)
     && (!selectedCapability || row.expertise_ids?.includes(selectedCapability)));
   return <>
-    <PageHero layout="stacked" eyebrow={t("pages.work.work-page.work-2af496", { en: "Work", fr: "Projets" })}
+    <PageHero visual={rows.length ? <WorkDeck studies={rows} locale={locale} /> : undefined} eyebrow={t("pages.work.work-page.work-2af496", { en: "Work", fr: "Projets" })}
       title={t("pages.work.work-page.transformation-stories-that-prove-the-impact-f01aa8", { en: "Transformation stories that prove the impact", fr: "Des transformations qui prouvent l’impact" })}
       lead={<p>{t("pages.work.work-page.real-challenges-explicit-decisions-measured-outcomes-see-b93c0c", { en: "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work.", fr: "Des défis réels, des décisions explicites, des résultats mesurés. Découvrez comment une architecture prend forme — des exemples illustratifs de notre façon de travailler." })}</p>} />
     <PageContainer>

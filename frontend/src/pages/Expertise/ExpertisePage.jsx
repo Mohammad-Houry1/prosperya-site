@@ -13,6 +13,7 @@ import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import styles from "./ExpertisePage.module.css";
+import CapabilityIndex from "./CapabilityIndex.jsx";
 
 export default function ExpertisePage() {
   const { locale, t } = useLocale();
@@ -20,7 +21,7 @@ export default function ExpertisePage() {
     queryFn: ({ signal }) => loadMarketingList("expertise", locale, signal) });
   useDocumentMeta({ title: t("nav.expertise") + " — Prosperya" });
   return <>
-    <PageHero layout="stacked" eyebrow={t("nav.expertise")}
+    <PageHero visual={query.data?.length ? <CapabilityIndex items={query.data} locale={locale} /> : undefined} eyebrow={t("nav.expertise")}
       title={t("pages.expertise.expertise-page.capabilities-that-drive-measurable-results-ad246d", { en: "Capabilities that drive measurable results.", fr: "Des expertises qui produisent des résultats." })}
       lead={<p>{t("pages.expertise.expertise-page.we-help-enterprises-design-connect-and-optimize-2b00c4", { en: "We help enterprises design, connect and optimize their systems to simplify operations, reduce complexity and unlock performance at scale.", fr: "Nous aidons les entreprises à concevoir, connecter et optimiser leurs systèmes pour simplifier les opérations, réduire la complexité et libérer la performance." })}</p>} />
     <PageContainer>

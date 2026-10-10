@@ -1,7 +1,8 @@
 # Work and Expertise listing designs
 
-The Work and Expertise index pages have been simplified. Detail page designs
-and their current data sources are unchanged by this change.
+The Work and Expertise index pages have been simplified. Their right-hand hero
+cards are retained and populated from the CMS. Detail page designs are retained;
+their content now comes from CMS records, including newly created slugs.
 
 ## Work → Case Studies
 
@@ -36,7 +37,8 @@ route SEO comes from SEO Pages (`work` and `expertise`). No new CMS module or
 field is needed. The exported label file preserves the current source defaults;
 the CMS import command upserts labels and does not delete old records.
 
-The site backend now has list endpoints `/api/case-studies` and `/api/expertise`.
+The site backend has list endpoints `/api/case-studies` and `/api/expertise`,
+plus detail endpoints at the same paths followed by the record slug.
 They enforce website-key module grants, tenant/owner restrictions and published
 project/country/language scopes, exclude deleted/future/inactive records, order
 by CMS `order`, paginate, and return only explicit public card fields.
@@ -44,8 +46,30 @@ The frontend follows all API pages and never substitutes local record data.
 Grant Case Studies and Expertise to the existing website key in API Keys, and
 deploy both the site backend and frontend to activate the connections.
 
-**Remaining:** Work and Expertise detail routes still read their previous local
-datasets. Existing matching slugs continue to resolve there; arbitrary new CMS
-slugs require a separate detail API/adapter integration. Their designs were
-deliberately left unchanged. Home's featured-record connections, Solutions and
-Approach integration are also separate remaining work.
+## Detail pages
+
+Work detail content comes from the selected Case Study's Description, Challenge,
+Challenge Points, Solution, Results, Metrics, Metrics Note, Before/After titles
+and compact system lists, Deliverables, Sections, Implementation Steps and Gallery.
+The selected Platforms determine the technology stack in selection order: the
+first published platform is the central platform. The selected Testimonial
+supplies the quote. Client, Duration and Metrics populate the hero fact strip.
+Hidden or ungranted related records are omitted. The next
+project comes from published CMS records. Empty optional blocks are hidden.
+Dense architecture lists switch to the existing compact list presentation so
+adding more than seven source boxes cannot crash or discard CMS content.
+
+Expertise detail content uses Expertise Title, Description and Detail Sections,
+including each section's image. The existing hero animations and reading
+navigation remain. Related expertise comes from other published Expertise rows.
+Capabilities/tagline/summary/image populate the overview; Delivery/Metrics are
+not extra slots in the existing Expertise detail template.
+
+Detail SEO now reads the record's own SEO tab (CaseStudy or Expertise), including
+new slugs, initial HTML metadata and sitemap entries. Overview SEO continues to
+come from SEO Pages. Fixed captions use Translations; the label export includes
+the Client/Duration captions. No new CMS fields are needed.
+
+**Remaining:** Home's featured-record connections, Solutions and Approach
+integration are separate remaining work. The site deployment and website key's
+actual grants/content must be configured before the new sources can appear live.

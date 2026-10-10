@@ -1,8 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { expertiseData } from "../../data/expertise.data.js";
-import { expertiseDetailsData } from "../../data/expertiseDetails.data.js";
-import { localizeEntity } from "../../repositories/localize.js";
+import { websiteApi } from "../../services/websiteApi.js";
+import { loadMarketingList } from "../../repositories/marketingListings.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import Section from "../../components/common/Section.jsx";
@@ -16,18 +15,19 @@ export default function ExpertiseDetailPage() {
   const {locale, t } = useLocale();
   const { data: page = null, isLoading, isError, refetch } = useQuery({
     queryKey: ["expertise-page", locale, slug],
-    queryFn: async () => {
-      const content = expertiseDetailsData[slug];
-      return content ? { slug, ...localizeEntity(content, locale) } : null;
+    queryFn: async ({ signal }) => {
+      try { return (await websiteApi.expertiseDetail(slug, locale, signal)).data; }
+      catch (error) { if (error.status === 404) return null; throw error; }
     },
     enabled: Boolean(slug),
   });
-  useDocumentMeta({ title: page ? `${page.title} — Prosperya` : "Prosperya — Expertise" });
+  const relatedQuery = useQuery({ queryKey: ["expertise-listing", locale], queryFn: ({ signal }) => loadMarketingList("expertise", locale, signal) });
+  useDocumentMeta({ title: page ? `${page.title} — Prosperya` : "Prosperya — Expertise", model: "Expertise" });
   if (isLoading) return <PageLoader />;
   if (isError) return <Section><ErrorState onRetry={refetch} /></Section>;
   if (!page) return <Section><EmptyState title={t("pages.expertise-detail.expertise-detail-page.expertise-not-found-6043fe", { en: "Expertise not found", fr: "Expertise introuvable" })} /></Section>;
-  const related = localizeEntity(expertiseData, locale)
+  const related = (relatedQuery.data ?? [])
     .filter((item) => item.slug !== slug)
-    .map((item) => ({ id: item.id, slug: item.slug, title: item.detailTitle || item.title }));
+    .map((item) => ({ id: item.id, slug: item.slug, title: item.title }));
   return <ExpertisePageContent page={page} related={related} locale={locale} />;
 }

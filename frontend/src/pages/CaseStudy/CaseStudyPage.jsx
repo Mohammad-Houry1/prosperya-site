@@ -1,7 +1,6 @@
 import { websiteApi } from "../../services/websiteApi.js";
-import { caseStudiesData } from "../../data/caseStudies.data.js";
-import { caseStudyDetailsData, industries } from "../../data/caseStudyDetails.data.js";
-import { localizeEntity } from "../../repositories/localize.js";
+import { caseStudyDetail } from "../../repositories/caseStudyDetail.js";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 import { ArrowRight, Quote, Lock } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -29,39 +28,16 @@ export default function CaseStudyPage() {
 
   const { data: study = null, isLoading: studyIsLoading, isError: studyIsError, refetch: studyRefetch } = useQuery({
     queryKey: ["case-study", locale, slug],
-    queryFn: async () => {
-      const studies = localizeEntity(caseStudiesData, locale).map((study) => {
-        const industry = caseStudyDetailsData[study.id]?.industry;
-        return industry
-          ? { ...study, industry, industryName: industries[industry][locale] ?? industries[industry].en }
-          : study;
-      });
-      const index = studies.findIndex((study) => study.slug === slug);
-      if (index === -1) return null;
-      const study = studies[index];
-      const detail = caseStudyDetailsData[study.id];
-      return {
-        ...study,
-        detail: detail ? localizeEntity(detail, locale) : null,
-        next: studies.length > 1 ? studies[(index + 1) % studies.length] : null,
-      };
+    queryFn: async ({ signal }) => {
+      try { return caseStudyDetail((await websiteApi.caseStudy(slug, locale, signal)).data); }
+      catch (error) { if (error.status === 404) return null; throw error; }
     },
     enabled: Boolean(slug),
   });
-  const { data: platformRows = [] } = useQuery({
-    queryKey: ["platforms", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.platforms({ locale }, signal);
-      return response.data || [];
-    },
-  });
-  const platforms = platformRows.map((platform) => ({
-    ...platform, id: platform.slug || platform.id, category: "",
-  }));
   const item = study;
   useDocumentMeta({
     title: item ? `${item.name} — Prosperya` : t("pages.case-study.case-study-page.prosperya-work-1636b5", { en: "Prosperya — Work", fr: "Prosperya — Projets" }),
-    description: item?.detail?.intro ?? item?.description,
+    description: item?.detail?.intro ?? item?.description, model: "CaseStudy",
   });
   if (studyIsLoading) return <PageLoader />;
   if (studyIsError)
@@ -77,7 +53,8 @@ export default function CaseStudyPage() {
       </Section>
     );
   const detail = item.detail;
-  const stack = platforms.filter((p) => item.platformIds.includes(p.id) && p.id !== "netsuite");
+  const stack = item.platforms;
+  const factLabels = { client: t("work.detail.client", { en: "Client", fr: "Client" }), duration: t("work.detail.duration", { en: "Duration", fr: "Durée" }) };
   const [quote, role, org] = detail.quote;
   return (
     <>
@@ -93,7 +70,7 @@ export default function CaseStudyPage() {
         lead={
           <>
             <p className={styles.industry}>{detail.industryLabel}</p>
-            <p>{detail.intro}</p>
+            <CmsRichHtml html={detail.intro} />
           </>
         }
         actions={
@@ -104,7 +81,7 @@ export default function CaseStudyPage() {
             </PrimaryLink>
           </>
         }
-        extra={<p className={styles.disclaimer}>{t("pages.case-study.case-study-page.illustrative-engagement-unverified-results-094592", { en: "Illustrative engagement · unverified results", fr: "Mission illustrative · résultats non vérifiés" })}</p>}
+        extra={detail.metricsNote ? <CmsRichHtml html={detail.metricsNote} className={styles.disclaimer} /> : undefined}
         visual={
           // The case's own cover with its headline facts. The page's one Hub
           // is the "after" state of the architecture morph further down.
@@ -112,31 +89,32 @@ export default function CaseStudyPage() {
             <div className={styles.heroMedia} data-reveal="image">
               <CaseVisual study={item} priority sizes="(min-width: 900px) 50vw, 100vw" />
             </div>
-            <dl className={styles.facts}>
+            {detail.heroFacts.length > 0 && <dl className={styles.facts}>
               {detail.heroFacts.map(([value, label]) => (
                 <div key={`${value}-${label}`}>
-                  <dt>{label}</dt>
+                  <dt>{factLabels[label] || label}</dt>
                   <dd>{value}</dd>
                 </div>
               ))}
-            </dl>
+            </dl>}
           </figure>
         }
       />
+      {(detail.challenge || detail.challengePoints.length > 0 || detail.glance.length > 0) && (
       <Section>
         <div className={styles.challenge}>
           <div>
             <h2 className={styles.h2}>
               {t("pages.case-study.case-study-page.the-challenge-c39e0a", { en: "The challenge", fr: "Le défi" })}
             </h2>
-            <p className={styles.body}>{detail.challenge}</p>
+            <CmsRichHtml className={styles.body} html={detail.challenge} />
             <ul className={styles.bullets}>
               {detail.challengePoints.map((point) => (
                 <li key={point}>{point}</li>
               ))}
             </ul>
           </div>
-          <div className={styles.glance} data-reveal="card" style={{ "--i": 2 }}>
+          {detail.glance.length > 0 && (<div className={styles.glance} data-reveal="card" style={{ "--i": 2 }}>
             <Eyebrow>{t("pages.case-study.case-study-page.at-a-glance-34f4be", { en: "At a glance", fr: "En un coup d’œil" })}</Eyebrow>
             <ul>
               {detail.glance.map(([icon, value, label, note]) => (
@@ -150,10 +128,11 @@ export default function CaseStudyPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div>)}
         </div>
       </Section>
-      <section className={styles.architecture}>
+      )}
+      {(detail.before.length > 0 || detail.after.length > 0) && (<section className={styles.architecture}>
         <PageContainer>
           <h2 className={styles.h2}>
             {t("pages.case-study.case-study-page.the-architecture-8ae880", { en: "The architecture", fr: "L’architecture" })}
@@ -169,14 +148,15 @@ export default function CaseStudyPage() {
             }}
           />
         </PageContainer>
-      </section>
+      </section>)}
+      {(detail.solutionIntro || detail.features.length > 0 || stack.length > 0) && (
       <Section>
         <div className={styles.solution}>
           <div>
             <h2 className={styles.h2}>
               {t("pages.case-study.case-study-page.the-solution-f395ce", { en: "The solution", fr: "La solution" })}
             </h2>
-            <p className={styles.body}>{detail.solutionIntro}</p>
+            <CmsRichHtml className={styles.body} html={detail.solutionIntro} />
             <ul className={styles.features}>
               {detail.features.map(([icon, text]) => (
                 <li key={text}>
@@ -186,15 +166,15 @@ export default function CaseStudyPage() {
               ))}
             </ul>
           </div>
-          <div className={styles.stack} data-reveal="card" style={{ "--i": 2 }}>
+          {stack.length > 0 && (<div className={styles.stack} data-reveal="card" style={{ "--i": 2 }}>
             <Eyebrow>{t("pages.case-study.case-study-page.technology-stack-e21e26", { en: "Technology stack", fr: "Pile technologique" })}</Eyebrow>
             <div className={styles.stackGrid}>
               <div className={styles.stackCore}>
-                <strong>NetSuite</strong>
+                <strong>{stack[0]?.name}</strong>
                 <span>{t("pages.case-study.case-study-page.core-erp-e561c8", { en: "Core ERP", fr: "Socle ERP" })}</span>
               </div>
               <ul>
-                {stack.map((platform) => (
+                {stack.slice(1).map((platform) => (
                   <li key={platform.id}>
                     {platform.name}
                     <span>{platform.category}</span>
@@ -206,16 +186,18 @@ export default function CaseStudyPage() {
               <Lock size={14} strokeWidth={1.6} aria-hidden="true" />
               {t("pages.case-study.case-study-page.secure-scalable-connected-7ae226", { en: "Secure. Scalable. Connected.", fr: "Sûr. Évolutif. Connecté." })}
             </p>
-          </div>
+          </div>)}
         </div>
       </Section>
+      )}
+      {(detail.outcomeIntro || detail.outcomes.length > 0 || quote) && (
       <Section>
         <div className={styles.outcome}>
           <div>
             <h2 className={styles.h2}>
               {t("pages.case-study.case-study-page.the-outcome-4d35d7", { en: "The outcome", fr: "Le résultat" })}
             </h2>
-            <p className={styles.body}>{detail.outcomeIntro}</p>
+            <CmsRichHtml className={styles.body} html={detail.outcomeIntro} />
             <ul className={styles.outcomes}>
               {detail.outcomes.map(([value, label]) => (
                 <li key={label}>
@@ -227,19 +209,27 @@ export default function CaseStudyPage() {
               ))}
             </ul>
           </div>
-          <figure className={styles.quote} data-reveal="card" style={{ "--i": 3 }}>
+          {quote && (<figure className={styles.quote} data-reveal="card" style={{ "--i": 3 }}>
             <Quote size={34} strokeWidth={1.1} aria-hidden="true" />
             <blockquote>{quote}</blockquote>
             <figcaption>
               <b>— {role}</b>
               {org}
-              <em>{t("pages.case-study.case-study-page.illustrative-quote-45e8ad", { en: "Illustrative quote", fr: "Citation illustrative" })}</em>
             </figcaption>
-          </figure>
+          </figure>)}
         </div>
       </Section>
+      )}
+      {[...detail.sections.map((row) => ({ title: row.section_title, description: row.section_description, image: row.section_image })),
+        ...detail.steps.map((row) => ({ title: row.step_title, description: row.step_description, image: row.step_image }))].map((row, index) => (
+        <Section key={index}><div className={styles.solution}>
+          <div>{row.title && <h2 className={styles.h2}>{row.title}</h2>}<CmsRichHtml html={row.description} className={styles.body} /></div>
+          {row.image?.url && <img src={row.image.url} alt={row.image.alt || row.title || ""} loading="lazy" style={{ width: "100%", height: "auto" }} />}
+        </div></Section>
+      ))}
+      {detail.gallery.length > 0 && <Section><div className={styles.gallery}>{detail.gallery.map((image, index) => <img key={index} src={image.url} alt={image.alt || ""} loading="lazy" />)}</div></Section>}
       {/* The Close: the next case, then one line to talk about this one. */}
-      <Section>
+      {item.next && (<Section>
         {item.next && (
           <Link to={`/${locale}/work/${item.next.slug}`} className={styles.next}>
             <div className={styles.nextMedia} data-reveal="image" aria-hidden="true">
@@ -251,7 +241,7 @@ export default function CaseStudyPage() {
               </div>
               <Eyebrow>{t("pages.case-study.case-study-page.next-project-eb1dfe", { en: "Next project", fr: "Projet suivant" })}</Eyebrow>
               <h2>{item.next.name}</h2>
-              <p>{item.next.description}</p>
+              <CmsRichHtml html={item.next.description} />
               <span className={styles.nextCta}>
                 {t("pages.case-study.case-study-page.view-case-study-2050cc", { en: "View case study", fr: "Voir le cas client" })}
                 <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
@@ -268,7 +258,7 @@ export default function CaseStudyPage() {
             </Link>
           </p>
         )}
-      </Section>
+      </Section>)}
       {/* Only case: no next case to show, so the Close is the full band with its Wave. */}
       {!item.next && (
         <CTASection

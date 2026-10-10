@@ -29,6 +29,39 @@ final class PublicPayload
                 (array) $record->related_expertise))), 'featured' => (bool) $record->featured];
     }
 
+    private function textList(mixed $values, string $locale): array
+    {
+        return array_values(array_filter(array_map(fn ($value) => $this->content->text(
+            (object) ['value' => $value], 'value', $locale), (array) $values), fn ($value) => trim($value) !== ''));
+    }
+
+    public function caseStudyDetail(\App\Models\CaseStudy $record, string $locale): array
+    {
+        $result = $this->caseStudyCard($record, $locale);
+        foreach (['description', 'challenge', 'solution', 'results', 'before_title', 'after_title', 'duration', 'metrics_note'] as $field) {
+            $result[$field] = $record->text('case_study_'.$field, $locale);
+        }
+        foreach (['challenge_points', 'before', 'after', 'deliverables'] as $field) {
+            $result[$field] = $this->textList($record->{'case_study_'.$field}, $locale);
+        }
+        $result['metrics'] = array_values(array_map(fn ($row) => [
+            'value' => $this->content->text((object) $row, 'metric_value', $locale),
+            'label' => $this->content->text((object) $row, 'metric_label', $locale)], (array) $record->case_study_metrics));
+        $result['sections'] = $this->localizedRows($record->sections, ['section_title', 'section_description'], 'section_image', $locale);
+        $result['implementation_steps'] = $this->localizedRows($record->implementation_steps, ['step_title', 'step_description'], 'step_image', $locale);
+        $result['gallery'] = array_values(array_filter(array_map(fn ($value) => $this->media($value, $locale), (array) $record->case_study_gallery)));
+        return [...$result, 'seo' => $this->seo($record, $locale)];
+    }
+
+    public function expertiseDetail(\App\Models\Expertise $record, string $locale): array
+    {
+        return [...$this->expertiseCard($record, $locale),
+            'description' => $record->text('expertise_description', $locale),
+            'sections' => array_map(fn ($row) => ['title' => $row['section_title'], 'description' => $row['section_description'],
+                'image' => $row['section_image']], $this->localizedRows($record->sections, ['section_title', 'section_description'], 'section_image', $locale)),
+            'seo' => $this->seo($record, $locale)];
+    }
+
     public function expertiseCard(\App\Models\Expertise $record, string $locale): array
     {
         return ['id' => (string) $record->id, 'slug' => $record->slug,
@@ -36,9 +69,7 @@ final class PublicPayload
             'tagline' => $record->text('expertise_tagline', $locale),
             'summary' => $record->text('expertise_summary', $locale),
             'image' => $this->media($record->expertise_image, $locale),
-            'capabilities' => array_values(array_filter(array_map(fn ($value) => $this->content->text(
-                (object) ['value' => $value], 'value', $locale), (array) $record->expertise_capabilities),
-                fn ($value) => trim($value) !== '')), 'featured' => (bool) $record->featured];
+            'capabilities' => $this->textList($record->expertise_capabilities, $locale), 'featured' => (bool) $record->featured];
     }
 
     public function referenceId(mixed $value): ?string

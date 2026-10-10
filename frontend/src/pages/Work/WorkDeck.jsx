@@ -25,8 +25,8 @@ export default function WorkDeck({ studies, locale }) {
                 <CaseVisual study={study} sizes="320px" />
               </span>
               <span className={styles.caption}>
-                <small>{study.category}</small>
-                <strong>{study.name}</strong>
+                <small>{study.industry || study.category}</small>
+                <strong>{study.title || study.name}</strong>
               </span>
             </span>
           </Link>

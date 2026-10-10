@@ -97,7 +97,10 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
               <span className={styles.sectionNumber}>{String(index + 1).padStart(2, "0")}</span>
               {section.title && <h2>{section.title}</h2>}
             </div>
-            <CmsRichHtml html={section.description} imageAlt={section.title || page.title} className={styles.sectionBody} />
+            <div className={styles.sectionBody}>
+              <CmsRichHtml html={section.description} imageAlt={section.title || page.title} />
+              {section.image?.url && <img src={section.image.url} alt={section.image.alt || section.title || ""} loading="lazy" style={{ maxWidth: "100%", height: "auto", marginTop: 24 }} />}
+            </div>
           </div>
         </Section>
       ))}

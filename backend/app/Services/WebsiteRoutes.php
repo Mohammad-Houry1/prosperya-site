@@ -30,8 +30,8 @@ final class WebsiteRoutes
                 break;
             }
         }
-        if ($kind === 'page' && preg_match('~^(insights|corporate)/([^/]+)$~u', $slug, $match)) {
-            $kind = $match[1] === 'insights' ? 'article' : 'legal';
+        if ($kind === 'page' && preg_match('~^(insights|corporate|work|expertise)/([^/]+)$~u', $slug, $match)) {
+            $kind = match ($match[1]) { 'insights' => 'article', 'corporate' => 'legal', 'work' => 'work', 'expertise' => 'expertise' };
             $slug = rawurldecode($match[2]);
             if (! preg_match('/^[\p{L}\p{N}_-]+$/u', $slug)) {
                 return null;
@@ -49,6 +49,7 @@ final class WebsiteRoutes
         $suffix = match ($kind) {
             'legal' => self::LEGAL[$slug][$locale] ?? 'corporate/'.rawurlencode($slug),
             'article' => 'insights/'.rawurlencode($slug),
+            'work', 'expertise' => $kind.'/'.rawurlencode($slug),
             default => $slug === 'home' ? '' : $slug,
         };
 

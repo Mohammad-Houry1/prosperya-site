@@ -10,7 +10,8 @@ use App\Models\SeoPage;
 final class WebsiteSeo
 {
     /** One route-to-model mapping for metadata, canonicals and sitemap entries. */
-    private const SOURCES = ['page' => SeoPage::class, 'article' => Article::class, 'legal' => CorporatePage::class];
+    private const SOURCES = ['page' => SeoPage::class, 'article' => Article::class, 'legal' => CorporatePage::class,
+        'work' => \App\Models\CaseStudy::class, 'expertise' => \App\Models\Expertise::class];
 
     public function __construct(private readonly WebsiteAccess $access, private readonly PublicPayload $payload,
         private readonly WebsiteRoutes $routes, private readonly PublicContent $content) {}
@@ -124,10 +125,13 @@ final class WebsiteSeo
     {
         $locale = $route['locale'];
         $seo = $this->payload->seo($record, $locale);
-        $title = $seo['title'] ?: ($record->text($route['kind'] === 'article' ? 'article_title' : 'title', $locale)
+        $titleField = match ($route['kind']) { 'article' => 'article_title', 'work' => 'case_study_title', 'expertise' => 'expertise_title', default => 'title' };
+        $descriptionField = match ($route['kind']) { 'article' => 'article_small_description', 'work' => 'case_study_summary', 'expertise' => 'expertise_summary', default => 'description' };
+        $imageField = match ($route['kind']) { 'work' => 'case_study_image', 'expertise' => 'expertise_image', default => 'cover_image' };
+        $title = $seo['title'] ?: ($record->text($titleField, $locale)
             ?: $record->text('name', $locale) ?: 'Prosperya');
-        $description = $seo['description'] ?: $record->text($route['kind'] === 'article' ? 'article_small_description' : 'description', $locale);
-        $image = $this->payload->media($record->meta_image, $locale) ?? $this->payload->media($record->cover_image, $locale);
+        $description = $seo['description'] ?: $record->text($descriptionField, $locale);
+        $image = $this->payload->media($record->meta_image, $locale) ?? $this->payload->media($record->{$imageField}, $locale);
         $canonical = $this->canonical($seo['url'], $route['path']);
 
         return ['path' => $route['path'], 'locale' => $locale, 'status' => 200, 'title' => $title,

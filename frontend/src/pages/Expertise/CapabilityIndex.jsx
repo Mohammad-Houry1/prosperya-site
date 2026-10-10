@@ -1,6 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import styles from "./CapabilityIndex.module.css";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 
 /*
   Expertise opens on its own table of contents: every discipline as one row
@@ -14,10 +15,10 @@ export default function CapabilityIndex({ items, locale }) {
         <li key={item.id} className={styles.row} data-reveal="card" style={{ "--i": index + 2 }}>
           <Link to={`/${locale}/expertise/${item.slug}`} className={styles.link}>
             <span className={styles.number}>{item.number ?? String(index + 1).padStart(2, "0")}</span>
-            <span className={styles.text}>
+            <div className={styles.text}>
               <strong>{item.detailTitle ?? item.title}</strong>
-              <span>{item.summary ?? item.description}</span>
-            </span>
+              <CmsRichHtml className={styles.summary} html={item.summary ?? item.description} />
+            </div>
             <ArrowUpRight className={styles.arrow} size={20} strokeWidth={1.4} aria-hidden="true" />
           </Link>
         </li>
