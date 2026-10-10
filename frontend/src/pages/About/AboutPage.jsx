@@ -27,8 +27,8 @@ function CmsImage({ media, fallbackAlt = "", ...props }) {
 export default function AboutPage() {
   const { locale, t } = useLocale();
   const pageQuery = useQuery({
-    queryKey: ["page", "about", locale],
-    queryFn: async ({ signal }) => (await websiteApi.page("about", locale, signal)).data,
+    queryKey: ["page", "about-prosperya", locale],
+    queryFn: async ({ signal }) => (await websiteApi.page("about-prosperya", locale, signal)).data,
     retry: false,
   });
   const page = pageQuery.data;

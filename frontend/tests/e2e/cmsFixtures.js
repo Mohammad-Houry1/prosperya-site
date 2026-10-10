@@ -21,7 +21,7 @@ export function fixtureData(url) {
   if (path === "case-studies") return [caseStudy];
   if (path.startsWith("case-studies/")) return caseStudy;
   if (path === "approaches/approach") return { slug: "approach", approach_title: "CMS Approach", approach_description: "<p>CMS approach</p>", methodology: [{ methodology_title: "CMS Stage", methodology_buttons: ["Discuss"], methodology_descriptions: ["<p>CMS methodology</p>"] }], how_we_work: [], collaboration_items: [], principles: [] };
-  if (path === "pages/about") return { slug: "about", about_title: "CMS About", description: "<p>CMS about</p>", about_users: [], about_facts: [], about_principles: [], about_steps: [], about_focus: [] };
+  if (path === "pages/about-prosperya") return { slug: "about-prosperya", about_title: "CMS About", description: "<p>CMS about</p>", about_users: [], about_facts: [], about_principles: [], about_steps: [], about_focus: [] };
   if (path === "pages/home") return { slug: "home", architecture_title: "CMS Architecture", architecture_description: "<p>CMS foundation</p>", architecture_column_1: ["Finance"], architecture_column_2: ["Operations"], architecture_column_3: ["Customer"], architecture_column_4: ["Analytics"] };
   if (path === "seo") { const route = url.searchParams.get("path"); return { path: route, locale, title: "CMS metadata", description: "CMS metadata description", robots: "index, follow", canonical: `http://127.0.0.1:5173${route}`, alternates: [] }; }
   return [];
