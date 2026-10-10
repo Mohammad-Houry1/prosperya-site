@@ -35,13 +35,15 @@ class WebsiteSeoPermissionTest extends TestCase
             'modules' => [], 'statuses' => ['published' => []],
             'website_settings' => ['default_locale' => 'en', 'locales' => ['en', 'fr']]])]);
 
-        foreach (['/en', '/fr', '/en/about', '/fr/about', '/en/expertise/systems-integration', '/fr/work/global-retail-core'] as $path) {
+        foreach (['/en', '/fr', '/en/about', '/fr/about'] as $path) {
             $this->getJson('/api/seo?path='.$path)->assertOk()
                 ->assertJsonPath('data.robots', 'noindex, follow')
                 ->assertJsonPath('data.canonical', 'https://site.example.test'.$path)
                 ->assertJsonCount(0, 'data.alternates');
         }
         $this->getJson('/api/seo?path=/en/unknown')->assertNotFound();
+        $this->getJson('/api/seo?path=/en/expertise/systems-integration')->assertNotFound();
+        $this->getJson('/api/seo?path=/fr/work/global-retail-core')->assertNotFound();
         $this->getJson('/api/seo?path=/en/insights/missing')->assertNotFound();
     }
 }

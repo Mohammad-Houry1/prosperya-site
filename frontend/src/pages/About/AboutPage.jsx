@@ -1,8 +1,4 @@
-import { companyData } from "../../data/company.data.js";
-import { expertiseData } from "../../data/expertise.data.js";
-import { localizeEntity } from "../../repositories/localize.js";
 import { websiteApi } from "../../services/websiteApi.js";
-import { Linkedin } from "lucide-react";
 import ClientCompanies from "../../components/company/ClientCompanies.jsx";
 import Testimonials from "../../components/company/Testimonials.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
@@ -10,225 +6,139 @@ import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import Section from "../../components/common/Section.jsx";
 import Eyebrow from "../../components/common/Eyebrow.jsx";
 import ResponsiveImage from "../../components/common/ResponsiveImage.jsx";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 import CTASection from "../../components/common/CTASection.jsx";
-import ProcessPath from "../../components/company/ProcessPath.jsx";
-import SystemIcon from "../../components/system/SystemIcon.jsx";
 import RevealText from "../../motion/components/RevealText.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
-import { aboutCopy } from "./about.copy.js";
 import styles from "./AboutPage.module.css";
 
-/*
-  About is the calm room of the site: editorial type, one photograph given
-  space, restrained reveals only. No system diagrams here.
-*/
+const hasText = (value) => typeof value === "string" && value.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim() !== "";
+const rowsWithContent = (rows, fields) => (Array.isArray(rows) ? rows : []).filter((row) => row && fields.some((field) => hasText(row[field]) || row[field]?.url));
+
+function CmsImage({ media, fallbackAlt = "", ...props }) {
+  if (!media?.url) return null;
+  return <ResponsiveImage src={media.url} alt={media.alt || fallbackAlt} width={media.width} height={media.height} {...props} />;
+}
+
 export default function AboutPage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const { locale, t } = useLocale();
+  const pageQuery = useQuery({
+    queryKey: ["page", "about", locale],
+    queryFn: async ({ signal }) => (await websiteApi.page("about", locale, signal)).data,
+    retry: false,
+  });
+  const page = pageQuery.data;
+  const leaders = page?.about_users || [];
   const { data: stories = [], isLoading: storiesIsLoading, isError: storiesIsError, refetch: storiesRefetch } = useQuery({
     queryKey: ["company-stories", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.testimonials({ locale }, signal);
-      return response.data || [];
-    },
+    queryFn: async ({ signal }) => (await websiteApi.testimonials({ locale }, signal)).data || [],
   });
-  const { isLoading: leadershipIsLoading, isError: leadershipIsError, refetch: leadershipRefetch, data: leadership = [] } = useQuery({
-    queryKey: ["leadership", locale],
-    queryFn: async () => {
-      return localizeEntity(companyData.leadership, locale);
-    },
-  });
-  const { data: capabilities = [] } = useQuery({
-    queryKey: ["capabilities", locale],
-    queryFn: async () => {
-      return localizeEntity(expertiseData, locale);
-    },
-  });
-  const { data: platformRows = [] } = useQuery({
+  const { data: platforms = [] } = useQuery({
     queryKey: ["platforms", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.platforms({ locale }, signal);
-      return response.data || [];
-    },
+    queryFn: async ({ signal }) => (await websiteApi.platforms({ locale }, signal)).data || [],
   });
-  const platforms = platformRows.map((platform) => ({
-    ...platform, id: platform.slug || platform.id, category: "",
-  }));
-  const copy = aboutCopy[locale] ?? aboutCopy.en;
-  useDocumentMeta({
-    title: `${fr ? "À propos" : "About"} — Prosperya`,
-    description: fr
-      ? "Architecture d’entreprise, transformation ERP et opérations connectées, depuis Paris."
-      : "Enterprise architecture, ERP transformation and connected operations, from Paris.",
-  });
-  if (leadershipIsLoading) return <PageLoader />;
-  if (leadershipIsError)
-    return (
-      <Section>
-        <ErrorState onRetry={leadershipRefetch} />
-      </Section>
-    );
-  const [leader] = leadership ?? [];
-  return (
-    <>
-      <section className={styles.hero}>
-        <PageContainer className={styles.heroGrid}>
-          <div>
-            <div>
-              <Eyebrow>{copy.eyebrow}</Eyebrow>
-            </div>
-            <RevealText as="h1" onLoad className={styles.title}>
-              {copy.lines.map((line) => (
-                <span key={line}>{line}</span>
-              ))}
-            </RevealText>
-            <p className={styles.lead}>
-              {copy.lead}
-            </p>
-            <div className={styles.actions}>
-              <PrimaryLink to={`/${locale}/contact`}>{fr ? "Démarrer une conversation" : "Start a conversation"}</PrimaryLink>
-              <PrimaryLink to={`/${locale}/approach`} variant="ghost">
-                {fr ? "Notre approche" : "Our approach"}
-              </PrimaryLink>
-            </div>
-          </div>
-          <figure className={styles.photo} data-reveal="image">
-            <ResponsiveImage
-              src="/images/paris-editorial.webp"
-              width={1200}
-              height={800}
-              priority
-              alt={fr ? "Vue illustrative de Paris au crépuscule" : "Illustrative view of Paris at dusk"}
-            />
-            <figcaption>
-              <strong>{copy.caption[0]}</strong>
-              <span>{copy.caption[1]}</span>
-            </figcaption>
-          </figure>
-        </PageContainer>
-      </section>
-      <ClientCompanies still />
-      <Section>
-        <div className={styles.story}>
-          <div>
-            <Eyebrow>{copy.storyEyebrow}</Eyebrow>
-            <h2 className={styles.h2}>
-              {copy.storyTitle[0]} <br />
-              {copy.storyTitle[1]}
-            </h2>
-            {copy.story.map((paragraph) => (
-              <p key={paragraph} className={styles.paragraph}>
-                {paragraph}
-              </p>
-            ))}
-          </div>
-          <dl className={styles.facts} data-reveal="card" style={{ "--i": 2 }}>
-            {copy.facts.map(([icon, label, value]) => (
-              <div key={label}>
-                <SystemIcon name={icon} size={22} strokeWidth={1.3} />
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </Section>
-      {leader && (
-        <Section>
-          <Eyebrow>{copy.leadershipEyebrow}</Eyebrow>
-          <div className={styles.leader}>
-            <div className={styles.monogram} aria-hidden="true" data-reveal="scale">
-              <span>{leader.initials}</span>
-            </div>
-            <div className={styles.leaderCopy}>
-              <h2>{leader.name}</h2>
-              <p className={styles.role}>{leader.role}</p>
-              <p>{leader.bio}</p>
-              {leader.linkedin && (
-                <a href={leader.linkedin} target="_blank" rel="noreferrer" className={styles.linkedin}>
-                  <Linkedin size={16} aria-hidden="true" />
-                  {fr ? "Profil LinkedIn" : "Connect on LinkedIn"}
-                </a>
-              )}
-            </div>
-            <div className={styles.focus} data-reveal="card" style={{ "--i": 2 }}>
-              <span>{copy.focusTitle}</span>
-              <ul>
-                {copy.focus.map(([icon, label]) => (
-                  <li key={label}>
-                    <i>
-                      <SystemIcon name={icon} size={20} strokeWidth={1.3} />
-                    </i>
-                    {label}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Section>
-      )}
-      <Section>
-        <Eyebrow>{copy.principlesEyebrow}</Eyebrow>
-        <ul className={styles.principles}>
-          {copy.principles.map(([icon, title, text]) => (
-            <li key={title}>
-              <SystemIcon name={icon} size={24} strokeWidth={1.2} />
-              <strong>{title}</strong>
-              <span>{text}</span>
-            </li>
-          ))}
-        </ul>
-      </Section>
-      <Section>
-        <div className={styles.ecosystem}>
-          <div>
-            <Eyebrow>{copy.platformsEyebrow}</Eyebrow>
-            <ul className={styles.wordmarks}>
-              {platforms.map((platform, index) => (
-                <li key={platform.id} data-reveal="card" style={{ "--i": index }}>
-                  {platform.name}
-                  <span>{platform.category}</span>
-                </li>
-              ))}
-            </ul>
-            <p className={styles.note}>{copy.platformsNote}</p>
-          </div>
-          <div>
-            <Eyebrow>{copy.expertiseEyebrow}</Eyebrow>
-            <ul className={styles.tags}>
-              {(capabilities ?? []).map((item) => (
-                <li key={item.id}>{item.detailTitle}</li>
-              ))}
-            </ul>
+  useDocumentMeta({ title: `${t("about.page_title")} — Prosperya`, description: "" });
+
+  if (pageQuery.isLoading) return <PageLoader />;
+  if (pageQuery.isError || !page) {
+    const unavailable = pageQuery.isError ? [403, 404].includes(pageQuery.error?.status) : !page;
+    return <Section><ErrorState
+      title={unavailable ? t("about.unavailable_title") : undefined}
+      description={unavailable ? t("about.unavailable_description") : undefined}
+      onRetry={unavailable ? undefined : pageQuery.refetch}
+    /></Section>;
+  }
+
+  const facts = rowsWithContent(page.about_facts, ["fact_title", "fact_value", "fact_image"]);
+  const principles = rowsWithContent(page.about_principles, ["principle_title", "principle_description", "principle_image"]);
+  const steps = rowsWithContent(page.about_steps, ["step_title", "step_description", "step_image"]);
+  const focus = (Array.isArray(page.about_focus) ? page.about_focus : []).filter(hasText);
+  const hasStory = hasText(page.about_story_title) || hasText(page.content);
+  const hasWork = hasText(page.about_work_title) || hasText(page.about_work_description);
+
+  return <>
+    <section className={styles.hero}>
+      <PageContainer className={`${styles.heroGrid} ${!page.cover_image?.url ? styles.singleColumn : ""}`}>
+        <div>
+          <Eyebrow>{t("about.eyebrow")}</Eyebrow>
+          {hasText(page.about_title) && <RevealText as="h1" onLoad className={styles.title}>{page.about_title}</RevealText>}
+          {hasText(page.description) && <CmsRichHtml html={page.description} className={styles.lead} />}
+          <div className={styles.actions}>
+            <PrimaryLink to={`/${locale}/contact`}>{t("about.start_conversation")}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/approach`} variant="ghost">{t("about.our_approach")}</PrimaryLink>
           </div>
         </div>
-      </Section>
-      <Section>
-        <div className={styles.how}>
-          <div>
-            <Eyebrow>{copy.howEyebrow}</Eyebrow>
-            <h2 className={styles.h2}>
-              {copy.howTitle[0]} <br />
-              {copy.howTitle[1]}
-            </h2>
-            <p className={styles.paragraph}>{copy.howText}</p>
-            <PrimaryLink to={`/${locale}/approach`} variant="text">
-              {fr ? "Découvrir notre approche" : "Explore our approach"}
-            </PrimaryLink>
-          </div>
-          <ProcessPath steps={copy.how} />
+        {page.cover_image?.url && <figure className={styles.photo} data-reveal="image"><CmsImage media={page.cover_image} priority /></figure>}
+      </PageContainer>
+    </section>
+    <ClientCompanies still />
+    {(hasStory || facts.length > 0) && <Section>
+      <div className={`${styles.story} ${!hasStory || facts.length === 0 ? styles.singleColumn : ""}`}>
+        {hasStory && <div>
+          <Eyebrow>{t("about.story_eyebrow")}</Eyebrow>
+          {hasText(page.about_story_title) && <h2 className={styles.h2}>{page.about_story_title}</h2>}
+          {hasText(page.content) && <CmsRichHtml html={page.content} className={styles.paragraph} />}
+        </div>}
+        {facts.length > 0 && <dl className={styles.facts} data-reveal="card">{facts.map((fact, index) => <div key={index} className={!fact.fact_image?.url ? styles.factText : undefined}>
+          <CmsImage media={fact.fact_image} className={styles.factImage} />
+          <dt>{fact.fact_title}</dt><dd>{fact.fact_value}</dd>
+        </div>)}</dl>}
+      </div>
+    </Section>}
+    {leaders.length > 0 && <Section>
+      <Eyebrow>{t("about.leadership_eyebrow")}</Eyebrow>
+      {leaders.map((leader) => <div className={styles.leader} key={leader.id}>
+        {leader.avatar?.url ? <CmsImage media={leader.avatar} fallbackAlt={leader.name} className={styles.portrait} /> : hasText(leader.name) && <div className={styles.monogram} aria-hidden="true"><span>{leader.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("")}</span></div>}
+        <div className={styles.leaderCopy}>
+          {hasText(leader.name) && <h2>{leader.name}</h2>}
+          {hasText(leader.position) && <p className={styles.role}>{leader.position}</p>}
+          {hasText(leader.bio) && <CmsRichHtml html={leader.bio} className={styles.paragraph} />}
         </div>
-      </Section>
-      <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} />
-      <CTASection
-        variant="split"
-        title={fr ? "Commençons par une conversation." : "Start with a conversation."}
-        description={fr ? "Construisons les systèmes qui porteront votre prochaine étape de croissance." : "Let’s build the systems that power your next level of growth."}
-      />
-    </>
-  );
+      </div>)}
+    </Section>}
+    {principles.length > 0 && <Section>
+      <Eyebrow>{t("about.principles_eyebrow")}</Eyebrow>
+      <ul className={styles.principles}>{principles.map((principle, index) => <li key={index}>
+        <CmsImage media={principle.principle_image} className={styles.sectionImage} />
+        {hasText(principle.principle_title) && <strong>{principle.principle_title}</strong>}
+        {hasText(principle.principle_description) && <CmsRichHtml html={principle.principle_description} className={styles.richSmall} />}
+      </li>)}</ul>
+    </Section>}
+    {(platforms.length > 0 || focus.length > 0) && <Section>
+      <div className={`${styles.ecosystem} ${platforms.length === 0 || focus.length === 0 ? styles.singleColumn : ""}`}>
+        {platforms.length > 0 && <div>
+          <Eyebrow>{t("about.platforms_eyebrow")}</Eyebrow>
+          <ul className={styles.wordmarks}>{platforms.map((platform, index) => <li key={platform.id} data-reveal="card" style={{ "--i": index }}>{platform.name}</li>)}</ul>
+        </div>}
+        {focus.length > 0 && <div>
+          <Eyebrow>{t("about.expertise_eyebrow")}</Eyebrow>
+          <ul className={styles.tags}>{focus.map((item, index) => <li key={index}>{item}</li>)}</ul>
+        </div>}
+      </div>
+    </Section>}
+    {(hasWork || steps.length > 0) && <Section>
+      <div className={`${styles.how} ${!hasWork || steps.length === 0 ? styles.singleColumn : ""}`}>
+        {hasWork && <div>
+          <Eyebrow>{t("about.how_eyebrow")}</Eyebrow>
+          {hasText(page.about_work_title) && <h2 className={styles.h2}>{page.about_work_title}</h2>}
+          {hasText(page.about_work_description) && <CmsRichHtml html={page.about_work_description} className={styles.paragraph} />}
+          <PrimaryLink to={`/${locale}/approach`} variant="text">{t("about.explore_approach")}</PrimaryLink>
+        </div>}
+        {steps.length > 0 && <ol className={styles.steps}>{steps.map((step, index) => <li key={index}>
+          {step.step_image?.url ? <CmsImage media={step.step_image} className={styles.sectionImage} /> : <span className={styles.stepNumber}>{String(index + 1).padStart(2, "0")}</span>}
+          {hasText(step.step_title) && <h3>{step.step_title}</h3>}
+          {hasText(step.step_description) && <CmsRichHtml html={step.step_description} className={styles.richSmall} />}
+        </li>)}</ol>}
+      </div>
+    </Section>}
+    <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} />
+    <CTASection variant="split"
+      title={t("about.cta_title")}
+      description={t("about.cta_description")}
+    />
+  </>;
 }

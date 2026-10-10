@@ -1,3 +1,4 @@
+import { labels } from "./cmsFixtures.js";
 import { expect, test } from "@playwright/test";
 
 for (const locale of ["en", "fr"]) {
@@ -22,7 +23,7 @@ for (const locale of ["en", "fr"]) {
         expect(url.searchParams.get("model")).toBe("CorporatePage");
         const path = url.searchParams.get("path");
         data = { path, locale, title: "CMS metadata", robots: "index, follow", canonical: `http://127.0.0.1:5173${path}`, alternates: [] };
-      } else if (url.pathname === "/api/labels") data = {};
+      } else if (url.pathname === "/api/labels") data = labels(locale);
       await route.fulfill({ json: { data, meta: { last_page: 1 } } });
     });
     await page.goto(`/${locale}/corporate/about-prosperya`);

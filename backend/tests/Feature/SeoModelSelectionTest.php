@@ -24,7 +24,7 @@ class SeoModelSelectionTest extends TestCase
 
     public function test_model_names_are_allowlisted_and_must_match_the_route(): void
     {
-        $this->assertSame(['SeoPage', 'Article', 'CorporatePage'], WebsiteSeo::modelNames());
+        $this->assertSame(['SeoPage', 'Article', 'CorporatePage', 'Expertise', 'Solution', 'CaseStudy', 'Approach'], WebsiteSeo::modelNames());
         $this->getJson('/api/seo?path=/en/insights&model=User')->assertUnprocessable()->assertJsonValidationErrors('model');
         $this->getJson('/api/seo?path=/en/insights&model=Article')->assertUnprocessable();
         $this->getJson('/api/seo?path=/en/corporate/about-prosperya&model=SeoPage')->assertUnprocessable();
@@ -35,6 +35,11 @@ class SeoModelSelectionTest extends TestCase
     {
         $this->getJson('/api/seo?path=/en/insights&model=SeoPage')->assertOk()->assertJsonPath('data.robots', 'noindex, follow');
         $this->getJson('/api/seo?path=/en/insights/example&model=Article')->assertNotFound();
+        foreach (['expertise' => 'Expertise', 'solutions' => 'Solution', 'work' => 'CaseStudy'] as $route => $model) {
+            $this->getJson('/api/seo?path=/en/'.$route.'/new-cms-slug&model='.$model)->assertNotFound();
+            $this->getJson('/api/seo?path=/en/'.$route.'/new-cms-slug&model=SeoPage')->assertUnprocessable();
+        }
+        $this->getJson('/api/seo?path=/fr/approach&model=Approach')->assertNotFound();
         $this->getJson('/api/seo?path=/en/corporate/about-prosperya&model=CorporatePage')->assertNotFound();
     }
 

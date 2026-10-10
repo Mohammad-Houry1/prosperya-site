@@ -1,13 +1,10 @@
 import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { messages } from "./messages.js";
 import { normalizeLocale } from "./locale.js";
 import { LocaleContext } from "./LocaleContext.jsx";
 import { websiteApi } from "../services/websiteApi.js";
-function getByPath(source, path) {
-  return path.split(".").reduce((value, key) => value?.[key], source);
-}
+import { createTranslator } from "./labels.js";
 export function LocaleProvider({ children }) {
   const { locale: routeLocale } = useParams();
   const locale = normalizeLocale(routeLocale);
@@ -25,17 +22,10 @@ export function LocaleProvider({ children }) {
   const value = useMemo(
     () => ({
       locale,
-      messages: messages[locale],
       labelsLoading,
       labelsError,
       retryLabels,
-      t(key) {
-        const label = labels[key];
-        if (typeof label === "string" && label.trim() !== "") return label;
-        return (
-          getByPath(messages[locale], key) ?? getByPath(messages.en, key) ?? key
-        );
-      },
+      t: createTranslator(locale, labels),
     }),
     [locale, labels, labelsLoading, labelsError, retryLabels],
   );

@@ -13,20 +13,7 @@ const clamp = (v) => Math.max(0, Math.min(1, v));
 const band = (p, from, span) => clamp((p - from) / span);
 const seeded = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 
-const LABELS = {
-  en: {
-    ledger: "Consolidated ledger", report: "Close ready", entities: ["France", "UK", "Germany", "US", "Singapore"],
-    lanes: ["Sales", "Operations", "Finance"], steps: ["Order", "Confirm", "Allocate", "Ship", "Invoice", "Collect"],
-    suppliers: ["Supplier A", "Supplier B", "Supplier C"], hubs: ["Warehouse", "Hub"], channels: ["Stores", "Online", "Wholesale"],
-    trend: "Signal",
-  },
-  fr: {
-    ledger: "Grand livre consolidé", report: "Clôture prête", entities: ["France", "R.-Uni", "Allemagne", "É.-Unis", "Singapour"],
-    lanes: ["Ventes", "Opérations", "Finance"], steps: ["Commande", "Confirmer", "Allouer", "Expédier", "Facturer", "Encaisser"],
-    suppliers: ["Fournisseur A", "Fournisseur B", "Fournisseur C"], hubs: ["Entrepôt", "Hub"], channels: ["Magasins", "En ligne", "Grossistes"],
-    trend: "Signal",
-  },
-};
+const LABELS = (t) => ({ ledger: t("components.visuals.solution-metaphor.copy.consolidated-ledger-858dbc"), report: t("components.visuals.solution-metaphor.copy.close-ready-524398"), entities: [t("components.visuals.solution-metaphor.copy.france-9ef45f"), t("components.visuals.solution-metaphor.copy.uk-929d4a"), t("components.visuals.solution-metaphor.copy.germany-a002ea"), t("components.visuals.solution-metaphor.copy.us-394834"), t("components.visuals.solution-metaphor.copy.singapore-b6e172")], lanes: [t("components.visuals.solution-metaphor.copy.sales-c2a0db"), t("components.visuals.solution-metaphor.copy.operations-b5b127"), t("components.visuals.solution-metaphor.copy.finance-9bee15")], steps: [t("components.visuals.solution-metaphor.copy.order-dd1e36"), t("components.visuals.solution-metaphor.copy.confirm-8aae42"), t("components.visuals.solution-metaphor.copy.allocate-749f1f"), t("components.visuals.solution-metaphor.copy.ship-e53832"), t("components.visuals.solution-metaphor.copy.invoice-6c6043"), t("components.visuals.solution-metaphor.copy.collect-87c026")], suppliers: [t("components.visuals.solution-metaphor.copy.supplier-a-4e04bc"), t("components.visuals.solution-metaphor.copy.supplier-b-4402ce"), t("components.visuals.solution-metaphor.copy.supplier-c-639489")], hubs: [t("components.visuals.solution-metaphor.copy.warehouse-b277cf"), t("components.visuals.solution-metaphor.copy.hub-01b8d3")], channels: [t("components.visuals.solution-metaphor.copy.stores-15257a"), t("components.visuals.solution-metaphor.copy.online-7c82ae"), t("components.visuals.solution-metaphor.copy.wholesale-c92a92")], trend: t("components.visuals.solution-metaphor.copy.signal-795576") });
 
 const entityY = (i) => 76 + i * 72;
 const streamPath = (i) => `M128 ${entityY(i)} C220 ${entityY(i)} 220 220 300 220`;
@@ -189,7 +176,7 @@ const SCENES = { consolidation, workflow, network, insight };
 export default function SolutionMetaphor({ variant, progressRef, label }) {
   const ref = useRef(null);
   const reduced = useReducedMotion();
-  const { locale } = useLocale();
+  const { t } = useLocale();
   const scene = SCENES[variant] ?? insight;
   useEffect(() => {
     const root = ref.current;
@@ -215,7 +202,7 @@ export default function SolutionMetaphor({ variant, progressRef, label }) {
   }, [scene, reduced, progressRef]);
   return (
     <svg ref={ref} className={styles.scene} viewBox="0 0 600 440" role="img" aria-label={label}>
-      {scene.render(LABELS[locale] ?? LABELS.en)}
+      {scene.render(LABELS(t))}
     </svg>
   );
 }

@@ -4,28 +4,29 @@ import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import NetSuiteFoundation from "./NetSuiteFoundation.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
-export default function PlatformStorySection() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+import CmsRichHtml from '../../components/common/CmsRichHtml.jsx';
+import SectionSkeleton from '../../components/feedback/SectionSkeleton.jsx';
+import ErrorState from '../../components/feedback/ErrorState.jsx';
+export default function PlatformStorySection({ page, isPending, isError, refetch }) {
+  const {locale, t } = useLocale();
+  if(isPending) return <Section><SectionSkeleton rows={4}/></Section>;
+  if(isError) return <Section><ErrorState onRetry={refetch}/></Section>;
+  if(!page || (!page.architecture_title && !page.architecture_description && ![1,2,3,4].some(i=>page[`architecture_column_${i}`]?.length))) return null;
+
   return (
     <Section>
       <div className={styles.platform}>
         <div className={styles.platformCopy}>
-          <Eyebrow>{fr ? "NetSuite au cœur" : "NetSuite at the core"}</Eyebrow>
+          <Eyebrow>{t("sections.home.platform-story-section.netsuite-at-the-core-1ead5e")}</Eyebrow>
           <h2>
-            {fr ? "Construit autour de NetSuite." : "Built around NetSuite."}
-            <span>{fr ? "Pensé pour la suite." : "Built for what’s next."}</span>
+            {page.architecture_title}
           </h2>
-          <p>
-            {fr
-              ? "Nous concevons, déployons et étendons NetSuite pour faire fonctionner tout l’écosystème de l’entreprise autour d’un même socle."
-              : "We design, implement and extend NetSuite so your entire business ecosystem runs on one foundation."}
-          </p>
-          <PrimaryLink to={`/${locale}/expertise/netsuite-implementation`} variant="ghost">
-            {fr ? "Notre expertise NetSuite" : "Explore NetSuite expertise"}
+          <CmsRichHtml html={page.architecture_description}/>
+          <PrimaryLink to={`/${locale}/expertise`} variant="ghost">
+            {t("sections.home.platform-story-section.explore-netsuite-expertise-96a2da")}
           </PrimaryLink>
         </div>
-        <NetSuiteFoundation />
+        <NetSuiteFoundation columns={[1,2,3,4].map(i=>page[`architecture_column_${i}`] || [])} />
       </div>
     </Section>
   );

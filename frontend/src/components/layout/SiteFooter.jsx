@@ -4,62 +4,58 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { replaceLocaleInPath } from "../../i18n/locale.js";
 import CorporatePageLinks from "../legal/CorporatePageLinks.jsx";
 import styles from "./SiteFooter.module.css";
-const sections = [
+const sections = (t) => [
   {
-    en: "Expertise",
-    fr: "Expertise",
+    key: "expertise",
+    title: t("nav.expertise"),
     links: [
-      ["expertise", "Overview", "Vue d’ensemble"],
+      ["expertise", t("footer.expertise_overview")],
       [
         "expertise/erp-transformation",
-        "ERP transformation",
-        "Transformation ERP",
+        t("footer.erp_transformation"),
       ],
       [
         "expertise/netsuite-implementation",
-        "NetSuite implementation",
-        "Implémentation NetSuite",
+        t("footer.netsuite_implementation"),
       ],
       [
         "expertise/systems-integration",
-        "Systems integration",
-        "Intégration des systèmes",
+        t("footer.systems_integration"),
       ],
-      ["expertise/erp-rescue", "ERP rescue", "Sauvetage ERP"],
+      ["expertise/erp-rescue", t("footer.erp_rescue")],
     ],
   },
   {
-    en: "Solutions",
-    fr: "Solutions",
+    key: "solutions",
+    title: t("nav.solutions"),
     links: [
-      ["solutions/finance", "Finance", "Finance"],
-      ["solutions/operations", "Operations", "Opérations"],
-      ["solutions/supply-chain", "Supply chain", "Chaîne logistique"],
-      ["solutions/data-analytics", "Data & analytics", "Données et analytique"],
+      ["solutions/finance", t("footer.finance")],
+      ["solutions/operations", t("footer.operations")],
+      ["solutions/supply-chain", t("footer.supply_chain")],
+      ["solutions/data-analytics", t("footer.data_analytics")],
     ],
   },
   {
-    en: "Company",
-    fr: "Entreprise",
+    key: "company",
+    title: t("footer.company"),
     links: [
-      ["about", "About us", "À propos"],
-      ["approach", "Our approach", "Notre approche"],
-      ["contact", "Start a project", "Démarrer un projet"],
+      ["about", t("footer.about_us")],
+      ["approach", t("footer.our_approach")],
+      ["contact", t("nav.contact")],
     ],
   },
   {
-    en: "Resources",
-    fr: "Ressources",
+    key: "resources",
+    title: t("footer.resources"),
     links: [
-      ["insights", "Insights", "Perspectives"],
-      ["work", "Case studies", "Études de cas"],
+      ["insights", t("footer.insights")],
+      ["work", t("footer.case_studies")],
     ],
   },
 ];
 export default function SiteFooter() {
   const { locale, t } = useLocale();
   const location = useLocation();
-  const fr = locale === "fr";
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -69,16 +65,16 @@ export default function SiteFooter() {
             <p>{t("footer.statement")}</p>
             <span>{t("footer.location")}</span>
           </div>
-          {sections.map((section) => (
+          {sections(t).map((section) => (
             <nav
-              key={section.en}
-              aria-label={section[locale]}
+              key={section.key}
+              aria-label={section.title}
               className={styles.column}
             >
-              <h2>{section[locale]}</h2>
-              {section.links.map(([path, en, frLabel]) => (
+              <h2>{section.title}</h2>
+              {section.links.map(([path, label]) => (
                 <Link key={path} to={`/${locale}/${path}`}>
-                  {fr ? frLabel : en}
+                  {label}
                 </Link>
               ))}
             </nav>
@@ -89,7 +85,7 @@ export default function SiteFooter() {
             © {new Date().getFullYear()} Prosperya. {t("footer.rights")}
           </span>
           <nav
-            aria-label={fr ? "Langue" : "Language"}
+            aria-label={t("components.layout.site-footer.language-cff648")}
             className={styles.languages}
           >
             {["en", "fr"].map((lang) => (
@@ -109,7 +105,7 @@ export default function SiteFooter() {
           </nav>
           <nav
             className={styles.legal}
-            aria-label={fr ? "Informations légales" : "Legal information"}
+            aria-label={t("components.layout.site-footer.legal-information-823929")}
           >
             <CorporatePageLinks inline />
           </nav>

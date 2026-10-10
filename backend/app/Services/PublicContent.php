@@ -82,7 +82,6 @@ final class PublicContent
     /** A text field in the requested language: the translations sidecar, then a locale map, then the plain value. */
     public function text(object $record, string $field, string $locale): string
     {
-        $default = $this->access->grant()['website_settings']['default_locale'] ?? $locale;
         $translations = (array) ($record->translations ?? []);
         $override = (array) ($translations[$locale] ?? $translations[(string) $this->language($locale)->id] ?? []);
         $value = $override[$field] ?? $record->{$field} ?? '';
@@ -90,18 +89,7 @@ final class PublicContent
             return $value;
         }
         $values = (array) $value;
-        foreach ([$locale, $default] as $key) {
-            if (is_string($values[$key] ?? null) && $values[$key] !== '') {
-                return $values[$key];
-            }
-        }
-        foreach ($values as $candidate) {
-            if (is_string($candidate) && $candidate !== '') {
-                return $candidate;
-            }
-        }
-
-        return '';
+        return is_string($values[$locale] ?? null) ? $values[$locale] : '';
     }
 
     /** The status a new submission to this module starts in: its "Default for new records" status in the CMS. */

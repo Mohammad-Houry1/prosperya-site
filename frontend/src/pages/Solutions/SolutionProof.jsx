@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Section from "../../components/common/Section.jsx";
@@ -14,7 +15,8 @@ import styles from "./SolutionProof.module.css";
   reads it function by function.
 */
 export default function SolutionProof({ solutions, studies, locale }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const carousel = useCarousel();
   const byId = Object.fromEntries(studies.map((study) => [study.id, study]));
   const pairs = solutions.filter((solution) => byId[solution.caseStudyId]);
@@ -23,12 +25,12 @@ export default function SolutionProof({ solutions, studies, locale }) {
     <Section>
       <div className={styles.head}>
         <SectionHeader
-          eyebrow={fr ? "En pratique" : "In practice"}
-          title={fr ? "Des résultats, fonction par fonction." : "Outcomes, function by function."}
+          eyebrow={t("pages.solutions.solution-proof.in-practice-bf2d3c")}
+          title={t("pages.solutions.solution-proof.outcomes-function-by-function-4f7b75")}
         />
         <CarouselArrows
           carousel={carousel}
-          labels={fr ? ["Fonction précédente", "Fonction suivante"] : ["Previous function", "Next function"]}
+          labels={[t("pages.solutions.solution-proof.previous-function-0ed881"), t("pages.solutions.solution-proof.next-function-00b85a")]}
         />
       </div>
       <div
@@ -36,7 +38,7 @@ export default function SolutionProof({ solutions, studies, locale }) {
         className={styles.rail}
         tabIndex={0}
         role="region"
-        aria-label={fr ? "Résultats par fonction" : "Outcomes by function"}
+        aria-label={t("pages.solutions.solution-proof.outcomes-by-function-7e7e49")}
       >
         {pairs.map((solution, index) => {
           const study = byId[solution.caseStudyId];
@@ -59,7 +61,7 @@ export default function SolutionProof({ solutions, studies, locale }) {
                   </div>
                 )}
                 <Link to={`/${locale}/work/${study.slug}`} className={styles.link}>
-                  {fr ? "Voir le cas client" : "View case study"}
+                  {t("pages.solutions.solution-proof.view-case-study-2050cc")}
                   <span className="visuallyHidden"> : {study.name}</span>
                   <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
                 </Link>
@@ -68,9 +70,7 @@ export default function SolutionProof({ solutions, studies, locale }) {
           );
         })}
       </div>
-      <p className={styles.note}>
-        {fr ? "Missions illustratives, résultats non vérifiés." : "Illustrative engagements. Results are not verified client references."}
-      </p>
+
     </Section>
   );
 }

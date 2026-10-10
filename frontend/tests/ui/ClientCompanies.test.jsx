@@ -1,3 +1,4 @@
+import { cmsLabels } from "../cmsFixtures.js";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -10,7 +11,7 @@ beforeEach(() => {
   vi.spyOn(websiteApi, "testimonials").mockResolvedValue({ data: [{ id: "t", company: "Northline", name: "Visitor", quote: "Approved" }], meta: { last_page: 1 } });
   vi.spyOn(websiteApi, "platforms").mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker",
     logo_image: { url: "https://media.example.test/foot-locker.jpg", alt: "FL_Logo_Primary_Black_RGB.jpg", width: 3000, height: 2732 } }], meta: { last_page: 1 } });
-  vi.spyOn(websiteApi, "labels").mockResolvedValue({ data: {}, meta: { last_page: 1 } });
+  vi.spyOn(websiteApi, "labels").mockResolvedValue({ data: cmsLabels("en"), meta: { last_page: 1 } });
 });
 afterEach(() => vi.restoreAllMocks());
 

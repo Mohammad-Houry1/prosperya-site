@@ -1,3 +1,4 @@
+import { cmsLocale } from "../cmsFixtures.js";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -12,7 +13,7 @@ const pages = [{ id: "about", slug: "about-prosperya", title: "About from CMS" }
 function renderPage(locale = "en") {
   return render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 300000 } } })}>
     <MemoryRouter initialEntries={[`/${locale}/corporate/about-prosperya`]}>
-      <LocaleContext.Provider value={{ locale, t: (key) => key }}>
+      <LocaleContext.Provider value={cmsLocale(locale)}>
         <Routes><Route path="/:locale/corporate/:slug" element={<LegalPage />} /></Routes><SiteFooter />
       </LocaleContext.Provider>
     </MemoryRouter>

@@ -1,8 +1,6 @@
+import { adaptCaseStudy } from "../../repositories/marketing.repository.js";
 import { websiteApi } from "../../services/websiteApi.js";
-import { caseStudiesData } from "../../data/caseStudies.data.js";
-import { caseStudyDetailsData, industries } from "../../data/caseStudyDetails.data.js";
-import { localizeEntity } from "../../repositories/localize.js";
-import { ArrowRight, Quote, Lock } from "lucide-react";
+import { ArrowRight, Quote } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
@@ -22,45 +20,34 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./CaseStudyPage.module.css";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
+import ContentLinks from "../../components/sections/ContentLinks.jsx";
+import MarketingSections from "../../components/sections/MarketingSections.jsx";
+import CmsImage from "../../components/common/CmsImage.jsx";
 
 export default function CaseStudyPage() {
   const { slug } = useParams();
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const { data: study = null, isLoading: studyIsLoading, isError: studyIsError, refetch: studyRefetch } = useQuery({
     queryKey: ["case-study", locale, slug],
-    queryFn: async () => {
-      const studies = localizeEntity(caseStudiesData, locale).map((study) => {
-        const industry = caseStudyDetailsData[study.id]?.industry;
-        return industry
-          ? { ...study, industry, industryName: industries[industry][locale] ?? industries[industry].en }
-          : study;
-      });
-      const index = studies.findIndex((study) => study.slug === slug);
-      if (index === -1) return null;
-      const study = studies[index];
-      const detail = caseStudyDetailsData[study.id];
-      return {
-        ...study,
-        detail: detail ? localizeEntity(detail, locale) : null,
-        next: studies.length > 1 ? studies[(index + 1) % studies.length] : null,
-      };
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.caseStudy(slug, locale, signal);
+      return response.data ? adaptCaseStudy(response.data) : null;
     },
     enabled: Boolean(slug),
   });
-  const { data: platformRows = [] } = useQuery({
-    queryKey: ["platforms", locale],
+  const { data: studies = [] } = useQuery({
+    queryKey: ["case-studies", locale],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.platforms({ locale }, signal);
-      return response.data || [];
+      const response = await websiteApi.caseStudies({ locale }, signal);
+      return (response.data || []).map(adaptCaseStudy);
     },
   });
-  const platforms = platformRows.map((platform) => ({
-    ...platform, id: platform.slug || platform.id, category: "",
-  }));
-  const item = study;
-  useDocumentMeta({
-    title: item ? `${item.name} — Prosperya` : fr ? "Prosperya — Projets" : "Prosperya — Work",
+  const studyIndex = studies.findIndex(row => row.id === study?.id);
+  const item = study ? { ...study, next: studies.length > 1 && studyIndex >= 0 ? studies[(studyIndex + 1) % studies.length] : null } : null;
+  useDocumentMeta({ model: "CaseStudy",
+    title: item ? `${item.name} — Prosperya` : t("pages.case-study.case-study-page.prosperya-work-1636b5"),
     description: item?.detail?.intro ?? item?.description,
   });
   if (studyIsLoading) return <PageLoader />;
@@ -73,45 +60,44 @@ export default function CaseStudyPage() {
   if (!item || !item.detail)
     return (
       <Section>
-        <EmptyState title={fr ? "Cas introuvable" : "Case study not found"} />
+        <EmptyState title={t("pages.case-study.case-study-page.case-study-not-found-c33e56")} />
       </Section>
     );
   const detail = item.detail;
-  const stack = platforms.filter((p) => item.platformIds.includes(p.id) && p.id !== "netsuite");
+  const stack = item.platforms || [];
   const [quote, role, org] = detail.quote;
   return (
     <>
       <PageHero
         breadcrumb={[
-          { label: fr ? "Projets" : "Work", to: `/${locale}/work` },
-          { label: fr ? "Cas clients" : "Case studies", to: `/${locale}/work` },
+          { label: t("pages.case-study.case-study-page.work-2af496"), to: `/${locale}/work` },
+          { label: t("pages.case-study.case-study-page.case-studies-262284"), to: `/${locale}/work` },
           { label: item.name },
         ]}
-        eyebrow={fr ? "Secteur" : "Industry"}
+        eyebrow={t("pages.case-study.case-study-page.industry-b26ab6")}
         title={item.name}
         titleClassName={styles.title}
         lead={
           <>
             <p className={styles.industry}>{detail.industryLabel}</p>
-            <p>{detail.intro}</p>
+            <CmsRichHtml html={detail.intro} />
           </>
         }
         actions={
           <>
-            <PrimaryLink to={`/${locale}/contact`}>{fr ? "Discuter d’un projet similaire" : "Discuss a similar project"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>{t("pages.case-study.case-study-page.discuss-a-similar-project-a96665")}</PrimaryLink>
             <PrimaryLink to={`/${locale}/work`} variant="ghost">
-              {fr ? "Tous les cas clients" : "All case studies"}
+              {t("pages.case-study.case-study-page.all-case-studies-0baf60")}
             </PrimaryLink>
           </>
         }
-        extra={<p className={styles.disclaimer}>{fr ? "Mission illustrative · résultats non vérifiés" : "Illustrative engagement · unverified results"}</p>}
-        visual={
+        visual={(item.image || detail.heroFacts.length > 0) && (
           // The case's own cover with its headline facts. The page's one Hub
           // is the "after" state of the architecture morph further down.
           <figure className={styles.heroVisual}>
-            <div className={styles.heroMedia} data-reveal="image">
+            {item.image && <div className={styles.heroMedia} data-reveal="image">
               <CaseVisual study={item} priority sizes="(min-width: 900px) 50vw, 100vw" />
-            </div>
+            </div>}
             <dl className={styles.facts}>
               {detail.heroFacts.map(([value, label]) => (
                 <div key={`${value}-${label}`}>
@@ -121,15 +107,16 @@ export default function CaseStudyPage() {
               ))}
             </dl>
           </figure>
-        }
+        )}
       />
+{detail.challenge || detail.challengePoints.length > 0 || detail.glance.length > 0 && (
       <Section>
         <div className={styles.challenge}>
           <div>
             <h2 className={styles.h2}>
-              {fr ? "Le défi" : "The challenge"}
+              {t("pages.case-study.case-study-page.the-challenge-c39e0a")}
             </h2>
-            <p className={styles.body}>{detail.challenge}</p>
+            <CmsRichHtml className={styles.body} html={detail.challenge} />
             <ul className={styles.bullets}>
               {detail.challengePoints.map((point) => (
                 <li key={point}>{point}</li>
@@ -137,7 +124,7 @@ export default function CaseStudyPage() {
             </ul>
           </div>
           <div className={styles.glance} data-reveal="card" style={{ "--i": 2 }}>
-            <Eyebrow>{fr ? "En un coup d’œil" : "At a glance"}</Eyebrow>
+            <Eyebrow>{t("pages.case-study.case-study-page.at-a-glance-34f4be")}</Eyebrow>
             <ul>
               {detail.glance.map(([icon, value, label, note]) => (
                 <li key={label}>
@@ -153,30 +140,35 @@ export default function CaseStudyPage() {
           </div>
         </div>
       </Section>
+      )}
+{detail.before.length > 0 || detail.after.length > 0 && (
       <section className={styles.architecture}>
         <PageContainer>
           <h2 className={styles.h2}>
-            {fr ? "L’architecture" : "The architecture"}
+            {t("pages.case-study.case-study-page.the-architecture-8ae880")}
           </h2>
           <ArchitectureMorph
             detail={detail}
             labels={{
-              before: fr ? "Avant" : "Before",
-              transform: fr ? "Transformation" : "Transformation",
-              after: fr ? "Après" : "After",
-              core: fr ? "SOCLE UNIQUE" : "SINGLE SOURCE",
-              aria: fr ? "Architecture avant et après la transformation" : "Architecture before and after the transformation",
+              before: t("pages.case-study.case-study-page.before-926f48"),
+              transform: t("pages.case-study.case-study-page.transformation-72c396"),
+              after: t("pages.case-study.case-study-page.after-733182"),
+              coreName: stack.map(platform => platform.name).join(" · "),
+              core: t("pages.case-study.case-study-page.single-source-037416"),
+              aria: t("pages.case-study.case-study-page.architecture-before-and-after-the-transformation-f26fa6"),
             }}
           />
         </PageContainer>
       </section>
+      )}
+{detail.solutionIntro || detail.features.length > 0 || stack.length > 0 && (
       <Section>
         <div className={styles.solution}>
           <div>
             <h2 className={styles.h2}>
-              {fr ? "La solution" : "The solution"}
+              {t("pages.case-study.case-study-page.the-solution-f395ce")}
             </h2>
-            <p className={styles.body}>{detail.solutionIntro}</p>
+            <CmsRichHtml className={styles.body} html={detail.solutionIntro} />
             <ul className={styles.features}>
               {detail.features.map(([icon, text]) => (
                 <li key={text}>
@@ -187,12 +179,8 @@ export default function CaseStudyPage() {
             </ul>
           </div>
           <div className={styles.stack} data-reveal="card" style={{ "--i": 2 }}>
-            <Eyebrow>{fr ? "Pile technologique" : "Technology stack"}</Eyebrow>
+            <Eyebrow>{t("pages.case-study.case-study-page.technology-stack-e21e26")}</Eyebrow>
             <div className={styles.stackGrid}>
-              <div className={styles.stackCore}>
-                <strong>NetSuite</strong>
-                <span>{fr ? "Socle ERP" : "Core ERP"}</span>
-              </div>
               <ul>
                 {stack.map((platform) => (
                   <li key={platform.id}>
@@ -202,20 +190,19 @@ export default function CaseStudyPage() {
                 ))}
               </ul>
             </div>
-            <p className={styles.secure}>
-              <Lock size={14} strokeWidth={1.6} aria-hidden="true" />
-              {fr ? "Sûr. Évolutif. Connecté." : "Secure. Scalable. Connected."}
-            </p>
+
           </div>
         </div>
       </Section>
+      )}
+{detail.outcomeIntro || detail.outcomes.length > 0 || quote && (
       <Section>
         <div className={styles.outcome}>
           <div>
             <h2 className={styles.h2}>
-              {fr ? "Le résultat" : "The outcome"}
+              {t("pages.case-study.case-study-page.the-outcome-4d35d7")}
             </h2>
-            <p className={styles.body}>{detail.outcomeIntro}</p>
+            <CmsRichHtml className={styles.body} html={detail.outcomeIntro} />
             <ul className={styles.outcomes}>
               {detail.outcomes.map(([value, label]) => (
                 <li key={label}>
@@ -227,17 +214,22 @@ export default function CaseStudyPage() {
               ))}
             </ul>
           </div>
-          <figure className={styles.quote} data-reveal="card" style={{ "--i": 3 }}>
+          {quote && <figure className={styles.quote} data-reveal="card" style={{ "--i": 3 }}>
             <Quote size={34} strokeWidth={1.1} aria-hidden="true" />
             <blockquote>{quote}</blockquote>
             <figcaption>
               <b>— {role}</b>
               {org}
-              <em>{fr ? "Citation illustrative" : "Illustrative quote"}</em>
+
             </figcaption>
-          </figure>
+          </figure>}
         </div>
       </Section>
+      )}
+      <ContentLinks title={t("nav.expertise")} items={item.related_expertise} field="expertise_title" route="expertise" />
+      <ContentLinks title={t("nav.solutions")} items={item.related_solutions} field="solution_title" route="solutions" />
+      <MarketingSections sections={item.sections} steps={item.implementation_steps} note={detail.metricsNote} />
+      {item.case_study_gallery?.length > 0 && <Section><div className={styles.stackGrid}>{item.case_study_gallery.map((media, index) => <CmsImage key={index} media={media} />)}</div></Section>}
       {/* The Close: the next case, then one line to talk about this one. */}
       <Section>
         {item.next && (
@@ -249,11 +241,11 @@ export default function CaseStudyPage() {
               <div className={styles.nextWave} aria-hidden="true">
                 <SignalWave shape="rise" strands={22} particles={90} />
               </div>
-              <Eyebrow>{fr ? "Projet suivant" : "Next project"}</Eyebrow>
+              <Eyebrow>{t("pages.case-study.case-study-page.next-project-eb1dfe")}</Eyebrow>
               <h2>{item.next.name}</h2>
               <p>{item.next.description}</p>
               <span className={styles.nextCta}>
-                {fr ? "Voir le cas client" : "View case study"}
+                {t("pages.case-study.case-study-page.view-case-study-2050cc")}
                 <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
               </span>
             </div>
@@ -261,9 +253,9 @@ export default function CaseStudyPage() {
         )}
         {item.next && (
           <p className={styles.contactLine}>
-            {fr ? "Un projet comparable en tête ?" : "Have a similar project in mind?"}
+            {t("pages.case-study.case-study-page.have-a-similar-project-in-mind-bbbb01")}
             <Link to={`/${locale}/contact`}>
-              {fr ? "Parler à un architecte" : "Talk to an architect"}
+              {t("pages.case-study.case-study-page.talk-to-an-architect-507d4c")}
               <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
             </Link>
           </p>
@@ -273,8 +265,8 @@ export default function CaseStudyPage() {
       {!item.next && (
         <CTASection
           variant="card"
-          title={fr ? "Un projet comparable en tête ?" : "Have a similar project in mind?"}
-          description={fr ? "Parlez à un architecte de votre contexte." : "Talk it through with an architect."}
+          title={t("pages.case-study.case-study-page.have-a-similar-project-in-mind-bbbb01")}
+          description={t("pages.case-study.case-study-page.talk-it-through-with-an-architect-d4b031")}
         />
       )}
     </>

@@ -11,7 +11,7 @@ const LABEL_GAP = 0.5;
 
 // A system: bright endpoint plus a label that sits just outside it, facing away from the core.
 export default function SystemNode3D({ node, progressRef }) {
-  const { locale } = useLocale();
+  const { t } = useLocale();
   const group = useRef();
   const label = useRef();
   const chip = useRef();
@@ -37,7 +37,7 @@ export default function SystemNode3D({ node, progressRef }) {
         <Html center distanceFactor={9} zIndexRange={[4, 0]} style={{ pointerEvents: "none" }}>
           <div ref={chip} className={styles.label} data-linked="false">
             <SystemIcon name={node.icon} />
-            <span>{node.label[locale] ?? node.label.en}</span>
+            <span>{t(`diagram.systems.${node.id}`)}</span>
           </div>
         </Html>
       </group>

@@ -4,7 +4,7 @@ The Prosperya website: a Laravel API (`backend/`) and a React + Vite frontend (`
 
 `frontend/` now reuses the complete supplied frontend. Pages, styling and interactions are preserved. Articles, legal content, translated labels and submissions use this backend; SEO is served in initial HTML and through the API. See [the integration guide](docs/frontend-backend-integration.md) for the exact scope and setup.
 
-The CMS (a separate private repo) owns the connected content. This repo **reads the CMS database directly** and asks the CMS one question before serving that content: *is this site's website key still good, and what may it serve?* (`GET /api/website-key`). The access limits—project, modules, languages, country and which statuses count as published—all come from that answer. Other page content still uses the original frontend data, as described in the integration guide.
+The CMS (a separate private repo) owns the connected content. This repo **reads the CMS database directly** and asks the CMS one question before serving that content: *is this site's website key still good, and what may it serve?* (`GET /api/website-key`). The access limits—project, modules, languages, country and which statuses count as published—all come from that answer. Authored marketing pages now use the CMS too; see docs/cms-dynamic-audit.md for coverage and editorial requirements.
 
 ```text
 Browser ──► frontend ──/api──► backend ──read──► CMS MongoDB

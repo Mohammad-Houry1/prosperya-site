@@ -19,6 +19,8 @@ Descriptions support sanitized rich text, lists, headings and images. The number
 
 Section titles also generate the sticky in-page navigation. Active links follow the section being read. The framed hero diagram and section accents reveal once, the reading line follows scroll progress, and related cards have subtle hover feedback. Reduced motion keeps the layout and section navigation readable without scroll-driven movement.
 
-API integration is intentionally unchanged for this task. The six local expertise records use this structure so the same component can render CMS records when connected. `expertise/:slug` remains a single dynamic frontend route.
+The page now loads the Expertise CMS endpoint and adapts its prefixed fields to this shared renderer. All public CMS slugs use `expertise/:slug`; the six known slugs only select their hero animation.
 
 Legal routes use the explicit CMS slugs in both languages: `privacy-policy`, `terms-of-use`, `cookie-policy`, and `accessibility`. Arbitrary corporate documents remain under `corporate/:slug`.
+
+The page wrapper owns its inline query; the shared renderer consumes authored sections, media, metrics, steps and scoped related records. Unknown valid CMS slugs use the structure animation. Empty authored fields do not receive bundled replacements. See `cms-dynamic-audit.md` for verification.

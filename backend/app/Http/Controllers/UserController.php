@@ -19,6 +19,8 @@ class UserController
             'roles' => ['sometimes', 'array', 'min:1', 'max:20'],
             'roles.*' => ['required', 'string', 'max:255', 'distinct'],
             'role_id' => ['sometimes', 'string', 'regex:/^[a-f0-9]{24}$/i'],
+            'ids' => ['sometimes', 'array', 'min:1', 'max:50'],
+            'ids.*' => ['required', 'string', 'regex:/^[a-f0-9]{24}$/i', 'distinct:ignore_case'],
         ]);
         $locale = $content->language($params['locale'] ?? null)->code;
         $filters = $content->filters($locale);
@@ -26,6 +28,10 @@ class UserController
             ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
             ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
             ->where('is_active', '!=', false)->where('is_approved', '!=', false);
+
+        if (isset($params['ids'])) {
+            $query->whereIn('_id', array_map('strtolower', $params['ids']));
+        }
 
         $roles = array_values(array_unique([...($params['roles'] ?? []),
             ...(isset($params['role']) ? [$params['role']] : []),

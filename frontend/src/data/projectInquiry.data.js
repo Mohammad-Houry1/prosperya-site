@@ -1,21 +1,18 @@
 export const inquiryFields = [
   {
     name: "name",
-    label: { en: "Name", fr: "Nom" },
     autoComplete: "name",
     required: true,
     maxLength: 255,
   },
   {
     name: "company_name",
-    label: { en: "Company", fr: "Entreprise" },
     autoComplete: "organization",
     required: true,
     maxLength: 255,
   },
   {
     name: "work_email",
-    label: { en: "Work email", fr: "Email professionnel" },
     type: "email",
     autoComplete: "email",
     required: true,
@@ -23,40 +20,34 @@ export const inquiryFields = [
   },
   {
     name: "contact_phone",
-    label: { en: "Phone (optional)", fr: "Téléphone (facultatif)" },
     type: "tel",
     autoComplete: "tel",
     maxLength: 60,
   },
   {
     name: "contact_country",
-    label: { en: "Country", fr: "Pays" },
     autoComplete: "country-name",
     required: true,
     maxLength: 255,
   },
   {
     name: "current_erp",
-    label: { en: "Current ERP (optional)", fr: "ERP actuel (facultatif)" },
     maxLength: 255,
   },
   {
     name: "project_type",
-    label: { en: "Project type", fr: "Type de projet" },
     options: true,
     required: true,
     maxLength: 100,
   },
   {
     name: "project_stage",
-    label: { en: "Project stage", fr: "Étape du projet" },
     options: true,
     required: true,
     maxLength: 100,
   },
   {
     name: "project_brief",
-    label: { en: "What needs to change?", fr: "Qu’est-ce qui doit changer ?" },
     multiline: true,
     required: true,
     maxLength: 10000,

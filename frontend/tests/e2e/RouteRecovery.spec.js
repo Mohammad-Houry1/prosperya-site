@@ -1,3 +1,4 @@
+import { fixtureData } from "./cmsFixtures.js";
 import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
@@ -7,7 +8,7 @@ test.beforeEach(async ({ page }) => {
     const path = url.searchParams.get("path");
     const data = path ? { path, locale: path.split("/")[1], title: "Page title", description: "Page description",
       robots: "index, follow", canonical: `http://127.0.0.1:5173${path}`, alternates: [] }
-      : url.pathname === "/api/labels" ? {} : [];
+      : fixtureData(url);
     await route.fulfill({ json: { data, meta: { current_page: 1, last_page: 1 } } });
   });
 });

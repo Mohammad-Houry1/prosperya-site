@@ -1,7 +1,4 @@
-import { caseStudiesData } from "../../data/caseStudies.data.js";
-import { caseStudyDetailsData, industries as industryLabels } from "../../data/caseStudyDetails.data.js";
-import { expertiseData } from "../../data/expertise.data.js";
-import { localizeEntity } from "../../repositories/localize.js";
+import { adaptExpertise, adaptCaseStudy } from "../../repositories/marketing.repository.js";
 import { websiteApi } from "../../services/websiteApi.js";
 import { useState } from "react";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -21,7 +18,6 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import WorkDeck from "./WorkDeck.jsx";
 import styles from "./WorkPage.module.css";
 
-const METRIC_ICONS = { markets: "network", flows: "link", entities: "building", manual: "zap", close: "refresh", handoffs: "refresh", issues: "search", priority: "target" };
 
 function Filter({ label, value, options, onChange }) {
   return (
@@ -39,8 +35,7 @@ function Filter({ label, value, options, onChange }) {
 }
 
 export default function WorkPage() {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
   const { data: stories = [], isLoading: storiesIsLoading, isError: storiesIsError, refetch: storiesRefetch } = useQuery({
     queryKey: ["company-stories", locale],
     queryFn: async ({ signal }) => {
@@ -50,19 +45,16 @@ export default function WorkPage() {
   });
   const { isLoading, isError, refetch, data = [] } = useQuery({
     queryKey: ["case-studies", locale],
-    queryFn: async () => {
-      return localizeEntity(caseStudiesData, locale).map((study) => {
-        const industry = caseStudyDetailsData[study.id]?.industry;
-        return industry
-          ? { ...study, industry, industryName: industryLabels[industry][locale] ?? industryLabels[industry].en }
-          : study;
-      });
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.caseStudies({ locale }, signal);
+      return (response.data || []).map(adaptCaseStudy);
     },
   });
   const { data: capabilities = [] } = useQuery({
     queryKey: ["capabilities", locale],
-    queryFn: async () => {
-      return localizeEntity(expertiseData, locale);
+    queryFn: async ({ signal }) => {
+      const response = await websiteApi.expertise({ locale }, signal);
+      return (response.data || []).map(adaptExpertise);
     },
   });
   const { data: platformRows = [] } = useQuery({
@@ -73,15 +65,13 @@ export default function WorkPage() {
     },
   });
   const platforms = platformRows.map((platform) => ({
-    ...platform, id: platform.slug || platform.id, category: "",
+    ...platform, id: platform.id, category: "",
   }));
   const [industry, setIndustry] = useState("all");
   const [capability, setCapability] = useState("all");
   useDocumentMeta({
-    title: fr ? "Projets — Prosperya" : "Work — Prosperya",
-    description: fr
-      ? "Des exemples de transformation ERP, d’intégration et d’opérations connectées."
-      : "ERP transformation, integration and connected operations through illustrative engagements.",
+    title: t("pages.work.work-page.work-prosperya-bb3774"),
+    description: t("pages.work.work-page.erp-transformation-integration-and-connected-operations-through-732c8a"),
   });
   if (isLoading) return <PageLoader />;
   if (isError)
@@ -91,7 +81,7 @@ export default function WorkPage() {
       </Section>
     );
   const capabilityNames = Object.fromEntries((capabilities ?? []).map((c) => [c.id, c.detailTitle]));
-  const platformNames = Object.fromEntries(platforms.map((p) => [p.id, p.name]));
+  const platformNames = Object.fromEntries([...platforms, ...data.flatMap(study => study.platforms || [])].map((p) => [p.id, p.name]));
   const industries = [...new Map(data.filter((s) => s.industry).map((s) => [s.industry, s.industryName]))];
   const capabilityIds = [...new Set(data.flatMap((s) => s.expertiseIds))];
   const filtered = data.filter(
@@ -99,17 +89,15 @@ export default function WorkPage() {
       (industry === "all" || study.industry === industry) &&
       (capability === "all" || study.expertiseIds.includes(capability)),
   );
-  const stats = data.flatMap((study) => study.metrics).filter((metric) => METRIC_ICONS[metric.id]).slice(0, 6);
+  const stats = data.flatMap((study) => study.metrics).slice(0, 6);
   return (
     <>
       <PageHero
-        breadcrumb={[{ label: fr ? "Accueil" : "Home", to: `/${locale}` }, { label: fr ? "Projets" : "Work" }]}
-        title={fr ? "Des transformations qui prouvent l’impact" : "Transformation stories that prove the impact"}
+        breadcrumb={[{ label: t("pages.work.work-page.home-ded702"), to: `/${locale}` }, { label: t("pages.work.work-page.work-2af496") }]}
+        title={t("pages.work.work-page.transformation-stories-that-prove-the-impact-f01aa8")}
         lead={
           <p>
-            {fr
-              ? "Des défis réels, des décisions explicites, des résultats mesurés. Découvrez comment une architecture prend forme — des exemples illustratifs de notre façon de travailler."
-              : "Real challenges, explicit decisions, measured outcomes. See how an architecture takes shape — illustrative engagements that show how we work."}
+            {t("pages.work.work-page.real-challenges-explicit-decisions-measured-outcomes-see-b93c0c")}
           </p>
         }
         visual={<WorkDeck studies={data} locale={locale} />}
@@ -117,21 +105,20 @@ export default function WorkPage() {
       <PageContainer>
         <div className={styles.filters}>
           <Filter
-            label={fr ? "Filtrer par secteur" : "Filter by industry"}
+            label={t("pages.work.work-page.filter-by-industry-3fbb2d")}
             value={industry}
             onChange={setIndustry}
-            options={[["all", fr ? "Tous les secteurs" : "All industries"], ...industries]}
+            options={[["all", t("pages.work.work-page.all-industries-42b72e")], ...industries]}
           />
           <Filter
-            label={fr ? "Filtrer par expertise" : "Filter by capability"}
+            label={t("pages.work.work-page.filter-by-capability-9f728f")}
             value={capability}
             onChange={setCapability}
-            options={[["all", fr ? "Toutes les expertises" : "All capabilities"], ...capabilityIds.map((id) => [id, capabilityNames[id] ?? id])]}
+            options={[["all", t("pages.work.work-page.all-capabilities-3d897f")], ...capabilityIds.map((id) => [id, capabilityNames[id]])]}
           />
         </div>
         <p className={styles.count} role="status">
-          {filtered.length} {fr ? "projet(s)" : filtered.length === 1 ? "engagement" : "engagements"} ·{" "}
-          {fr ? "missions illustratives, résultats non vérifiés" : "illustrative, results not verified"}
+          {filtered.length === 1 ? t("work.count_one", { count: filtered.length }) : t("work.count_many", { count: filtered.length })}
         </p>
         {filtered.length ? (
           <div className={styles.features2}>
@@ -152,11 +139,11 @@ export default function WorkPage() {
       </PageContainer>
       <Section>
         <div className={styles.band}>
-          <h2>{fr ? "Sur ces missions. Mesuré par l’impact." : "Across these engagements. Measured by impact."}</h2>
+          <h2>{t("pages.work.work-page.across-these-engagements-measured-by-impact-042bbc")}</h2>
           <ul>
             {stats.map((metric, index) => (
               <li key={`${metric.id}-${index}`}>
-                <SystemIcon name={METRIC_ICONS[metric.id]} size={28} strokeWidth={1.2} />
+                <SystemIcon name={"chart"} size={28} strokeWidth={1.2} />
                 <strong>
                   <AnimatedCounter value={metric.value} />
                 </strong>
@@ -164,17 +151,15 @@ export default function WorkPage() {
               </li>
             ))}
           </ul>
-          <p>{fr ? "Chiffres illustratifs issus des missions présentées." : "Illustrative figures from the engagements above."}</p>
+          <p>{t("pages.work.work-page.illustrative-figures-from-the-engagements-above-9e82b7")}</p>
         </div>
       </Section>
       <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} variant="rail" />
       <CTASection
         variant="band"
-        title={fr ? "Un défi comparable ?" : "Facing a similar challenge?"}
+        title={t("pages.work.work-page.facing-a-similar-challenge-bc32be")}
         description={
-          fr
-            ? "Dites-nous où vous en êtes : nous vous dirons à quoi pourrait ressembler un premier pas."
-            : "Tell us where you are. We will tell you what a first step could look like."
+          t("pages.work.work-page.tell-us-where-you-are-we-will-cb70c5")
         }
       />
     </>

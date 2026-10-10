@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import PageContainer from "./PageContainer.jsx";
 import Eyebrow from "./Eyebrow.jsx";
 import RevealText from "../../motion/components/RevealText.jsx";
@@ -22,12 +23,13 @@ export default function PageHero({
   className = "",
   titleClassName = "",
 }) {
+  const { t } = useLocale();
   return (
-    <section className={`${styles.hero} ${styles[layout]} ${className}`}>
+    <section className={`${styles.hero} ${styles[visual ? layout : "stacked"]} ${className}`}>
       <PageContainer className={styles.inner}>
         <div className={styles.copy}>
           {breadcrumb && (
-            <nav aria-label="Breadcrumb" className={styles.breadcrumb}>
+            <nav aria-label={t("common.breadcrumb")} className={styles.breadcrumb}>
               <ol>
                 {breadcrumb.map((item) => (
                   <li key={item.label}>

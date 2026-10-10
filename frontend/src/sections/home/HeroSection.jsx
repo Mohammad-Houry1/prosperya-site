@@ -20,8 +20,8 @@ const ORCHESTRATED_VIEW = { tilt: 0, zoom: 0.12, yaw: 0 };
   keep pulsing. Reduced motion starts on the finished, still frame.
 */
 export default function HeroSection() {
-  const { locale } = useLocale();
-  const copy = heroCopy[locale] ?? heroCopy.en;
+  const { locale, t } = useLocale();
+  const copy = heroCopy(t);
   const reduced = useReducedMotion();
   const section = useRef(null);
   const progress = useRef(reduced ? 1 : 0);

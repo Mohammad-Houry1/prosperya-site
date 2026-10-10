@@ -3,7 +3,8 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { LocaleProvider } from "../../src/i18n/LocaleProvider.jsx";
+import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
+import { cmsLocale } from "../cmsFixtures.js";
 import ContactPage from "../../src/pages/Contact/ContactPage.jsx";
 import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 
@@ -28,7 +29,7 @@ function renderPage(locale = "en") {
     <MantineProvider env="test">
       <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}>
         <MemoryRouter initialEntries={[`/${locale}/contact`]}>
-          <Routes><Route path="/:locale/contact" element={<LocaleProvider><ContactPage /></LocaleProvider>} /></Routes>
+          <Routes><Route path="/:locale/contact" element={<LocaleContext.Provider value={cmsLocale(locale)}><ContactPage /></LocaleContext.Provider>} /></Routes>
         </MemoryRouter>
       </QueryClientProvider>
     </MantineProvider>,

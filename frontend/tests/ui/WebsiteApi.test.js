@@ -62,6 +62,7 @@ test("posts submission JSON directly to the named endpoint", async () => {
 });
 
 test("loads translated labels with one request", async () => {
+  websiteApi.labels.mockRestore();
   const fetcher = fetchApi(() => ({ data: { "nav.insights": "Insights", "footer.rights": "Rights" }, meta: { last_page: 2 } }));
   const response = await websiteApi.labels({ locale: "en" });
   expect(response.data).toEqual({ "nav.insights": "Insights", "footer.rights": "Rights" });

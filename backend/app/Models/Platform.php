@@ -21,6 +21,11 @@ class Platform extends ContentEntity
 
     public bool $reordering = true;
 
+    public array $dependents = [
+        [CaseStudy::class, 'platforms', 'Case Studies'],
+        [Expertise::class, 'platforms', 'Expertise'],
+    ];
+
     public array $fields = [
         ['key' => 'logo_image', 'name' => 'Company Logo', 'type' => 'image', 'width' => '90px'],
         ['key' => 'name', 'name' => 'Platform', 'width' => '30%', 'sortable' => true, 'localized' => true],

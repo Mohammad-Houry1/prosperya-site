@@ -1,9 +1,11 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import CaseVisual from "./CaseVisual.jsx";
 import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
 import styles from "./CaseStudyCard.module.css";
 export default function CaseStudyCard({ study, locale, index = 0 }) {
+  const { t } = useLocale();
   return (
     <article className={styles.card} data-reveal="card" style={{ "--i": index }}>
       <div className={styles.media} aria-hidden="true">
@@ -24,7 +26,7 @@ export default function CaseStudyCard({ study, locale, index = 0 }) {
           ))}
         </dl>
         <Link className={styles.link} to={`/${locale}/work/${study.slug}`}>
-          {locale === "fr" ? "Voir le cas client" : "View case study"}
+          {t("components.case-study.case-study-card.view-case-study-2050cc")}
           <span className="visuallyHidden"> : {study.name ?? study.title}</span>
           <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
         </Link>

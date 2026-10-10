@@ -1,36 +1,39 @@
 // Copy for the Home Hero: the claim, its actions and audiences, and the status
 // line the Hub shows before and after its settle.
-export const heroCopy = {
-  en: {
-    eyebrow: "Paris-based. Globally minded.",
-    lines: ["Complexity.", "Orchestrated."],
-    lead: "We architect, implement and connect enterprise systems that power modern operations and fuel measurable impact.",
-    primary: "Explore our approach",
-    secondary: "Talk to an expert",
-    audienceLabel: "Built for ambitious organizations",
-    audiences: [
-      ["building", "Global enterprise"],
-      ["gauge", "Private equity"],
-      ["rocket", "Scale-up"],
-      ["landmark", "Public sector"],
-      ["users", "Family business"],
+export const heroCopy = (t) => ({
+  eyebrow: t("sections.home.hero-story.copy.copy.paris-based-globally-minded-880a0a"),
+  lines: [
+    t("sections.home.hero-story.copy.copy.complexity-3598e9"),
+    t("sections.home.hero-story.copy.copy.orchestrated-3a4c51"),
+  ],
+  lead: t("sections.home.hero-story.copy.copy.we-architect-implement-and-connect-enterprise-systems-74bdcb"),
+  primary: t("sections.home.hero-story.copy.copy.explore-our-approach-de10c8"),
+  secondary: t("sections.home.hero-story.copy.copy.talk-to-an-expert-8e5217"),
+  audienceLabel: t("sections.home.hero-story.copy.copy.built-for-ambitious-organizations-2ec66d"),
+  audiences: [
+    [
+      "building",
+      t("sections.home.hero-story.copy.copy.global-enterprise-0b778c"),
     ],
-    status: ["Fragmented architecture", "One operating architecture"],
-  },
-  fr: {
-    eyebrow: "À Paris. Ouvert sur le monde.",
-    lines: ["Complexité.", "Orchestrée."],
-    lead: "Nous concevons, déployons et connectons les systèmes d’entreprise qui font avancer vos opérations et produisent un impact mesurable.",
-    primary: "Découvrir notre approche",
-    secondary: "Parler à un expert",
-    audienceLabel: "Pour les organisations ambitieuses",
-    audiences: [
-      ["building", "Grands groupes"],
-      ["gauge", "Capital-investissement"],
-      ["rocket", "Scale-ups"],
-      ["landmark", "Secteur public"],
-      ["users", "Entreprises familiales"],
+    [
+      "gauge",
+      t("sections.home.hero-story.copy.copy.private-equity-f7a5ab"),
     ],
-    status: ["Architecture fragmentée", "Une architecture opérationnelle"],
-  },
-};
+    [
+      "rocket",
+      t("sections.home.hero-story.copy.copy.scale-up-8976ab"),
+    ],
+    [
+      "landmark",
+      t("sections.home.hero-story.copy.copy.public-sector-0116a2"),
+    ],
+    [
+      "users",
+      t("sections.home.hero-story.copy.copy.family-business-5e5d7e"),
+    ],
+  ],
+  status: [
+    t("sections.home.hero-story.copy.copy.fragmented-architecture-4082fc"),
+    t("sections.home.hero-story.copy.copy.one-operating-architecture-df021b"),
+  ],
+});

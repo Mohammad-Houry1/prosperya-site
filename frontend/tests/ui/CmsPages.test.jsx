@@ -1,3 +1,4 @@
+import { cmsLocale } from "../cmsFixtures.js";
 import { screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
@@ -11,6 +12,9 @@ import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 beforeEach(() => {
+  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: { about_title: "CMS About", about_users: [] } });
+  vi.spyOn(websiteApi, "caseStudies").mockResolvedValue({ data: [] });
+  vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: {} });
   vi.spyOn(websiteApi, "testimonials").mockImplementation(async ({ locale }) => ({ data: [{
     id: "testimonial", quote: locale === "fr" ? "Nos équipes travaillent ensemble." : "Our teams work together.",
@@ -22,7 +26,7 @@ afterEach(() => vi.restoreAllMocks());
 
 function renderPage(page, locale = "en", route = "/*", pathname = `/${locale}`) {
   return render(<ThemeProvider><MemoryRouter initialEntries={[pathname]}>
-    <LocaleContext.Provider value={{ locale, t: (key) => key }}>
+    <LocaleContext.Provider value={cmsLocale(locale)}>
       <Routes><Route path={route} element={page} /></Routes>
     </LocaleContext.Provider>
   </MemoryRouter></ThemeProvider>);

@@ -10,35 +10,33 @@ export default function LegalPageLayout({
   intro,
   sections,
 }) {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const updatedDate = lastUpdated ? new Date(lastUpdated) : null;
   const formattedDate = updatedDate && !Number.isNaN(updatedDate.getTime())
-    ? new Intl.DateTimeFormat(fr ? "fr-FR" : "en-GB", { dateStyle: "long", timeZone: "UTC" }).format(updatedDate)
+    ? new Intl.DateTimeFormat(locale === "fr" ? "fr-FR" : "en-GB", { dateStyle: "long", timeZone: "UTC" }).format(updatedDate)
     : null;
   return (
     <article className={styles.page}>
       <PageContainer>
         <header className={styles.header}>
           <p className={styles.eyebrow}>
-            {fr ? "Informations du site" : "Website information"}
+            {t("components.legal.legal-page-layout.website-information-fd3a15")}
           </p>
           <h1>{title}</h1>
           <CmsRichHtml html={intro} className={styles.intro} imageAlt={title} />
           <p className={styles.meta}>
             {formattedDate
-              ? <>{fr ? "Mis à jour le" : "Last updated"} <time dateTime={updatedDate.toISOString()}>{formattedDate}</time></>
-              : fr
-                ? "Date de publication à confirmer"
-                : "Publication date to be confirmed"}
+              ? <>{t("components.legal.legal-page-layout.last-updated-095290")} <time dateTime={updatedDate.toISOString()}>{formattedDate}</time></>
+              : t("components.legal.legal-page-layout.publication-date-to-be-confirmed-eb48b8")}
           </p>
         </header>
         <div className={styles.grid}>
           <nav
             className={styles.contents}
-            aria-label={fr ? "Pages de l’entreprise" : "Corporate pages"}
+            aria-label={t("components.legal.legal-page-layout.corporate-pages-fefb9b")}
           >
-            <strong>{fr ? "Pages de l’entreprise" : "Corporate pages"}</strong>
+            <strong>{t("components.legal.legal-page-layout.corporate-pages-fefb9b")}</strong>
             <CorporatePageLinks />
           </nav>
           <div className={styles.body}>

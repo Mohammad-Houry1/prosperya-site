@@ -61,6 +61,7 @@ class CorporatePage extends ContentEntity
             ...ListRules::of('sections', [
                 'title' => LocaleMap::rules(max: 255),
                 'description' => LocaleMap::rules(),
+                'section_image' => ['nullable', CmsMedia::valueOnly()],
             ]),
             'cover_image' => ['nullable', CmsMedia::uploadable()],
             'mobile_image' => ['nullable', CmsMedia::uploadable()],

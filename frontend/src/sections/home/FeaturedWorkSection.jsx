@@ -7,22 +7,22 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { dragScroll } from "../../motion/gestures.js";
 import styles from "./HomeSections.module.css";
 export default function FeaturedWorkSection({ data = [], isLoading, isError, refetch }) {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   return (
     <Section>
       <SectionHeader
-        eyebrow={fr ? "Projets" : "Featured work"}
+        eyebrow={t("sections.home.featured-work-section.featured-work-bda526")}
         title={
           <>
-            {fr ? "Des résultats concrets." : "Real outcomes."}
+            {t("sections.home.featured-work-section.real-outcomes-260034")}
             <br />
-            {fr ? "Un impact mesurable." : "Measurable impact."}
+            {t("sections.home.featured-work-section.measurable-impact-6dd1eb")}
           </>
         }
         action={{
           to: `/${locale}/work`,
-          label: fr ? "Tous les cas clients" : "View all case studies",
+          label: t("sections.home.featured-work-section.view-all-case-studies-81af03"),
         }}
       />
       {isLoading ? (
@@ -36,11 +36,7 @@ export default function FeaturedWorkSection({ data = [], isLoading, isError, ref
           ))}
         </div>
       )}
-      <p className={styles.note}>
-        {fr
-          ? "Missions illustratives — résultats non vérifiés."
-          : "Illustrative engagements — results are not verified client references."}
-      </p>
+
     </Section>
   );
 }

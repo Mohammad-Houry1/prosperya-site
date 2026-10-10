@@ -173,4 +173,31 @@ class WebsiteSeoTest extends WebsiteTestCase
         $this->assertStringNotContainsString('<loc>https://site.example.test/en/about</loc>', $xml);
         $this->assertSame(1, substr_count($xml, '<loc>https://site.example.test/en/insights/erp</loc>'));
     }
+
+    public function test_new_marketing_slugs_share_api_html_canonical_alternates_and_sitemap_sources(): void
+    {
+        foreach (['expertise' => 'Expertise', 'solutions' => 'Solution', 'case_studies' => 'CaseStudy', 'approaches' => 'Approach'] as $table => $model) {
+            $this->grant['modules'][] = ['id' => (string) new \MongoDB\BSON\ObjectId, 'slug' => $table, 'model' => $model, 'record_scope' => 'all'];
+        }
+        Http::swap(new Factory);
+        Http::fake(['*' => Http::response($this->grant)]);
+        foreach (['expertise' => ['expertise', 'Expertise'], 'solutions' => ['solutions', 'Solution'], 'case_studies' => ['work', 'CaseStudy']] as $table => [$route, $model]) {
+            $this->collection($table)->insertMany([
+                $this->record(['slug' => 'new-cms-slug', 'meta_title' => ['en' => 'CMS SEO', 'fr' => 'SEO français'], 'meta_description' => ['en' => 'CMS description']]),
+                $this->record(['slug' => 'hidden-cms-slug', 'status_id' => $this->ids['draft']]),
+            ]);
+            $this->getJson('/api/seo?path=/en/'.$route.'/new-cms-slug&model='.$model)->assertOk()
+                ->assertJsonPath('data.title', 'CMS SEO')->assertJsonPath('data.canonical', 'https://site.example.test/en/'.$route.'/new-cms-slug');
+            $html = $this->get('/fr/'.$route.'/new-cms-slug')->assertOk()->getContent();
+            $this->assertStringContainsString('<title>SEO français</title>', $html);
+            $this->assertStringContainsString('hreflang="en"', $html);
+            $this->get('/en/'.$route.'/hidden-cms-slug')->assertNotFound();
+        }
+        $this->collection('approaches')->insertOne($this->record(['slug' => 'approach', 'meta_title' => ['en' => 'CMS Approach SEO']]));
+        $this->getJson('/api/seo?path=/en/approach&model=Approach')->assertOk()->assertJsonPath('data.title', 'CMS Approach SEO');
+        $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
+        foreach (['expertise', 'solutions', 'work'] as $route) $this->assertStringContainsString('/en/'.$route.'/new-cms-slug', $xml);
+        $this->assertStringContainsString('/en/approach', $xml);
+        $this->assertStringNotContainsString('hidden-cms-slug', $xml);
+    }
 }

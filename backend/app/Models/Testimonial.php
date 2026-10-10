@@ -20,7 +20,7 @@ class Testimonial extends ContentEntity
 
     public array $translatable = ['name'];
 
-    public array $dependents = [];
+    public array $dependents = [[CaseStudy::class, 'case_study_testimonial', 'Case Studies']];
 
     public array $searchable = ['name', 'testimonial_subject', 'testimonial_description', 'user_name', 'user_company'];
 

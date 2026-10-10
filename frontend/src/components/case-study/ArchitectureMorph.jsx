@@ -25,11 +25,11 @@ const mix = (a, b, t) => a + (b - a) * t;
   0.5–0.8  the connected architecture radiates out; spokes draw
   0.8–1.0  data flows. Everything is derived from one progress value.
 */
-function frame(p, afterCount) {
+function frame(p, afterCount, beforeCount) {
   const collapse = band(p, 0.22, 0.26);
   return {
     tangle: 1 - band(p, 0.12, 0.2),
-    before: BEFORE_AT.map(([x, y]) => ({
+    before: Array.from({ length: beforeCount }, (_, i) => BEFORE_AT[i] || afterAt(i, beforeCount)).map(([x, y]) => ({
       x: mix(x, CORE[0], collapse),
       y: mix(y, CORE[1], collapse),
       s: mix(1, 0.4, collapse),
@@ -47,7 +47,7 @@ function frame(p, afterCount) {
 }
 
 function Diagram({ before, after, progress, svgRef, labels }) {
-  const f = frame(progress, after.length);
+  const f = frame(progress, after.length, before.length);
   return (
     <svg ref={svgRef} viewBox="0 0 1000 470" className={styles.svg} role="img" aria-label={labels.aria}>
       <g data-tangle style={{ opacity: f.tangle }}>
@@ -67,7 +67,7 @@ function Diagram({ before, after, progress, svgRef, labels }) {
       <g data-core style={{ opacity: f.core }}>
         <circle cx={CORE[0]} cy={CORE[1]} r="96" className={styles.halo} />
         <circle cx={CORE[0]} cy={CORE[1]} r="68" className={styles.core} />
-        <text x={CORE[0]} y={CORE[1] - 6} className={styles.coreName}>NetSuite</text>
+        <text x={CORE[0]} y={CORE[1] - 6} className={styles.coreName}>{labels.coreName}</text>
         <text x={CORE[0]} y={CORE[1] + 18} className={styles.coreSub}>{labels.core}</text>
       </g>
       {before.map((name, i) => {
@@ -121,7 +121,7 @@ export default function ArchitectureMorph({ detail, labels }) {
       const p = progress.current;
       if (p !== last && svg.current) {
         last = p;
-        const f = frame(p, detail.after.length);
+        const f = frame(p, detail.after.length, detail.before.length);
         const root = svg.current;
         root.querySelector("[data-tangle]").style.opacity = f.tangle;
         root.querySelector("[data-core]").style.opacity = f.core;
@@ -160,7 +160,7 @@ export default function ArchitectureMorph({ detail, labels }) {
       observer.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [staticMode, detail.after.length]);
+  }, [staticMode, detail.before.length, detail.after.length]);
 
   if (staticMode)
     return (
@@ -176,7 +176,7 @@ export default function ArchitectureMorph({ detail, labels }) {
             </figcaption>
             {compact ? (
               <ul className={`${styles.chips} ${p ? styles.chipsAfter : ""}`}>
-                {p ? <li className={styles.chipCore}>NetSuite</li> : null}
+                {p && labels.coreName ? <li className={styles.chipCore}>{labels.coreName}</li> : null}
                 {(p ? detail.after : detail.before).map((name) => (
                   <li key={name}>{name}</li>
                 ))}

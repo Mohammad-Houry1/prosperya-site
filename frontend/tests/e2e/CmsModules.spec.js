@@ -1,12 +1,13 @@
+import { fixtureData } from "./cmsFixtures.js";
 import { expect, test } from "@playwright/test";
 
 function response(item) {
   const fr = item.query?.locale === "fr";
-  let data = [];
+  let data = fixtureData(new URL(`http://fixture/api/${item.path}?${new URLSearchParams(item.query)}`));
   if (item.path === "seo") {
     const path = item.query.path;
     data = { path, locale: path.split("/")[1], title: "CMS title", description: "CMS description", robots: "index, follow", canonical: `http://127.0.0.1:5173${path}`, alternates: [] };
-  } else if (item.path === "labels") data = {};
+  } else if (item.path === "labels") data = fixtureData(new URL(`http://fixture/api/labels?locale=${item.query.locale}`));
   else if (item.path === "testimonials") data = [{ id: "quote", name: "Approved Person", company: "Approved Company", quote: fr ? "Avis publié du CMS" : "Published CMS testimonial" }];
   else if (item.path === "platforms") data = [{ id: "platform", slug: "cms-platform", name: "CMS Platform",
     logo_image: { url: "/cms-logo.svg", alt: "uploaded-file.svg", width: 100, height: 100 } }];
@@ -27,7 +28,7 @@ for (const locale of ["en", "fr"]) {
       const item = { path: url.pathname.replace('/api/', ''), method: route.request().method(),
         query: Object.fromEntries(url.searchParams), data: route.request().method() === "POST" ? route.request().postDataJSON() : undefined };
       calls.push(item);
-      if (item.path === "seo") expect(item.query.model).toBe("SeoPage");
+      if (item.path === "seo") expect(item.query.model).toBe(item.query.path.endsWith("/approach") ? "Approach" : "SeoPage");
       const result = response(item);
       await route.fulfill({ status: result.status, json: result.body });
     });

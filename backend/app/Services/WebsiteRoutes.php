@@ -30,15 +30,17 @@ final class WebsiteRoutes
                 break;
             }
         }
-        if ($kind === 'page' && preg_match('~^(insights|corporate)/([^/]+)$~u', $slug, $match)) {
-            $kind = $match[1] === 'insights' ? 'article' : 'legal';
+        if ($kind === 'page' && preg_match('~^(insights|corporate|expertise|solutions|work)/([^/]+)$~u', $slug, $match)) {
+            $kind = match ($match[1]) { 'insights' => 'article', 'corporate' => 'legal', 'expertise' => 'expertise', 'solutions' => 'solution', 'work' => 'case-study' };
             $slug = rawurldecode($match[2]);
             if (! preg_match('/^[\p{L}\p{N}_-]+$/u', $slug)) {
                 return null;
             }
-        } elseif ($kind === 'page' && ! in_array($slug, $this->pagePaths(), true)) {
+        } elseif ($kind === 'page' && ! in_array($slug, self::STATIC_PAGES, true)) {
             return null;
         }
+
+        if ($kind === 'page' && $slug === 'approach') $kind = 'approach';
 
         return ['kind' => $kind, 'slug' => $slug === '' ? 'home' : $slug, 'locale' => $locale,
             'path' => $this->path($kind, $slug === '' ? 'home' : $slug, $locale)];
@@ -49,18 +51,13 @@ final class WebsiteRoutes
         $suffix = match ($kind) {
             'legal' => self::LEGAL[$slug][$locale] ?? 'corporate/'.rawurlencode($slug),
             'article' => 'insights/'.rawurlencode($slug),
+            'expertise' => 'expertise/'.rawurlencode($slug),
+            'solution' => 'solutions/'.rawurlencode($slug),
+            'case-study' => 'work/'.rawurlencode($slug),
+            'approach' => 'approach',
             default => $slug === 'home' ? '' : $slug,
         };
 
         return '/'.$locale.($suffix === '' ? '' : '/'.$suffix);
-    }
-
-    private function pagePaths(): array
-    {
-        $file = config('website.frontend_dist').'/site-routes.json';
-        $routes = is_file($file) ? json_decode(file_get_contents($file), true) : [];
-
-        return array_values(array_unique([...self::STATIC_PAGES, ...array_filter(is_array($routes) ? $routes : [],
-            fn ($path) => is_string($path) && preg_match('~^(expertise|solutions|work)/[a-z0-9_-]+$~i', $path))]));
     }
 }

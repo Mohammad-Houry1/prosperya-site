@@ -3,17 +3,17 @@ import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import SystemIcon from "../system/SystemIcon.jsx";
 import styles from "./CapabilityStateVisual.module.css";
 
-// [id, icon, en, fr, scattered [x, y, rotation], structured [x, y], retiredWhenOptimized]
-const SYSTEMS = [
-  ["crm", "users", "CRM", "CRM", [150, 120, -9], [95, 80]],
-  ["commerce", "cart", "Commerce", "Commerce", [330, 70, 6], [95, 160]],
-  ["hr", "badge", "HR", "RH", [70, 250, 5], [95, 240]],
-  ["sheets", "grid", "Spreadsheets", "Tableurs", [420, 300, -7], [95, 320], true],
-  ["erp", "layers", "ERP", "ERP", [250, 330, 8], [465, 80]],
-  ["finance", "landmark", "Finance", "Finance", [470, 160, -5], [465, 160]],
-  ["warehouse", "warehouse", "Warehouse", "Entrepôt", [120, 390, -4], [465, 240]],
-  ["legacy", "database", "Legacy ERP", "ERP historique", [480, 410, 10], [465, 320], true],
-  ["analytics", "chart", "Analytics", "Analytique", [300, 200, -12], [280, 400]],
+// [id, icon, label, scattered [x, y, rotation], structured [x, y], retiredWhenOptimized]
+const SYSTEMS = (t) => [
+  ["crm", "users", t("diagram.crm"), [150, 120, -9], [95, 80]],
+  ["commerce", "cart", t("diagram.commerce"), [330, 70, 6], [95, 160]],
+  ["hr", "badge", t("diagram.hr"), [70, 250, 5], [95, 240]],
+  ["sheets", "grid", t("diagram.spreadsheets"), [420, 300, -7], [95, 320], true],
+  ["erp", "layers", t("diagram.erp"), [250, 330, 8], [465, 80]],
+  ["finance", "landmark", t("diagram.finance"), [470, 160, -5], [465, 160]],
+  ["warehouse", "warehouse", t("diagram.warehouse"), [120, 390, -4], [465, 240]],
+  ["legacy", "database", t("diagram.legacy_erp"), [480, 410, 10], [465, 320], true],
+  ["analytics", "chart", t("diagram.analytics"), [300, 200, -12], [280, 400]],
 ];
 
 // Elbow connector from the core to a structured slot, with soft corners.
@@ -39,13 +39,13 @@ function connector([x, y]) {
   -1 = before the story begins (scattered).
 */
 export default function CapabilityStateVisual({ state = -1, caption }) {
-  const { locale } = useLocale();
+  const { t } = useLocale();
   const reduced = useReducedMotion();
   return (
     <div className={styles.frame} data-state={state}>
       <svg viewBox="0 0 560 460" className={styles.svg} role="img" aria-label={caption}>
         <rect className={styles.grid} x="0" y="0" width="560" height="460" />
-        {SYSTEMS.map(([id, , , , , slot, retired], index) => (
+        {SYSTEMS(t).map(([id, , , , slot, retired], index) => (
           <g key={id} className={styles.link} data-retired={Boolean(retired)} style={{ "--i": index }}>
             <path className={styles.linkBase} d={connector(slot)} pathLength="1" />
             {!reduced && (
@@ -60,7 +60,7 @@ export default function CapabilityStateVisual({ state = -1, caption }) {
           <circle cx="280" cy="200" r="56" className={styles.coreDisc} />
           <path transform="translate(260 180) scale(0.8)" d="M3 5 47 18 21 24 8 46 13 22ZM23 25 47 18 23 40Z" className={styles.coreMark} />
         </g>
-        {SYSTEMS.map(([id, icon, en, fr, scattered, slot, retired], index) => (
+        {SYSTEMS(t).map(([id, icon, label, scattered, slot, retired], index) => (
           <g
             key={id}
             className={styles.system}
@@ -76,13 +76,13 @@ export default function CapabilityStateVisual({ state = -1, caption }) {
               <SystemIcon name={icon} size={14} />
             </g>
             <text x="-37" y="0" dominantBaseline="central">
-              {(locale === "fr" ? fr : en).toUpperCase()}
+              {label.toUpperCase()}
             </text>
           </g>
         ))}
       </svg>
       <div className={styles.meter} aria-hidden="true">
-        <span>{locale === "fr" ? "Systèmes" : "Systems"}</span>
+        <span>{t("components.visuals.capability-state-visual.systems-057844")}</span>
         <strong className={styles.before}>9</strong>
         <strong className={styles.after}>7</strong>
       </div>

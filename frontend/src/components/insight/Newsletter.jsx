@@ -7,8 +7,8 @@ import { websiteApi } from "../../services/websiteApi.js";
 
 export default function Newsletter({ title }) {
   const submissionsEnabled = import.meta.env?.VITE_CMS_SUBMISSIONS_ENABLED === "true";
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
+
   const [state, setState] = useState("idle");
   const lock = useRef(false);
   const { mutateAsync: subscribe } = useMutation({
@@ -42,50 +42,42 @@ export default function Newsletter({ title }) {
     <div className={styles.newsletter} data-reveal="card">
       <Mail size={44} strokeWidth={1} aria-hidden="true" />
       <div>
-        <h2>{title ?? (fr ? "Restez informé. Gardez une longueur d’avance." : "Stay informed. Stay ahead.")}</h2>
+        <h2>{title ?? (t("components.insight.newsletter.stay-informed-stay-ahead-606b2d"))}</h2>
         <p>
-          {fr
-            ? "Des analyses choisies sur l’ERP, NetSuite et la transformation, directement dans votre boîte."
-            : "Curated insights on ERP, NetSuite and enterprise transformation, delivered to your inbox."}
+          {t("components.insight.newsletter.curated-insights-on-erp-netsuite-and-enterprise-eb7688")}
         </p>
       </div>
       <form onSubmit={submit} noValidate className={styles.form}>
         <label htmlFor="newsletter-email" className="visuallyHidden">
-          {fr ? "Email professionnel" : "Work email"}
+          {t("components.insight.newsletter.work-email-67fe32")}
         </label>
         <input
           id="newsletter-email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder={fr ? "Votre email professionnel" : "Enter your work email"}
+          placeholder={t("components.insight.newsletter.enter-your-work-email-357a52")}
           aria-invalid={state === "invalid"}
           aria-describedby="newsletter-status"
           onChange={() => state !== "idle" && setState("idle")}
           disabled={!submissionsEnabled}
         />
         <button type="submit" disabled={!submissionsEnabled || state === "sending"}>
-          {state === "sending" ? (fr ? "Envoi…" : "Sending…") : (fr ? "S’abonner" : "Subscribe")}
+          {state === "sending" ? (t("components.insight.newsletter.sending-b7af8e")) : (t("components.insight.newsletter.subscribe-5e59be"))}
           <ArrowRight size={16} strokeWidth={1.6} aria-hidden="true" />
         </button>
         <p id="newsletter-status" role="status" className={styles.status} data-state={state}>
           {state === "done"
-            ? fr
-              ? "Merci. Votre inscription a été reçue."
-              : "Thank you. Your subscription was received."
+            ? t("components.insight.newsletter.thank-you-your-subscription-was-received-b81230")
             : state === "invalid"
-              ? fr
-                ? "Saisissez une adresse email valide."
-                : "Enter a valid email address."
+              ? t("components.insight.newsletter.enter-a-valid-email-address-e89bf5")
               : state === "rate-limited"
-                ? fr ? "Trop de demandes. Réessayez dans un moment." : "Too many requests. Please wait before trying again."
+                ? t("components.insight.newsletter.too-many-requests-please-wait-before-trying-a64b07")
               : state === "error"
-                ? fr ? "L’inscription a échoué. Vérifiez votre connexion et réessayez." : "Subscription failed. Check your connection and try again."
+                ? t("components.insight.newsletter.subscription-failed-check-your-connection-and-try-d1895b")
               : !submissionsEnabled
-                ? fr ? "L’inscription est temporairement indisponible." : "Newsletter signup is temporarily unavailable."
-                : fr
-                  ? "Pas de spam. Désinscription à tout moment."
-                  : "No spam. Unsubscribe anytime."}
+                ? t("components.insight.newsletter.newsletter-signup-is-temporarily-unavailable-f93d44")
+                : t("components.insight.newsletter.no-spam-unsubscribe-anytime-a93953")}
         </p>
       </form>
     </div>

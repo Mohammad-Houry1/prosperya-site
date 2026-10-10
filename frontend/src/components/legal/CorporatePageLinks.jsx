@@ -6,7 +6,7 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import SectionSkeleton from "../feedback/SectionSkeleton.jsx";
 
 export default function CorporatePageLinks({ inline = false }) {
-  const { locale } = useLocale();
+  const {locale, t } = useLocale();
   const { pathname } = useLocation();
   const { data: pages = [], isPending, isError } = useQuery({
     queryKey: ["corporate-pages", locale, "corporate"],
@@ -15,7 +15,7 @@ export default function CorporatePageLinks({ inline = false }) {
       return response.data || [];
     },
   });
-  if (isPending) return <SectionSkeleton rows={4} compact inline={inline} label={locale === "fr" ? "Chargement des pages" : "Loading pages"} />;
+  if (isPending) return <SectionSkeleton rows={4} compact inline={inline} label={t("components.legal.corporate-page-links.loading-pages-ae76b2")} />;
   if (isError) return null;
   return pages.filter((page) => page.slug).map((page) => {
     const path = corporatePagePath(locale, page.slug);

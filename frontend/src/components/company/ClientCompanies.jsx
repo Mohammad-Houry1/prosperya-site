@@ -18,8 +18,7 @@ import SectionSkeleton from "../feedback/SectionSkeleton.jsx";
   lays the same marks out in a static row (About).
 */
 export default function ClientCompanies({ still = false }) {
-  const { locale } = useLocale();
-  const fr = locale === "fr";
+  const {locale, t } = useLocale();
   const { data: clients = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["platforms", locale],
     queryFn: async ({ signal }) => {
@@ -29,12 +28,12 @@ export default function ClientCompanies({ still = false }) {
   });
   const [paused, setPaused] = useState(false);
   if (isError) return <Section><ErrorState onRetry={refetch} /></Section>;
-  if (isLoading) return <Section><SectionSkeleton rows={1} label={fr ? "Chargement des entreprises" : "Loading companies"} /></Section>;
+  if (isLoading) return <Section><SectionSkeleton rows={1} label={t("components.company.client-companies.loading-companies-dd40c1")} /></Section>;
   if (!clients.length) return null;
   const mark = (client, key) => (
     <li key={key} className={styles.mark} data-mark={client.id}>
       {client.logo_image?.url ? (
-        <ResponsiveImage src={client.logo_image.url} alt={fr ? `Logo ${client.name}` : `${client.name} logo`}
+        <ResponsiveImage src={client.logo_image.url} alt={t("common.company_logo", { name: client.name })}
           width={client.logo_image.width || undefined} height={client.logo_image.height || undefined} className={styles.logo} />
       ) : (
         <><span className={styles.monogram} aria-hidden="true">{client.name.replace(/[^A-Za-z]/g, "")[0]}</span>{client.name}</>
@@ -45,7 +44,7 @@ export default function ClientCompanies({ still = false }) {
   return (
     <Section className={styles.clients}>
       <div className={styles.intro}>
-        <Eyebrow>{fr ? "À leurs côtés" : "In good company"}</Eyebrow>
+        <Eyebrow>{t("components.company.client-companies.in-good-company-2fa9e0")}</Eyebrow>
         {!still && (
           <button
             type="button"
@@ -53,12 +52,12 @@ export default function ClientCompanies({ still = false }) {
             onClick={() => setPaused(!paused)}
             aria-label={
               paused
-                ? fr ? "Relancer les logos clients" : "Play client logos"
-                : fr ? "Mettre en pause les logos clients" : "Pause client logos"
+                ? t("components.company.client-companies.play-client-logos-3af529")
+                : t("components.company.client-companies.pause-client-logos-d08e8b")
             }
           >
             {paused ? <Play size={14} strokeWidth={1.6} aria-hidden="true" /> : <Pause size={14} strokeWidth={1.6} aria-hidden="true" />}
-            {paused ? (fr ? "Relancer" : "Play") : "Pause"}
+            {paused ? t("components.company.client-companies.play-48234e") : t("components.company.client-companies.pause")}
           </button>
         )}
       </div>

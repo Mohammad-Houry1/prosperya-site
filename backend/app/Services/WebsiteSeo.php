@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Models\{Expertise, Solution, CaseStudy, Approach};
 use App\Models\Base\ContentEntity;
 use App\Models\CorporatePage;
 use App\Models\SeoPage;
@@ -10,7 +11,8 @@ use App\Models\SeoPage;
 final class WebsiteSeo
 {
     /** One route-to-model mapping for metadata, canonicals and sitemap entries. */
-    private const SOURCES = ['page' => SeoPage::class, 'article' => Article::class, 'legal' => CorporatePage::class];
+    private const SOURCES = ['page' => SeoPage::class, 'article' => Article::class, 'legal' => CorporatePage::class,
+        'expertise' => Expertise::class, 'solution' => Solution::class, 'case-study' => CaseStudy::class, 'approach' => Approach::class];
 
     public function __construct(private readonly WebsiteAccess $access, private readonly PublicPayload $payload,
         private readonly WebsiteRoutes $routes, private readonly PublicContent $content) {}
@@ -42,8 +44,7 @@ final class WebsiteSeo
             422, 'The requested SEO model does not match this website route.');
         $record = $this->record($route, $route['locale']);
         if (! $record) {
-            // The route inventory verifies that these pages exist in the frontend.
-            // Missing SEO must not turn a real page into an HTTP 404.
+            // Fixed listing routes exist independently of optional metadata.
             $status = $route['kind'] === 'page' ? 200 : 404;
 
             return [...$this->missing($route['path']), 'status' => $status,
@@ -94,7 +95,7 @@ final class WebsiteSeo
                     }
                     $path = $this->routes->path($kind, $slug, $locale);
                     $route = $this->routes->parse($path);
-                    if (! $route || $route['kind'] !== $kind) {
+                    if (! $route || $route['kind'] !== $kind || $route['slug'] !== $slug) {
                         continue;
                     }
                     $metadata = $this->metadata($record, $route);
@@ -124,10 +125,9 @@ final class WebsiteSeo
     {
         $locale = $route['locale'];
         $seo = $this->payload->seo($record, $locale);
-        $title = $seo['title'] ?: ($record->text($route['kind'] === 'article' ? 'article_title' : 'title', $locale)
-            ?: $record->text('name', $locale) ?: 'Prosperya');
-        $description = $seo['description'] ?: $record->text($route['kind'] === 'article' ? 'article_small_description' : 'description', $locale);
-        $image = $this->payload->media($record->meta_image, $locale) ?? $this->payload->media($record->cover_image, $locale);
+        $title = $seo['title'];
+        $description = $seo['description'];
+        $image = $this->payload->media($record->meta_image, $locale);
         $canonical = $this->canonical($seo['url'], $route['path']);
 
         return ['path' => $route['path'], 'locale' => $locale, 'status' => 200, 'title' => $title,

@@ -1,32 +1,34 @@
+import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import CoverArt from "../visuals/CoverArt.jsx";
-import SystemIcon from "../system/SystemIcon.jsx";
 import styles from "./SolutionRow.module.css";
+import CmsImage from "../common/CmsImage.jsx";
+import CmsRichHtml from "../common/CmsRichHtml.jsx";
 
 // One business function as an editorial row: identity, friction, capabilities, outcomes.
 export default function SolutionRow({ solution, locale, index = 0 }) {
-  const fr = locale === "fr";
+  const { t } = useLocale();
+
   const to = `/${locale}/solutions/${solution.slug}`;
   return (
     <article className={styles.row} data-reveal="card" style={{ "--i": index }}>
       <div className={styles.identity}>
         <div className={styles.cover} aria-hidden="true">
-          <CoverArt variant={solution.cover} seed={index * 11 + 5} />
+          <CmsImage media={solution.image} />
         </div>
         <span className={styles.icon}>
-          <SystemIcon name={solution.icon} size={24} strokeWidth={1.3} />
+          <CmsImage media={solution.image} />
         </span>
         <h3>{solution.title}</h3>
         <p>{solution.tagline}</p>
         <Link to={to} className={styles.more}>
-          {fr ? "En savoir plus" : "Learn more"}
+          {t("components.expertise.solution-row.learn-more-f2ab41")}
           <span className="visuallyHidden"> : {solution.title}</span>
           <ArrowRight size={14} strokeWidth={1.6} aria-hidden="true" />
         </Link>
       </div>
       <div className={styles.column}>
-        <span className={styles.label}>{fr ? "Difficultés" : "Pains"}</span>
+        <span className={styles.label}>{t("components.expertise.solution-row.pains-f524cc")}</span>
         <ul className={styles.pains}>
           {solution.pains.map((item) => (
             <li key={item}>{item}</li>
@@ -34,7 +36,7 @@ export default function SolutionRow({ solution, locale, index = 0 }) {
         </ul>
       </div>
       <div className={styles.column}>
-        <span className={styles.label}>{fr ? "Capacités" : "Capabilities"}</span>
+        <span className={styles.label}>{t("components.expertise.solution-row.capabilities-912c87")}</span>
         <ul className={styles.checks}>
           {solution.capabilities.map((item) => (
             <li key={item}>
@@ -45,19 +47,20 @@ export default function SolutionRow({ solution, locale, index = 0 }) {
         </ul>
       </div>
       <div className={styles.column}>
-        <span className={styles.label}>{fr ? "Résultats" : "Outcomes"}</span>
+        <span className={styles.label}>{t("components.expertise.solution-row.outcomes-28c664")}</span>
         <ul className={styles.outcomes}>
-          {solution.outcomes.map(([icon, text]) => (
-            <li key={text}>
+          {solution.outcomes.map(([image, text, description], outcomeIndex) => (
+            <li key={outcomeIndex}>
               <span>
-                <SystemIcon name={icon} size={16} strokeWidth={1.5} />
+                <CmsImage media={image} />
               </span>
               {text}
+              <CmsRichHtml html={description} />
             </li>
           ))}
         </ul>
       </div>
-      <Link to={to} className={styles.arrow} aria-label={`${fr ? "Découvrir" : "Explore"} ${solution.title}`}>
+      <Link to={to} className={styles.arrow} aria-label={`${t("components.expertise.solution-row.explore-82bb18")} ${solution.title}`}>
         <ArrowRight size={18} strokeWidth={1.5} aria-hidden="true" />
       </Link>
     </article>

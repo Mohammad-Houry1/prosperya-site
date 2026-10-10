@@ -19,7 +19,7 @@ function Probe() {
 }
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 describe("LocaleProvider", () => {
-  test("derives French content from the localized route", () => {
+  test("derives French content from the localized route", async () => {
     render(
       <MemoryRouter initialEntries={["/fr/work"]}>
         <Routes>
@@ -35,19 +35,19 @@ describe("LocaleProvider", () => {
       </MemoryRouter>,
     );
     expect(screen.getByText("fr")).toBeInTheDocument();
-    expect(screen.getByText("Projets")).toBeInTheDocument();
+    expect(await screen.findByText("Projets")).toBeInTheDocument();
   });
-  test("empty CMS translations keep the French fallback instead of blanking navigation", async () => {
+  test("blank CMS translations expose full keys without cross-locale fallback", async () => {
     vi.spyOn(websiteApi, "labels").mockResolvedValue({
-      data: { "nav.work": "", "nav.contact": "   ", "footer.rights": "Droits du CMS" },
+      data: { "prosperya.nav.work": "", "prosperya.nav.contact": "   ", "prosperya.footer.rights": "Droits du CMS" },
       meta: { current_page: 1, last_page: 1 },
     });
     render(<MemoryRouter initialEntries={["/fr/work"]}><Routes>
       <Route path="/:locale/*" element={<LocaleProvider><Probe /></LocaleProvider>} />
     </Routes></MemoryRouter>);
-    await waitFor(() => expect(screen.getByText("Labels ready")).toBeInTheDocument());
-    expect(screen.getByText("Projets")).toBeInTheDocument();
-    expect(screen.getByText("Démarrer un projet")).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText("Droits du CMS")).toBeInTheDocument());
+    expect(screen.getByText("prosperya.nav.work")).toBeInTheDocument();
+    expect(screen.getByText("prosperya.nav.contact")).toBeInTheDocument();
     expect(screen.getByText("Droits du CMS")).toBeInTheDocument();
   });
 });

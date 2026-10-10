@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "../renderWithQueries.jsx";
+import { fireEvent, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { expect, test } from "vitest";
 import SolutionRow from "../../src/components/expertise/SolutionRow.jsx";
@@ -24,7 +25,7 @@ test("a solution row presents pains, capabilities and outcomes with locale-aware
 });
 
 test("delivery sequence can be reversed and cannot advance past the final stage", async () => {
-  const steps = localizeEntity(companyData.process, "en");
+  const steps = localizeEntity(companyData.process, "en").map(row => ({ ...row, descriptions: [row.deliverable] }));
   render(
     <ThemeProvider>
       <DeliverySequence steps={steps} locale="en" />

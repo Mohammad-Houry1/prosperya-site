@@ -1,7 +1,6 @@
 import ResponsiveImage from "../common/ResponsiveImage.jsx";
-import CoverArt from "../visuals/CoverArt.jsx";
 
-// Photography when a study has it, otherwise its generative cover.
+// Only authored media is rendered.
 export default function CaseVisual({ study, priority = false, alt = "", sizes }) {
   if (study.image)
     return (
@@ -14,5 +13,5 @@ export default function CaseVisual({ study, priority = false, alt = "", sizes })
         sizes={sizes}
       />
     );
-  return <CoverArt variant={study.cover} seed={study.id.length * 7} />;
+  return null;
 }
