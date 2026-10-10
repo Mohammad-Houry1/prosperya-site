@@ -114,6 +114,8 @@ docker run --rm -v "$PWD/backend:/app" -w /app -e MONGODB_TEST_URI="mongodb://ho
 
 The staging Work listing uses a responsive two-column project grid with industry/expertise filters. The Expertise listing uses numbered editorial rows for every local reference record. Both retain their hero cards and existing detail pages, with compact contact links below the listings.
 
+Every staging Work detail uses `frontend/src/pages/CaseStudy/CaseStudyContent.jsx`. One Case Study record supplies the summary, industry, facts, challenge, solution/deliverables, before/after systems, results, quote and selected platforms. Optional sections hide consistently; there are no per-slug detail layouts. The index uses aligned project visuals and a selectable project spotlight.
+
 These branches intentionally have different content sources. Do not merge the static staging frontend into production. Make future CMS integration changes on `production` (or a branch based on it). Keep staging as the visual/content reference while authoring the CMS.
 
 To switch versions locally, stop the frontend server, commit any changes, switch branches and restart `npm run dev`.

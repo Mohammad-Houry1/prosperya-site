@@ -5,12 +5,12 @@ import { localizeEntity } from "../../repositories/localize.js";
 import { stagingContent } from "../../services/stagingContent.js";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import ResponsiveImage from "../../components/common/ResponsiveImage.jsx";
+import CaseVisual from "../../components/case-study/CaseVisual.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import Section from "../../components/common/Section.jsx";
-import Testimonials from "../../components/company/Testimonials.jsx";
+
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
@@ -38,7 +38,7 @@ function Filter({ label, value, options, onChange }) {
 export default function WorkPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const { data: stories = [], isLoading: storiesIsLoading, isError: storiesIsError, refetch: storiesRefetch } = useQuery({
+  const { data: stories = [] } = useQuery({
     queryKey: ["company-stories", locale],
     queryFn: async ({ signal }) => {
       const response = await stagingContent.testimonials({ locale }, signal);
@@ -122,9 +122,9 @@ export default function WorkPage() {
           <div className={styles.projectGrid} aria-label={fr ? "Projets" : "Projects"}>
             {filtered.map((study, index) => (
               <article key={study.id} className={styles.project} data-reveal="card" style={{ "--i": index }}>
-                {study.image?.src && <Link to={`/${locale}/work/${study.slug}`} className={styles.projectImage} tabIndex={-1} aria-hidden="true">
-                  <ResponsiveImage src={study.image.src} alt="" width={study.image.width} height={study.image.height} sizes="(max-width: 700px) 100vw, 50vw" />
-                </Link>}
+                <Link to={`/${locale}/work/${study.slug}`} className={styles.projectImage} tabIndex={-1} aria-hidden="true">
+                  <CaseVisual study={study} sizes="(max-width: 700px) 100vw, 50vw" />
+                </Link>
                 <div className={styles.projectCopy}>
                   {study.industryName && <span className={styles.industry}>{study.industryName}</span>}
                   <h2><Link to={`/${locale}/work/${study.slug}`}>{study.name || study.title}</Link></h2>
@@ -139,7 +139,11 @@ export default function WorkPage() {
           <EmptyState />
         )}
       </PageContainer>
-      <Testimonials data={stories} isLoading={storiesIsLoading} isError={storiesIsError} refetch={storiesRefetch} variant="rail" />
+      {stories.length > 0 && <Section><figure className={styles.testimonial}>
+        <span>{fr ? "Regards clients" : "Client perspective"}</span>
+        <blockquote>{stories[0].quote}</blockquote>
+        <figcaption>{[stories[0].name, stories[0].role, stories[0].company].filter(Boolean).join(" · ")}</figcaption>
+      </figure></Section>}
       <Section className={styles.contactSection}>
         <div className={styles.contact}>
           <p>{fr ? "Un défi comparable ?" : "Facing a similar challenge?"}</p>
