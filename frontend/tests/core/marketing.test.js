@@ -35,3 +35,20 @@ test('solution animation data comes from authored fields without invented nodes'
   assert.equal(solution.animation.centreLabel, 'CMS centre');
   assert.equal(adaptSolution({}).animation.type, '');
 });
+
+test('case studies use stable industry records, labelled facts and ordered authored sections', () => {
+  const study = adaptCaseStudy({ industry_id: 'industry-id', industry_record: { id: 'industry-id', name: 'Commerce FR' },
+    case_study_industry: 'Legacy industry', case_study_chapeau: 'Short introduction', case_study_animation_type: 'network',
+    case_study_client: 'Legacy client', case_study_hero_facts: [{ hero_fact_value: '12', hero_fact_label: 'Teams' }],
+    content_sections: [{ content_title: 'CMS heading', content_subtitle: 'CMS subtitle', content_description: '<p>CMS body</p>' }],
+    technology_stack: [{ technology_name: 'CMS tool', technology_image: { url: '/tool.png' } }],
+    sections: [{ section_title: 'Extra', section_subtitle: 'Extra subtitle' }] });
+  assert.equal(study.industryName, 'Commerce FR');
+  assert.equal(study.chapeau, 'Short introduction');
+  assert.equal(study.animationType, 'network');
+  assert.deepEqual(study.detail.heroFacts, [['12', 'Teams']]);
+  assert.equal(study.contentSections[0].subtitle, 'CMS subtitle');
+  assert.equal(study.technologyStack[0].image.url, '/tool.png');
+  assert.equal(study.sections[0].subtitle, 'Extra subtitle');
+  assert.deepEqual(adaptCaseStudy({}).detail.heroFacts, []);
+});

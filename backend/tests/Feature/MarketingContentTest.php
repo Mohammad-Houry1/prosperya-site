@@ -8,6 +8,55 @@ use Tests\WebsiteTestCase;
 
 class MarketingContentTest extends WebsiteTestCase
 {
+    public function test_case_studies_expose_authored_content_and_scoped_industry_records(): void
+    {
+        $this->grant['modules'][] = ['id' => (string) new ObjectId, 'slug' => 'industries', 'model' => 'Industry', 'record_scope' => 'all'];
+        Http::swap(new \Illuminate\Http\Client\Factory);
+        Http::fake(['*' => Http::response($this->grant)]);
+        $industry = (string) new ObjectId;
+        $hidden = (string) new ObjectId;
+        $untranslated = (string) new ObjectId;
+        $this->collection('industries')->insertMany([
+            $this->record(['_id' => new ObjectId($industry), 'name' => 'Retail', 'translations' => ['fr' => ['name' => 'Commerce']]]),
+            $this->record(['_id' => new ObjectId($hidden), 'name' => 'Private industry', 'status_id' => $this->ids['draft']]),
+            $this->record(['_id' => new ObjectId($untranslated), 'name' => 'Industry EN', 'translations' => ['fr' => ['name' => '']]]),
+        ]);
+        $this->collection('case_studies')->insertMany([
+            $this->record(['slug' => 'authored', 'industry' => $industry, 'case_study_chapeau' => ['fr' => 'Introduction CMS'],
+                'case_study_animation_type' => 'network', 'case_study_hero_facts' => [['hero_fact_value' => ['fr' => '12'], 'hero_fact_label' => ['fr' => 'Équipes']]],
+                'content_sections' => [['content_title' => ['fr' => 'Chapitre'], 'content_subtitle' => ['en' => 'English only'], 'content_description' => ['fr' => '<p>Texte</p>']]],
+                'technology_stack' => [['technology_name' => ['fr' => 'Outil CMS']]],
+                'sections' => [['section_subtitle' => ['fr' => 'Sous-titre']]], 'internal_secret' => 'never-public']),
+            $this->record(['slug' => 'hidden-industry', 'industry' => ['_id' => $hidden, 'name' => 'private-snapshot'], 'case_study_industry' => ['fr' => 'Stale legacy label']]),
+            $this->record(['slug' => 'untranslated-industry', 'industry' => $untranslated, 'case_study_industry' => ['fr' => 'Stale legacy label']]),
+        ]);
+        $this->getJson('/api/case-studies/authored?locale=fr')->assertOk()
+            ->assertJsonPath('data.industry_id', $industry)->assertJsonPath('data.industry_record.name', 'Commerce')
+            ->assertJsonPath('data.case_study_chapeau', 'Introduction CMS')->assertJsonPath('data.case_study_animation_type', 'network')
+            ->assertJsonPath('data.case_study_hero_facts.0.hero_fact_label', 'Équipes')->assertJsonPath('data.content_sections.0.content_subtitle', '')
+            ->assertJsonPath('data.technology_stack.0.technology_name', 'Outil CMS')->assertJsonPath('data.sections.0.section_subtitle', 'Sous-titre')->assertDontSee('never-public');
+        $this->getJson('/api/case-studies/hidden-industry?locale=fr')->assertOk()
+            ->assertJsonPath('data.industry_id', '')->assertJsonPath('data.industry_record', null)->assertJsonPath('data.case_study_industry', '')
+            ->assertDontSee('private-snapshot')->assertDontSee('Private industry')->assertDontSee('Stale legacy label');
+        $this->getJson('/api/case-studies/untranslated-industry?locale=fr')->assertOk()
+            ->assertJsonPath('data.industry_id', $untranslated)->assertJsonPath('data.industry_record.name', '')->assertJsonPath('data.case_study_industry', '');
+    }
+
+    public function test_case_studies_keep_legacy_industries_but_omit_ungranted_industry_snapshots(): void
+    {
+        $industry = (string) new ObjectId;
+        $this->collection('industries')->insertOne($this->record(['_id' => new ObjectId($industry), 'name' => 'Ungranted industry']));
+        $this->collection('case_studies')->insertMany([
+            $this->record(['slug' => 'legacy', 'case_study_industry' => ['en' => 'Retail', 'fr' => 'Commerce']]),
+            $this->record(['slug' => 'ungranted', 'industry' => ['_id' => $industry, 'name' => 'Private snapshot'], 'case_study_industry' => ['fr' => 'Stale label']]),
+        ]);
+        $this->getJson('/api/case-studies/legacy?locale=fr')->assertOk()
+            ->assertJsonPath('data.industry_id', 'Retail')->assertJsonPath('data.case_study_industry', 'Commerce');
+        $this->getJson('/api/case-studies/ungranted?locale=fr')->assertOk()
+            ->assertJsonPath('data.industry_id', '')->assertJsonPath('data.industry_record', null)->assertJsonPath('data.case_study_industry', '')
+            ->assertDontSee('Ungranted industry')->assertDontSee('Private snapshot')->assertDontSee('Stale label');
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

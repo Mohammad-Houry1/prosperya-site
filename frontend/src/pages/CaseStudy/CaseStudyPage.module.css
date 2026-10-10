@@ -15,6 +15,10 @@
   background: #07131a;
 }
 
+.heroAnimation {
+  background: var(--bg-surface);
+}
+
 .heroVisual img, .heroVisual svg {
   width: 100%;
   height: 100%;
@@ -390,4 +394,35 @@
     align-items: flex-start;
     gap: 0;
   }
+}
+.authoredImage {
+  padding-bottom: 40px;
+}
+
+.authoredImage img {
+  width: 100%;
+  height: auto;
+}
+
+.heroVisual > [data-case-study-animation] {
+  width: 100%;
+  height: 100%;
+}
+
+.platforms li img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.facts > div, .narrative, .platforms li {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }

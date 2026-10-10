@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AnimatedVisualType;
 use App\Models\Base\ContentEntity;
 use App\Models\Concerns\Trashable;
 use App\Rules\CmsGallery;
@@ -28,11 +29,12 @@ class CaseStudy extends ContentEntity
         [Expertise::class, 'related_case_studies', 'Expertise'],
     ];
 
-    public array $searchable = ['name', 'slug', 'case_study_title', 'case_study_industry', 'case_study_client', 'case_study_duration', 'case_study_summary', 'case_study_description', 'case_study_challenge', 'case_study_challenge_points', 'case_study_solution', 'case_study_results', 'case_study_before_title', 'case_study_after_title', 'case_study_before', 'case_study_after', 'meta_title', 'meta_keywords', 'meta_url', 'meta_description'];
+    public array $searchable = ['case_study_chapeau', 'content_sections', 'technology_stack', 'case_study_hero_facts', 'name', 'slug', 'case_study_title', 'case_study_industry', 'case_study_client', 'case_study_duration', 'case_study_summary', 'case_study_description', 'case_study_challenge', 'case_study_challenge_points', 'case_study_solution', 'case_study_results', 'case_study_before_title', 'case_study_after_title', 'case_study_before', 'case_study_after', 'meta_title', 'meta_keywords', 'meta_url', 'meta_description'];
 
     public array $fields = [
         ['key' => 'name', 'name' => 'Name', 'sortable' => true, 'localized' => true],
         ['key' => 'slug', 'name' => 'Slug', 'sortable' => true],
+        ['key' => 'industry', 'name' => 'Industry', 'type' => 'object', 'source' => 'industries', 'getter' => 'getIndustriesList'],
         ['key' => 'related_solutions', 'name' => 'Related Solutions', 'type' => 'objects', 'source' => 'solutions', 'getter' => 'getSolutionsList'],
         ['key' => 'related_expertise', 'name' => 'Related Expertise', 'type' => 'objects', 'source' => 'expertise', 'getter' => 'getExpertiseList'],
         ['key' => 'platforms', 'name' => 'Platforms', 'type' => 'objects', 'source' => 'platforms', 'getter' => 'getPlatformsList'],
@@ -49,6 +51,7 @@ class CaseStudy extends ContentEntity
     public array $filters = [
         ['key' => 'project', 'name' => 'All Projects', 'type' => 'select', 'source' => 'projects', 'getter' => 'getProjectsList'],
         ['key' => 'status', 'name' => 'All Status', 'type' => 'select', 'source' => 'statuses', 'module' => 'case_studies', 'getter' => 'getStatusesList'],
+        ['key' => 'industry', 'name' => 'All Industries', 'type' => 'select', 'source' => 'industries', 'getter' => 'getIndustriesList'],
         ['key' => 'related_solutions', 'name' => 'All Solutions', 'type' => 'select', 'source' => 'solutions', 'getter' => 'getSolutionsList', 'multiple' => true],
         ['key' => 'related_expertise', 'name' => 'All Expertise', 'type' => 'select', 'source' => 'expertise', 'getter' => 'getExpertiseList', 'multiple' => true],
         ['key' => 'platforms', 'name' => 'All Platforms', 'type' => 'select', 'source' => 'platforms', 'getter' => 'getPlatformsList', 'multiple' => true],
@@ -69,11 +72,28 @@ class CaseStudy extends ContentEntity
             'status' => [...$sometimes, 'required'],
             'featured' => ['sometimes', 'boolean'],
             'case_study_title' => LocaleMap::rules(max: 255),
+            'case_study_chapeau' => LocaleMap::rules(max: 255),
+            'case_study_animation_type' => ['nullable', 'string', Rule::enum(AnimatedVisualType::class)],
             'case_study_industry' => LocaleMap::rules(max: 255),
+            'industry' => ['bail', 'nullable', 'string', 'regex:/^[a-f0-9]{24}$/',
+                Rule::exists(Industry::class, '_id')->where('tenant_id', $tenantId)->whereNull('deleted_at')],
             'case_study_client' => LocaleMap::rules(max: 255),
             'case_study_duration' => LocaleMap::rules(max: 255),
+            ...ListRules::of('case_study_hero_facts', [
+                'hero_fact_value' => LocaleMap::rules(max: 255),
+                'hero_fact_label' => LocaleMap::rules(max: 255),
+            ], max: 50),
             'case_study_summary' => LocaleMap::rules(),
             'case_study_description' => LocaleMap::rules(),
+            ...ListRules::of('content_sections', [
+                'content_title' => LocaleMap::rules(max: 255),
+                'content_subtitle' => LocaleMap::rules(max: 255),
+                'content_description' => LocaleMap::rules(),
+            ], max: 50),
+            ...ListRules::of('technology_stack', [
+                'technology_name' => LocaleMap::rules(max: 255),
+                'technology_image' => ['nullable', CmsMedia::valueOnly()],
+            ], max: 50),
             'case_study_challenge' => LocaleMap::rules(),
             ...ListRules::values('case_study_challenge_points', LocaleMap::rules(max: 255), max: 50),
             'case_study_solution' => LocaleMap::rules(),
@@ -89,6 +109,7 @@ class CaseStudy extends ContentEntity
             'case_study_metrics_note' => LocaleMap::rules(),
             ...ListRules::of('sections', [
                 'section_title' => LocaleMap::rules(max: 255),
+                'section_subtitle' => LocaleMap::rules(max: 255),
                 'section_description' => LocaleMap::rules(),
                 'section_image' => ['nullable', CmsMedia::valueOnly()],
             ], max: 50),
@@ -131,6 +152,23 @@ class CaseStudy extends ContentEntity
     public function getProjectsList(): array
     {
         return Project::query()->orderBy('name')->get(['_id', 'name', 'translations', 'code'])->toArray();
+    }
+
+    public function getIndustriesList(): array
+    {
+        $tenantId = CurrentTenant::id();
+        if (! $tenantId) {
+            return [];
+        }
+
+        return Industry::query()->where('tenant_id', $tenantId)->whereNull('deleted_at')
+            ->orderBy('order')->orderBy('name')
+            ->get(['_id', 'name', 'slug', 'translations', 'project', 'country', 'language'])->all();
+    }
+
+    public function industryRecord()
+    {
+        return $this->belongsTo(Industry::class, 'industry');
     }
 
     public function getSolutionsList(): array

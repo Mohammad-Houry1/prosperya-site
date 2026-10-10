@@ -8,6 +8,8 @@ import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import CaseVisual from "../../components/case-study/CaseVisual.jsx";
+import CmsImage from "../../components/common/CmsImage.jsx";
+import CaseStudyAnimation from "../../components/case-study/CaseStudyAnimation.jsx";
 import styles from "./CaseStudyPage.module.css";
 import CTASection from "../../components/common/CTASection.jsx";
 // One template for every Case Study record; optional content controls section visibility.
@@ -19,7 +21,9 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
   const hasSolution = Boolean(detail.solutionIntro || detail.features?.length);
   const hasArchitecture = Boolean(detail.before?.length || detail.after?.length);
   const hasResults = Boolean(detail.outcomeIntro || detail.outcomes?.length || detail.metricsNote || quote);
-  const sections = [
+  const contentSections = study.contentSections || [];
+  const technologies = study.technologyStack?.length ? study.technologyStack : platforms;
+  const sections = contentSections.filter(row => row.title).map(row => [row.id, row.title]).concat([
     hasChallenge && ["challenge", t("pages.case-study.case-study-page.the-challenge-c39e0a")],
     hasSolution && ["solution", t("pages.case-study.case-study-page.the-solution-f395ce")],
     hasArchitecture && [
@@ -27,7 +31,7 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
       t("pages.case-study.case-study-page.the-architecture-8ae880"),
     ],
     hasResults && ["results", t("pages.case-study.case-study-page.the-outcome-4d35d7")],
-  ].filter(Boolean);
+  ].filter(Boolean));
   return (
     <div className={styles.page} data-case-study-template="shared">
       <PageHero
@@ -38,13 +42,13 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
           { label: t("pages.case-study.case-study-page.work-2af496"), to: `/${locale}/work` },
           { label: study.name || study.title },
         ]}
-        lead={<CmsRichHtml html={detail.intro || study.description} />}
+        lead={<>{study.chapeau && <p>{study.chapeau}</p>}<CmsRichHtml html={detail.intro || study.description} /></>}
         actions={
           <PrimaryLink to={`/${locale}/contact`} variant="text">
             {t("pages.case-study.case-study-page.discuss-a-similar-project-a96665")}
           </PrimaryLink>
         }
-        visual={study.image && (
+        visual={study.animationType ? <div className={`${styles.heroVisual} ${styles.heroAnimation}`}><CaseStudyAnimation type={study.animationType} /></div> : study.image && (
           <div className={styles.heroVisual} aria-hidden="true">
             <CaseVisual
               study={study}
@@ -55,6 +59,7 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
         )}
       />
       <PageContainer>
+        {study.animationType && study.image && <div className={styles.authoredImage}><CaseVisual study={study} alt={study.image.alt || study.title} /></div>}
         {detail.heroFacts?.length > 0 && (
           <dl className={styles.facts}>
             {detail.heroFacts.map(([value, label], index) => (
@@ -65,7 +70,7 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
             ))}
           </dl>
         )}
-        {(sections.length > 0 || platforms.length > 0) && (
+        {(sections.length > 0 || contentSections.length > 0 || technologies.length > 0) && (
           <div className={styles.story}>
             <nav
               className={styles.navigation}
@@ -82,12 +87,13 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
                   </li>
                 ))}
               </ol>
-              {platforms.length > 0 && (
+              {technologies.length > 0 && (
                 <div className={styles.platforms}>
                   <span>{t("pages.case-study.case-study-page.technology-stack-e21e26")}</span>
                   <ul>
-                    {platforms.map((platform) => (
+                    {technologies.map((platform) => (
                       <li key={platform.id || platform.slug}>
+                        <CmsImage media={platform.image} />
                         <strong>{platform.name}</strong>
 
                       </li>
@@ -97,6 +103,11 @@ export default function CaseStudyContent({ study, platforms = [], locale }) {
               )}
             </nav>
             <div className={styles.narrative}>
+              {contentSections.map(section => <section key={section.id} id={`case-${section.id}`} className={styles.section}>
+                {section.title && <h2>{section.title}</h2>}
+                {section.subtitle && <p className={styles.subtitle}>{section.subtitle}</p>}
+                <CmsRichHtml className={styles.body} html={section.description} />
+              </section>)}
               {hasChallenge && (
                 <section id="case-challenge" className={styles.section}>
                   <span className={styles.sectionLabel}>
