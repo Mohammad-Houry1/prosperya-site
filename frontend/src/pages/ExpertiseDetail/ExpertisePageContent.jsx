@@ -121,7 +121,7 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
           </Link>
         </li>)}</ul>
       </Section>}
-      <CTASection variant="card" secondary={{ path: "contact", label: t("pages.expertise-detail.expertise-page-content.talk-to-an-expert-8e5217") }} />
+      <CTASection variant="split" showSecondButton={false} secondary={{ path: "contact", label: t("pages.expertise-detail.expertise-page-content.talk-to-an-expert-8e5217") }} />
     </div>
   );
 }

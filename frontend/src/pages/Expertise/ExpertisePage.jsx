@@ -2,13 +2,12 @@ import { websiteApi } from "../../services/websiteApi.js";
 import { adaptExpertise } from "../../repositories/marketing.repository.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import Section from "../../components/common/Section.jsx";
-import Eyebrow from "../../components/common/Eyebrow.jsx";
+import { Link } from "react-router-dom";
+import CmsImage from "../../components/common/CmsImage.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import CTASection from "../../components/common/CTASection.jsx";
-import ArchitectureFlowDiagram from "../../components/visuals/ArchitectureFlowDiagram.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
-import CapabilityStory from "./CapabilityStory.jsx";
 import CapabilityIndex from "./CapabilityIndex.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
@@ -49,33 +48,57 @@ export default function ExpertisePage() {
         }
         visual={<CapabilityIndex items={items} locale={locale} />}
       />
-      <CapabilityStory items={items} locale={locale} />
       <Section>
-        <div className={styles.architecture}>
-          <div className={styles.architectureCopy}>
-            <Eyebrow>{t("pages.expertise.expertise-page.our-architecture-approach-37ec21")}</Eyebrow>
-            <h2>
-              {t("pages.expertise.expertise-page.built-to-connect-5ea962")}
-              <span>{t("pages.expertise.expertise-page.designed-to-scale-4d2442")}</span>
-            </h2>
-            <p>
-              {t("pages.expertise.expertise-page.our-architecture-framework-unifies-your-enterprise-systems-46a34d")}
-            </p>
-            <PrimaryLink to={`/${locale}/approach`} variant="text">
-              {t("pages.expertise.expertise-page.explore-our-approach-de10c8")}
-            </PrimaryLink>
-          </div>
-          <ArchitectureFlowDiagram />
-        </div>
+        <ol
+          className={styles.rows}
+          aria-label={t("nav.expertise")}
+        >
+          {items.map((item, index) => (
+            <li
+              key={item.id}
+              className={styles.row}
+              data-reveal="card"
+              style={{ "--i": index }}
+            >
+              <span className={styles.number}>
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className={styles.copy}>
+                <h2>
+                  <Link to={`/${locale}/expertise/${item.slug}`}>
+                    {item.detailTitle || item.title}
+                  </Link>
+                </h2>
+                {item.tagline && (
+                  <p className={styles.tagline}>{item.tagline}</p>
+                )}
+                {item.summary && (
+                  <p className={styles.summary}>{item.summary}</p>
+                )}
+                {item.capabilities?.length > 0 && (
+                  <ul className={styles.capabilities}>
+                    {item.capabilities.map((service) => (
+                      <li key={service}>{service}</li>
+                    ))}
+                  </ul>
+                )}
+                <PrimaryLink
+                  to={`/${locale}/expertise/${item.slug}`}
+                  variant="text"
+                >
+                  {t("pages.expertise.capability-story.explore-5be3be")}
+                </PrimaryLink>
+              </div>
+              <CmsImage media={item.image} className={styles.image} sizes="(max-width: 700px) 100vw, 30vw" />
+            </li>
+          ))}
+        </ol>
+        <CTASection
+          variant="split"
+          showSecondButton={false}
+          title={t("pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66")}
+        />
       </Section>
-      <CTASection
-        variant="card"
-        title={t("pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66")}
-        description={
-          t("pages.expertise.expertise-page.describe-the-problem-we-will-point-you-b40a3b")
-        }
-        secondary={{ path: "contact", label: t("pages.expertise.expertise-page.talk-to-an-expert-8e5217") }}
-      />
     </>
   );
 }

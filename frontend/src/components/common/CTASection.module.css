@@ -92,7 +92,7 @@
   margin-top: 24px;
 }
 /* The light field passes behind this column: keep the ghost action legible. */
-.splitSide .actions > a:last-child {
+.splitSide .actions > a + a {
   background: var(--bg-primary);
 }
 .splitWave {

@@ -159,7 +159,7 @@ export default function ApproachPage() {
       )}
       <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} layout="columns" />
       <CTASection
-        variant="card"
+        variant="split"
         title={t("pages.approach.approach-page.map-your-path-with-us-0a8424")}
         description={
           t("pages.approach.approach-page.share-your-goals-and-we-ll-craft-bb713a")

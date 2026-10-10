@@ -108,12 +108,8 @@ docker run --rm -v "$PWD/backend:/app" -w /app -e MONGODB_TEST_URI="mongodb://ho
 
 ## Branches
 
-`staging` is the development branch. `production` holds the reviewed release version. Both branches currently contain the completed CMS integration and local API proxy fix. Production hosting is not configured by this branch setup.
+`production` contains the CMS-connected website. `staging` is an offline, hardcoded design reference. Their content sources intentionally differ. Production hosting is not configured by this branch setup.
 
-After verifying work on staging, promote it locally:
+Production now uses staging's Work grid and rotating spotlight, numbered Expertise listing, shared case-study layout, and split contact sections. These layouts still use production's CMS APIs, translations, sanitized rich text and published relationships. Contact and newsletter submissions, SEO, About's `about-prosperya` source and platform category filters retain their production implementations.
 
-```bash
-git switch production
-git merge --ff-only staging
-git switch staging
-```
+Promote future presentation changes selectively on `production` (or a branch based on it). Do not merge the staging branch or copy its local data/service implementations into production. Extend the remaining API fields page by page while using staging as the visual reference.
