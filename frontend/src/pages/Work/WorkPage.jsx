@@ -1,5 +1,8 @@
 import { caseStudiesData } from "../../data/caseStudies.data.js";
-import { caseStudyDetailsData, industries as industryLabels } from "../../data/caseStudyDetails.data.js";
+import {
+  caseStudyDetailsData,
+  industries as industryLabels,
+} from "../../data/caseStudyDetails.data.js";
 import { expertiseData } from "../../data/expertise.data.js";
 import { localizeEntity } from "../../repositories/localize.js";
 import { stagingContent } from "../../services/stagingContent.js";
@@ -19,14 +22,19 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import WorkDeck from "./WorkDeck.jsx";
 import styles from "./WorkPage.module.css";
-
+import CTASection from "../../components/common/CTASection.jsx";
 function Filter({ label, value, options, onChange }) {
   return (
     <div className={styles.filter}>
       <span id={`filter-${label}`}>{label}</span>
       <div role="group" aria-labelledby={`filter-${label}`}>
         {options.map(([id, name]) => (
-          <button key={id} type="button" aria-pressed={value === id} onClick={() => onChange(id)}>
+          <button
+            key={id}
+            type="button"
+            aria-pressed={value === id}
+            onClick={() => onChange(id)}
+          >
             {name}
           </button>
         ))}
@@ -45,13 +53,23 @@ export default function WorkPage() {
       return response.data || [];
     },
   });
-  const { isLoading, isError, refetch, data = [] } = useQuery({
+  const {
+    isLoading,
+    isError,
+    refetch,
+    data = [],
+  } = useQuery({
     queryKey: ["case-studies", locale],
     queryFn: async () => {
       return localizeEntity(caseStudiesData, locale).map((study) => {
         const industry = caseStudyDetailsData[study.id]?.industry;
         return industry
-          ? { ...study, industry, industryName: industryLabels[industry][locale] ?? industryLabels[industry].en }
+          ? {
+              ...study,
+              industry,
+              industryName:
+                industryLabels[industry][locale] ?? industryLabels[industry].en,
+            }
           : study;
       });
     },
@@ -77,8 +95,14 @@ export default function WorkPage() {
         <ErrorState onRetry={() => refetch()} />
       </Section>
     );
-  const capabilityNames = Object.fromEntries((capabilities ?? []).map((c) => [c.id, c.detailTitle]));
-  const industries = [...new Map(data.filter((s) => s.industry).map((s) => [s.industry, s.industryName]))];
+  const capabilityNames = Object.fromEntries(
+    (capabilities ?? []).map((c) => [c.id, c.detailTitle]),
+  );
+  const industries = [
+    ...new Map(
+      data.filter((s) => s.industry).map((s) => [s.industry, s.industryName]),
+    ),
+  ];
   const capabilityIds = [...new Set(data.flatMap((s) => s.expertiseIds))];
   const filtered = data.filter(
     (study) =>
@@ -88,8 +112,15 @@ export default function WorkPage() {
   return (
     <>
       <PageHero
-        breadcrumb={[{ label: fr ? "Accueil" : "Home", to: `/${locale}` }, { label: fr ? "Projets" : "Work" }]}
-        title={fr ? "Des transformations qui prouvent l’impact" : "Transformation stories that prove the impact"}
+        breadcrumb={[
+          { label: fr ? "Accueil" : "Home", to: `/${locale}` },
+          { label: fr ? "Projets" : "Work" },
+        ]}
+        title={
+          fr
+            ? "Des transformations qui prouvent l’impact"
+            : "Transformation stories that prove the impact"
+        }
         lead={
           <p>
             {fr
@@ -105,32 +136,77 @@ export default function WorkPage() {
             label={fr ? "Filtrer par secteur" : "Filter by industry"}
             value={industry}
             onChange={setIndustry}
-            options={[["all", fr ? "Tous les secteurs" : "All industries"], ...industries]}
+            options={[
+              ["all", fr ? "Tous les secteurs" : "All industries"],
+              ...industries,
+            ]}
           />
           <Filter
             label={fr ? "Filtrer par expertise" : "Filter by capability"}
             value={capability}
             onChange={setCapability}
-            options={[["all", fr ? "Toutes les expertises" : "All capabilities"], ...capabilityIds.map((id) => [id, capabilityNames[id] ?? id])]}
+            options={[
+              ["all", fr ? "Toutes les expertises" : "All capabilities"],
+              ...capabilityIds.map((id) => [id, capabilityNames[id] ?? id]),
+            ]}
           />
         </div>
         <p className={styles.count} role="status">
-          {filtered.length} {fr ? "projet(s)" : filtered.length === 1 ? "engagement" : "engagements"} ·{" "}
-          {fr ? "missions illustratives, résultats non vérifiés" : "illustrative, results not verified"}
+          {filtered.length}{" "}
+          {fr
+            ? "projet(s)"
+            : filtered.length === 1
+              ? "engagement"
+              : "engagements"}{" "}
+          ·{" "}
+          {fr
+            ? "missions illustratives, résultats non vérifiés"
+            : "illustrative, results not verified"}
         </p>
         {filtered.length ? (
-          <div className={styles.projectGrid} aria-label={fr ? "Projets" : "Projects"}>
+          <div
+            className={styles.projectGrid}
+            aria-label={fr ? "Projets" : "Projects"}
+          >
             {filtered.map((study, index) => (
-              <article key={study.id} className={styles.project} data-reveal="card" style={{ "--i": index }}>
-                <Link to={`/${locale}/work/${study.slug}`} className={styles.projectImage} tabIndex={-1} aria-hidden="true">
-                  <CaseVisual study={study} sizes="(max-width: 700px) 100vw, 50vw" />
+              <article
+                key={study.id}
+                className={styles.project}
+                data-reveal="card"
+                style={{ "--i": index }}
+              >
+                <Link
+                  to={`/${locale}/work/${study.slug}`}
+                  className={styles.projectImage}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                >
+                  <CaseVisual
+                    study={study}
+                    sizes="(max-width: 700px) 100vw, 50vw"
+                  />
                 </Link>
                 <div className={styles.projectCopy}>
-                  {study.industryName && <span className={styles.industry}>{study.industryName}</span>}
-                  <h2><Link to={`/${locale}/work/${study.slug}`}>{study.name || study.title}</Link></h2>
+                  {study.industryName && (
+                    <span className={styles.industry}>
+                      {study.industryName}
+                    </span>
+                  )}
+                  <h2>
+                    <Link to={`/${locale}/work/${study.slug}`}>
+                      {study.name || study.title}
+                    </Link>
+                  </h2>
                   {study.description && <p>{study.description}</p>}
-                  {study.client && <span className={styles.client}>{study.client}</span>}
-                  <PrimaryLink to={`/${locale}/work/${study.slug}`} variant="text">{fr ? "Voir le cas client" : "View case study"}</PrimaryLink>
+                  {study.client && (
+                    <span className={styles.client}>{study.client}</span>
+                  )}
+                  <PrimaryLink
+                    to={`/${locale}/work/${study.slug}`}
+                    variant="text"
+                  >
+                    {fr ? "Voir le cas client" : "View case study"}
+                  </PrimaryLink>
                 </div>
               </article>
             ))}
@@ -139,17 +215,28 @@ export default function WorkPage() {
           <EmptyState />
         )}
       </PageContainer>
-      {stories.length > 0 && <Section><figure className={styles.testimonial}>
-        <span>{fr ? "Regards clients" : "Client perspective"}</span>
-        <blockquote>{stories[0].quote}</blockquote>
-        <figcaption>{[stories[0].name, stories[0].role, stories[0].company].filter(Boolean).join(" · ")}</figcaption>
-      </figure></Section>}
-      <Section className={styles.contactSection}>
-        <div className={styles.contact}>
-          <p>{fr ? "Un défi comparable ?" : "Facing a similar challenge?"}</p>
-          <PrimaryLink to={`/${locale}/contact`} variant="text">{fr ? "Parlons de votre projet" : "Let’s talk about your project"}</PrimaryLink>
-        </div>
-      </Section>
+      {stories.length > 0 && (
+        <Section>
+          <figure className={styles.testimonial}>
+            <span>{fr ? "Regards clients" : "Client perspective"}</span>
+            <blockquote>{stories[0].quote}</blockquote>
+            <figcaption>
+              {[stories[0].name, stories[0].role, stories[0].company]
+                .filter(Boolean)
+                .join(" · ")}
+            </figcaption>
+          </figure>
+        </Section>
+      )}
+      <CTASection
+        variant="split"
+        title={fr ? "Un défi comparable ?" : "Facing a similar challenge?"}
+        description={
+          fr
+            ? "Partagez vos objectifs : nous construirons une approche sur mesure pour un impact durable."
+            : "Share your goals and we’ll craft a tailored approach to deliver lasting impact."
+        }
+      />
     </>
   );
 }

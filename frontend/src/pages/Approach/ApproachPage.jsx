@@ -154,7 +154,7 @@ export default function ApproachPage() {
       </Section>
       <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} layout="columns" />
       <CTASection
-        variant="card"
+        variant="split"
         title={fr ? "Traçons votre parcours ensemble." : "Map your path with us."}
         description={
           fr

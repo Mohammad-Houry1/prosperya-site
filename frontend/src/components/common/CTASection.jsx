@@ -19,6 +19,7 @@ export default function CTASection({
   eyebrow,
   variant = "band",
   secondary,
+  showSecondButton = true,
 }) {
   const { locale } = useLocale();
   const fr = locale === "fr";
@@ -46,12 +47,14 @@ export default function CTASection({
       <PrimaryLink to={`/${locale}/contact`}>
         {fr ? "Démarrer une conversation" : "Start a conversation"}
       </PrimaryLink>
-      <PrimaryLink
-        to={`/${locale}/${secondary?.path ?? "expertise"}`}
-        variant="ghost"
-      >
-        {secondary?.label ?? (fr ? "Découvrir nos services" : "Explore our services")}
-      </PrimaryLink>
+      {showSecondButton && (
+        <PrimaryLink
+          to={`/${locale}/${secondary?.path ?? "expertise"}`}
+          variant="ghost"
+        >
+          {secondary?.label ?? (fr ? "Découvrir nos services" : "Explore our services")}
+        </PrimaryLink>
+      )}
     </div>
   );
   if (variant === "split")
