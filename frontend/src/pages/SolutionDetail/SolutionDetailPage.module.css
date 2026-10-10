@@ -127,6 +127,9 @@
   border-radius: var(--radius-md);
   background: #07131a;
 }
+.singleColumn {
+  grid-template-columns: minmax(0, 1fr);
+}
 .proofMedia img,
 .proofMedia svg {
   width: 100%;

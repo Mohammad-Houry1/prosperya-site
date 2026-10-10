@@ -83,6 +83,9 @@
 .single {
   grid-template-columns: minmax(0, 1fr) !important;
 }
+.layer li {
+  overflow-wrap: anywhere;
+}
 .platform li {
   min-height: 48px;
   border-color: rgba(var(--brand-primary-rgb), 0.55);

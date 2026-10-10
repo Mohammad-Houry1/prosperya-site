@@ -16,6 +16,10 @@ export function adaptSolution(record) {
     image: record.solution_image, pains: rows(record.solution_challenges), capabilities: rows(record.solution_capabilities),
     outcomes: rows(record.outcomes).map(row => [row.outcome_image, text(row.outcome_title), text(row.outcome_description)]),
     expertiseIds: ids(record.related_expertise), caseStudyId: rows(record.related_case_studies)[0]?.id,
+    animation: { type: text(record.solution_animation_type), centreLabel: text(record.solution_animation_centre_label),
+      resultLabel: text(record.solution_animation_result_label), signalLabel: text(record.solution_animation_signal_label),
+      sources: rows(record.solution_animation_sources), lanes: rows(record.solution_animation_lanes), steps: rows(record.solution_animation_steps),
+      suppliers: rows(record.solution_animation_suppliers), hubs: rows(record.solution_animation_hubs), channels: rows(record.solution_animation_channels) },
     sections: adaptSections(record.sections),
     story: { statement: text(record.solution_statement), lead: text(record.solution_lead), frictionTitle: text(record.solution_friction_title),
       friction: rows(record.solution_friction), metrics: metrics(record.metrics).map(row => [row.value,row.label]), metricsNote: text(record.solution_metrics_note) } };

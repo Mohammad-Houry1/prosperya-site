@@ -14,6 +14,7 @@ import CapabilityCard from "../../components/expertise/CapabilityCard.jsx";
 import CaseVisual from "../../components/case-study/CaseVisual.jsx";
 import SolutionMetaphor from "../../components/visuals/SolutionMetaphor.jsx";
 import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
+import ContentLinks from "../../components/sections/ContentLinks.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
@@ -43,7 +44,7 @@ function SolutionHero({ item, locale }) {
         titleClassName={styles.title}
         lead={
           <>
-            <p className={styles.tagline}>{item.tagline}</p>
+            {item.tagline && <p className={styles.tagline}>{item.tagline}</p>}
             <CmsRichHtml html={item.description} />
           </>
         }
@@ -55,7 +56,7 @@ function SolutionHero({ item, locale }) {
             </PrimaryLink>
           </>
         }
-        visual={<SolutionMetaphor variant={item.metaphor} progressRef={progress} label={item.story.statement} />}
+        visual={item.animation.type ? <SolutionMetaphor animation={item.animation} progressRef={progress} label={item.title} /> : null}
       />
     </div>
   );
@@ -64,19 +65,21 @@ function SolutionHero({ item, locale }) {
 export default function SolutionDetailPage() {
   const { slug } = useParams();
   const {locale, t } = useLocale();
-  const { data: solution = null, isLoading: solutionIsLoading, isError: solutionIsError, refetch: solutionRefetch } = useQuery({
+  const { data: solution = null, isLoading: solutionIsLoading, isError: solutionIsError, refetch: solutionRefetch, error: solutionError } = useQuery({
     queryKey: ["solution", locale, slug],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.solution(slug, locale, signal);
       return response.data ? adaptSolution(response.data) : null;
     },
     enabled: Boolean(slug),
+    retry: (count, error) => error?.status !== 404 && error?.status !== 403 && count < 2,
   });
   useDocumentMeta({ model: "Solution",
     title: solution ? `${solution.title} — Prosperya` : "Prosperya — Solutions",
     description: solution?.description,
   });
   if (solutionIsLoading) return <PageLoader />;
+  if (solutionIsError && solutionError?.status === 404) return <Section><EmptyState title={t("pages.solution-detail.solution-detail-page.solution-not-found-0f1206")} /></Section>;
   if (solutionIsError)
     return (
       <Section>
@@ -92,23 +95,23 @@ export default function SolutionDetailPage() {
   const item = solution;
   const story = item.story;
   const related = (item.related_expertise || []).map(adaptExpertise);
-  const proof = item.related_case_studies?.[0] ? adaptCaseStudy(item.related_case_studies[0]) : null;
+  const proofs = (item.related_case_studies || []).map(adaptCaseStudy);
   return (
     <>
       <SolutionHero item={item} locale={locale} />
       {item.image?.url && <Section><CmsImage media={item.image} /></Section>}
-{story.statement || story.lead && (
+{(story.statement || story.lead) && (
       <section className={styles.statement}>
         <PageContainer>
           <Eyebrow>{item.title}</Eyebrow>
-          <h2 className={styles.statementTitle}>
+          {story.statement && <h2 className={styles.statementTitle}>
             {story.statement}
-          </h2>
+          </h2>}
           <CmsRichHtml html={story.lead} />
         </PageContainer>
       </section>
       )}
-{story.frictionTitle || story.friction.length > 0 && (
+{(story.frictionTitle || story.friction.length > 0) && (
       <Section>
         <div className={styles.friction}>
           <h2>{story.frictionTitle}</h2>
@@ -123,14 +126,14 @@ export default function SolutionDetailPage() {
         </div>
       </Section>
       )}
-{item.capabilities.length > 0 || item.outcomes.length > 0 && (
+{(item.capabilities.length > 0 || item.outcomes.length > 0) && (
       <Section className={styles.change}>
         <SectionHeader
           eyebrow={t("pages.solution-detail.solution-detail-page.what-changes-dd20b5")}
           title={t("pages.solution-detail.solution-detail-page.concrete-capabilities-visible-outcomes-72f078")}
         />
-        <div className={styles.changeGrid}>
-          <div className={styles.changeColumn} data-reveal="card">
+        <div className={styles.changeGrid + (!item.capabilities.length || !item.outcomes.length ? " " + styles.singleColumn : "")}>
+          {item.capabilities.length > 0 && <div className={styles.changeColumn} data-reveal="card">
             <span>{t("pages.solution-detail.solution-detail-page.what-we-put-in-place-370fb3")}</span>
             <ul className={styles.checks}>
               {item.capabilities.map((capability) => (
@@ -140,8 +143,8 @@ export default function SolutionDetailPage() {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className={styles.changeColumn} data-reveal="card" style={{ "--i": 2 }}>
+          </div>}
+          {item.outcomes.length > 0 && <div className={styles.changeColumn} data-reveal="card" style={{ "--i": 2 }}>
             <span>{t("pages.solution-detail.solution-detail-page.what-you-can-expect-508821")}</span>
             <ul className={styles.outcomes}>
               {item.outcomes.map(([image, text, description], index) => (
@@ -154,22 +157,22 @@ export default function SolutionDetailPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div>}
         </div>
       </Section>
       )}
-      {proof && (
-        <Section>
-          <article className={styles.proof}>
-            <div className={styles.proofMedia} data-reveal="image" aria-hidden="true">
+      {proofs.map(proof => (
+        <Section key={proof.id}>
+          <article className={styles.proof + (!proof.image ? " " + styles.singleColumn : "")}>
+            {proof.image && <div className={styles.proofMedia} data-reveal="image" aria-hidden="true">
               <CaseVisual study={proof} />
-            </div>
+            </div>}
             <div className={styles.proofCopy}>
               <Eyebrow>{t("pages.solution-detail.solution-detail-page.in-practice-bf2d3c")}</Eyebrow>
               <h2>{proof.name}</h2>
-              <p>{proof.title}</p>
+              <p>{proof.description}</p>
               <dl className={styles.proofMetrics}>
-                {story.metrics.map(([value, label]) => (
+                {proof.metrics.map(({value, label}) => (
                   <div key={label}>
                     <dd>
                       <AnimatedCounter value={value} />
@@ -178,7 +181,7 @@ export default function SolutionDetailPage() {
                   </div>
                 ))}
               </dl>
-              <CmsRichHtml className={styles.note} html={story.metricsNote} />
+              <CmsRichHtml className={styles.note} html={proof.detail.metricsNote} />
               <Link className={styles.proofLink} to={`/${locale}/work/${proof.slug}`}>
                 {t("pages.solution-detail.solution-detail-page.read-the-case-study-c265da")}
                 <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
@@ -186,7 +189,7 @@ export default function SolutionDetailPage() {
             </div>
           </article>
         </Section>
-      )}
+      ))}
       {related.length > 0 && (
         <Section>
           <SectionHeader
@@ -200,7 +203,8 @@ export default function SolutionDetailPage() {
           </div>
         </Section>
       )}
-      <MarketingSections sections={item.sections} metrics={proof ? [] : story.metrics.map(([value, label]) => ({ value, label }))} note={proof ? "" : story.metricsNote} />
+      <MarketingSections sections={item.sections} metrics={story.metrics.map(([value, label]) => ({ value, label }))} note={story.metricsNote} />
+      <ContentLinks title={t("nav.insights")} items={item.related_articles} field="title" route="insights" />
       <CTASection
         variant="band"
         title={t("solutions.detail_cta_title", { solution: item.title.toLowerCase() })}

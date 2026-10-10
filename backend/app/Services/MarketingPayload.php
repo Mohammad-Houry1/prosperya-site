@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\{Approach, CaseStudy, Expertise, Page, Platform, Solution, Testimonial, User};
+use App\Models\{Approach, Article, CaseStudy, Expertise, Page, Platform, Solution, Testimonial, User};
+use App\Enums\AnimatedVisualType;
 use App\Models\Base\ContentEntity;
 
 /** Allowlisted authored fields; relationship snapshots are never public payloads. */
@@ -12,7 +13,7 @@ final class MarketingPayload
 
     private const TEXT = [
         Expertise::class => ['expertise_title', 'expertise_detail_title', 'expertise_tagline', 'expertise_summary', 'expertise_description', 'expertise_metrics_note'],
-        Solution::class => ['solution_title', 'solution_tagline', 'solution_description', 'solution_statement', 'solution_lead', 'solution_friction_title', 'solution_metrics_note'],
+        Solution::class => ['solution_title', 'solution_tagline', 'solution_description', 'solution_statement', 'solution_lead', 'solution_friction_title', 'solution_metrics_note', 'solution_animation_centre_label', 'solution_animation_result_label', 'solution_animation_signal_label'],
         CaseStudy::class => ['case_study_title', 'case_study_client', 'case_study_industry', 'case_study_duration', 'case_study_summary', 'case_study_description', 'case_study_challenge', 'case_study_solution', 'case_study_results', 'case_study_before_title', 'case_study_after_title', 'case_study_metrics_note'],
         Approach::class => ['approach_title', 'approach_description', 'collaboration_title', 'principles_title', 'diagram_client_title', 'diagram_client_description', 'diagram_shared_title', 'diagram_shared_description', 'diagram_company_title', 'diagram_company_description', 'diagram_value_title', 'diagram_value_description'],
         Page::class => ['description', 'content', 'about_title', 'about_story_title', 'about_work_title', 'about_work_description', 'architecture_title', 'architecture_description'],
@@ -20,7 +21,7 @@ final class MarketingPayload
 
     private const LISTS = [
         Expertise::class => ['expertise_capabilities', 'expertise_outcomes'],
-        Solution::class => ['solution_challenges', 'solution_capabilities', 'solution_friction'],
+        Solution::class => ['solution_challenges', 'solution_capabilities', 'solution_friction', 'solution_animation_sources', 'solution_animation_lanes', 'solution_animation_steps', 'solution_animation_suppliers', 'solution_animation_hubs', 'solution_animation_channels'],
         CaseStudy::class => ['case_study_challenge_points', 'case_study_before', 'case_study_after', 'case_study_deliverables'],
         Approach::class => ['collaboration_items'],
         Page::class => ['about_focus', 'architecture_column_1', 'architecture_column_2', 'architecture_column_3', 'architecture_column_4'],
@@ -51,7 +52,7 @@ final class MarketingPayload
 
     private const RELATIONS = [
         Expertise::class => ['related_solutions' => Solution::class, 'related_case_studies' => CaseStudy::class, 'platforms' => Platform::class],
-        Solution::class => ['related_expertise' => Expertise::class, 'related_case_studies' => CaseStudy::class],
+        Solution::class => ['related_expertise' => Expertise::class, 'related_case_studies' => CaseStudy::class, 'related_articles' => Article::class],
         CaseStudy::class => ['related_expertise' => Expertise::class, 'related_solutions' => Solution::class, 'platforms' => Platform::class, 'case_study_testimonial' => Testimonial::class],
         Page::class => ['about_users' => User::class],
     ];
@@ -65,6 +66,10 @@ final class MarketingPayload
             'featured' => (bool) $record->featured, 'seo' => $this->payload->seo($record, $locale), 'meta_image' => $this->payload->media($record->meta_image, $locale)];
         foreach (self::TEXT[$model] ?? [] as $field) $result[$field] = $record->text($field, $locale);
         foreach (self::LISTS[$model] ?? [] as $field) $result[$field] = $this->values($record->{$field}, $locale);
+        if ($model === Solution::class) {
+            $type = $record->solution_animation_type;
+            $result['solution_animation_type'] = is_string($type) ? (AnimatedVisualType::tryFrom($type)?->value ?? '') : '';
+        }
         foreach (self::MODEL_ROWS[$model] ?? [] as $field) {
             $result[$field] = array_map(function ($row) use ($field, $locale) {
                 $row = (object) $row;
@@ -111,7 +116,7 @@ final class MarketingPayload
             ->where('is_active', '!=', false)->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
         if ($model === User::class) $query->where('is_approved', '!=', false);
         return $this->related[$key] = $query->get()->mapWithKeys(fn ($row) => [(string) $row->id => match ($model) {
-            Platform::class => $this->payload->platform($row, $locale), Testimonial::class => $this->payload->testimonial($row, $locale), User::class => $this->payload->user($row, $locale),
+            Article::class => $this->payload->article($row, $locale), Platform::class => $this->payload->platform($row, $locale), Testimonial::class => $this->payload->testimonial($row, $locale), User::class => $this->payload->user($row, $locale),
             default => $this->record($row, $locale, false),
         }])->all();
     }

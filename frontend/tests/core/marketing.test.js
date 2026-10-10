@@ -25,3 +25,13 @@ test('expertise keeps its short card title and separate authored full heading', 
   assert.equal(adaptExpertise({ expertise_title: 'Existing title' }).detailTitle, 'Existing title');
   assert.equal(adaptExpertise({ expertise_title: 'Titre FR', expertise_detail_title: '' }).detailTitle, 'Titre FR');
 });
+
+test('solution animation data comes from authored fields without invented nodes', () => {
+  const solution = adaptSolution({ solution_animation_type: 'workflow', solution_animation_steps: ['One', 'Two'], solution_animation_lanes: ['CMS lane'], solution_animation_centre_label: 'CMS centre' });
+  assert.equal(solution.animation.type, 'workflow');
+  assert.deepEqual(solution.animation.steps, ['One', 'Two']);
+  assert.deepEqual(solution.animation.lanes, ['CMS lane']);
+  assert.deepEqual(solution.animation.sources, []);
+  assert.equal(solution.animation.centreLabel, 'CMS centre');
+  assert.equal(adaptSolution({}).animation.type, '');
+});

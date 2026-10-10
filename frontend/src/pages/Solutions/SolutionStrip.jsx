@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import SolutionMetaphor from "../../components/visuals/SolutionMetaphor.jsx";
+import CmsImage from "../../components/common/CmsImage.jsx";
 import { gsap } from "../../motion/gsap.js";
 import { dragScroll } from "../../motion/gestures.js";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
@@ -28,7 +29,7 @@ export default function SolutionStrip({ items, locale }) {
     }
   }, [active, items, phone, progress, reduced]);
   return (
-    <ul ref={dragScroll} className={styles.strip}>
+    <ul ref={dragScroll} className={styles.strip} data-many={items.length > 4} data-has-visual={items.some(item => item.animation.type || item.image?.url)}>
       {items.map((item, index) => (
         <li
           key={item.id}
@@ -40,9 +41,9 @@ export default function SolutionStrip({ items, locale }) {
           onFocus={() => setActive(item.id)}
         >
           <Link to={`/${locale}/solutions/${item.slug}`} className={styles.link}>
-            <span className={styles.scene} aria-hidden="true" data-reveal-media>
-              <SolutionMetaphor variant={item.metaphor} progressRef={progress[item.id]} />
-            </span>
+            {(item.animation.type || item.image?.url) && <span className={styles.scene} aria-hidden="true" data-reveal-media>
+              {item.animation.type ? <SolutionMetaphor animation={item.animation} progressRef={progress[item.id]} label={item.title} /> : <CmsImage media={item.image} />}
+            </span>}
             <span className={styles.copy}>
               <span className={styles.number}>{String(index + 1).padStart(2, "0")}</span>
               <strong>{item.title}</strong>

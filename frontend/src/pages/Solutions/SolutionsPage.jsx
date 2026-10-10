@@ -1,5 +1,5 @@
 import { websiteApi } from "../../services/websiteApi.js";
-import { adaptSolution, adaptCaseStudy } from "../../repositories/marketing.repository.js";
+import { adaptSolution } from "../../repositories/marketing.repository.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import Section from "../../components/common/Section.jsx";
@@ -15,6 +15,8 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import SolutionStrip from "./SolutionStrip.jsx";
 import SolutionProof from "./SolutionProof.jsx";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
+import SectionSkeleton from "../../components/feedback/SectionSkeleton.jsx";
 import styles from "./SolutionsPage.module.css";
 
 export default function SolutionsPage() {
@@ -27,15 +29,16 @@ export default function SolutionsPage() {
       return (response.data || []).map(adaptSolution);
     },
   });
-  const { data: studies = [] } = useQuery({
-    queryKey: ["case-studies", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.caseStudies({ locale }, signal);
-      return (response.data || []).map(adaptCaseStudy);
-    },
+  const architectureQuery = useQuery({
+    queryKey: ["page", "solutions", locale],
+    queryFn: async ({ signal }) => (await websiteApi.page("solutions", locale, signal)).data,
+    retry: false,
   });
+  const architecture = architectureQuery.data;
+  const columns = [1, 2, 3, 4].map(index => Array.isArray(architecture?.["architecture_column_" + index]) ? architecture["architecture_column_" + index] : []);
+  const hasArchitecture = architecture?.architecture_title || architecture?.architecture_description || columns.some(column => column.length > 0);
   useDocumentMeta({
-    title: "Prosperya — Solutions",
+    title: t("nav.solutions") + " — Prosperya",
     description: t("pages.solutions.solutions-page.finance-operations-supply-chain-and-data-solutions-69ed3c"),
   });
   if (isLoading) return <PageLoader />;
@@ -65,11 +68,11 @@ export default function SolutionsPage() {
         }
         layout="stacked"
         className={styles.hero}
-        below={
+        below={data.length > 0 ? (
           <PageContainer className={styles.stripWrap}>
             <SolutionStrip items={data} locale={locale} />
           </PageContainer>
-        }
+        ) : null}
       />
       <section className={styles.solutions} aria-labelledby="solutions-heading">
         <div className={styles.panel}>
@@ -87,18 +90,20 @@ export default function SolutionsPage() {
           </div>
         </div>
       </section>
-      <section className={styles.architecture}>
-        <div className={styles.panel}>
-          <div className={styles.sticky}>
-            <h2>{t("pages.solutions.solutions-page.built-on-a-connected-architecture-that-scales-a0fd13")}</h2>
-            <p>
-              {t("pages.solutions.solutions-page.our-enterprise-architecture-connects-people-processes-and-77db9d")}
-            </p>
+      {architectureQuery.isLoading && <Section><SectionSkeleton /></Section>}
+      {architectureQuery.isError && architectureQuery.error?.status !== 404 && <Section><ErrorState onRetry={architectureQuery.refetch} /></Section>}
+      {hasArchitecture && (
+        <section className={styles.architecture}>
+          <div className={styles.panel}>
+            <div className={styles.sticky}>
+              {architecture.architecture_title && <h2>{architecture.architecture_title}</h2>}
+              <CmsRichHtml html={architecture.architecture_description} />
+            </div>
+            <LayeredArchitecture columns={columns} />
           </div>
-          <LayeredArchitecture />
-        </div>
-      </section>
-      <SolutionProof solutions={data} studies={studies ?? []} locale={locale} />
+        </section>
+      )}
+      <SolutionProof solutions={data} locale={locale} />
       <CTASection
         variant="band"
         title={t("pages.solutions.solutions-page.which-function-should-move-first-74e99d")}

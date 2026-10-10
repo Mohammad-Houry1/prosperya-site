@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AnimatedVisualType;
 use App\Models\Base\ContentEntity;
 use App\Models\Concerns\Trashable;
 use App\Rules\CmsMedia;
@@ -35,6 +36,7 @@ class Solution extends ContentEntity
         ['key' => 'slug', 'name' => 'Slug', 'sortable' => true],
         ['key' => 'related_expertise', 'name' => 'Related Expertise', 'type' => 'object', 'multiple' => true, 'source' => 'expertise', 'getter' => 'getExpertiseList'],
         ['key' => 'related_case_studies', 'name' => 'Related Case Studies', 'type' => 'object', 'multiple' => true, 'source' => 'case_studies', 'getter' => 'getCaseStudiesList'],
+        ['key' => 'related_articles', 'name' => 'Related Articles', 'type' => 'objects', 'source' => 'articles', 'getter' => 'getArticlesList'],
         ['key' => 'status', 'name' => 'Status', 'type' => 'badge', 'sortable' => true, 'sort_key' => 'status.name', 'changeable' => true,
             'input' => ['type' => 'object', 'multi' => false, 'function' => '', 'key_to_update' => 'status', 'getter' => 'getStatusesList']],
         ['key' => 'updated_at', 'name' => 'Updated', 'sortable' => true, 'type' => 'datetime'],
@@ -61,6 +63,16 @@ class Solution extends ContentEntity
             'solution_title' => LocaleMap::rules(max: 255),
             'solution_tagline' => LocaleMap::rules(max: 255),
             'solution_description' => LocaleMap::rules(),
+            'solution_animation_type' => ['nullable', 'string', Rule::enum(AnimatedVisualType::class)],
+            'solution_animation_centre_label' => LocaleMap::rules(max: 255),
+            'solution_animation_result_label' => LocaleMap::rules(max: 255),
+            'solution_animation_signal_label' => LocaleMap::rules(max: 255),
+            ...ListRules::values('solution_animation_sources', LocaleMap::rules(max: 255), max: 20),
+            ...ListRules::values('solution_animation_lanes', LocaleMap::rules(max: 255), max: 10),
+            ...ListRules::values('solution_animation_steps', LocaleMap::rules(max: 255), max: 40),
+            ...ListRules::values('solution_animation_suppliers', LocaleMap::rules(max: 255), max: 20),
+            ...ListRules::values('solution_animation_hubs', LocaleMap::rules(max: 255), max: 10),
+            ...ListRules::values('solution_animation_channels', LocaleMap::rules(max: 255), max: 20),
             ...ListRules::values('solution_challenges', LocaleMap::rules(max: 255)),
             ...ListRules::values('solution_capabilities', LocaleMap::rules(max: 255)),
             'solution_statement' => LocaleMap::rules(max: 255),
@@ -86,6 +98,8 @@ class Solution extends ContentEntity
             'related_expertise.*' => ['required', 'string', 'regex:/^[a-f0-9]{24}$/', 'distinct', Rule::exists(Expertise::class, '_id')->where($live)],
             'related_case_studies' => ['nullable', 'array', 'list', 'max:50'],
             'related_case_studies.*' => ['required', 'string', 'regex:/^[a-f0-9]{24}$/', 'distinct', Rule::exists(CaseStudy::class, '_id')->where($live)],
+            'related_articles' => ['nullable', 'array', 'list', 'max:50'],
+            'related_articles.*' => ['bail', 'required', 'string', 'regex:/^[a-f0-9]{24}$/', 'distinct', Rule::exists(Article::class, '_id')->where($live)],
             'solution_image' => ['nullable', CmsMedia::uploadable()],
             'meta_image' => ['nullable', CmsMedia::uploadable()],
             'meta_title' => LocaleMap::rules(max: 255),
@@ -126,6 +140,16 @@ class Solution extends ContentEntity
         }
 
         return CaseStudy::query()->orderBy('order')->orderBy('name')
+            ->get(['_id', 'name', 'translations', 'project', 'country', 'language'])->all();
+    }
+
+    public function getArticlesList(): array
+    {
+        if (! CurrentTenant::id()) {
+            return [];
+        }
+
+        return Article::query()->orderBy('order')->orderBy('name')
             ->get(['_id', 'name', 'translations', 'project', 'country', 'language'])->all();
     }
 }

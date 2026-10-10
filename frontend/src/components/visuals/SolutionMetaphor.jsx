@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
-import { useLocale } from "../../i18n/LocaleContext.jsx";
+import SignalWave from "./SignalWave.jsx";
 import styles from "./SolutionMetaphor.module.css";
 
 /*
@@ -13,27 +13,50 @@ const clamp = (v) => Math.max(0, Math.min(1, v));
 const band = (p, from, span) => clamp((p - from) / span);
 const seeded = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 
-const LABELS = (t) => ({ ledger: t("components.visuals.solution-metaphor.copy.consolidated-ledger-858dbc"), report: t("components.visuals.solution-metaphor.copy.close-ready-524398"), entities: [t("components.visuals.solution-metaphor.copy.france-9ef45f"), t("components.visuals.solution-metaphor.copy.uk-929d4a"), t("components.visuals.solution-metaphor.copy.germany-a002ea"), t("components.visuals.solution-metaphor.copy.us-394834"), t("components.visuals.solution-metaphor.copy.singapore-b6e172")], lanes: [t("components.visuals.solution-metaphor.copy.sales-c2a0db"), t("components.visuals.solution-metaphor.copy.operations-b5b127"), t("components.visuals.solution-metaphor.copy.finance-9bee15")], steps: [t("components.visuals.solution-metaphor.copy.order-dd1e36"), t("components.visuals.solution-metaphor.copy.confirm-8aae42"), t("components.visuals.solution-metaphor.copy.allocate-749f1f"), t("components.visuals.solution-metaphor.copy.ship-e53832"), t("components.visuals.solution-metaphor.copy.invoice-6c6043"), t("components.visuals.solution-metaphor.copy.collect-87c026")], suppliers: [t("components.visuals.solution-metaphor.copy.supplier-a-4e04bc"), t("components.visuals.solution-metaphor.copy.supplier-b-4402ce"), t("components.visuals.solution-metaphor.copy.supplier-c-639489")], hubs: [t("components.visuals.solution-metaphor.copy.warehouse-b277cf"), t("components.visuals.solution-metaphor.copy.hub-01b8d3")], channels: [t("components.visuals.solution-metaphor.copy.stores-15257a"), t("components.visuals.solution-metaphor.copy.online-7c82ae"), t("components.visuals.solution-metaphor.copy.wholesale-c92a92")], trend: t("components.visuals.solution-metaphor.copy.signal-795576") });
 
-const entityY = (i) => 76 + i * 72;
-const streamPath = (i) => `M128 ${entityY(i)} C220 ${entityY(i)} 220 220 300 220`;
+const entityY = (i, count, height) => count === 1 ? height / 2 : 70 + i * (height - 140) / Math.max(1, count - 1);
+const streamPath = (i, copy) => "M128 " + entityY(i, copy.entities.length, copy.height) + " C220 " + entityY(i, copy.entities.length, copy.height) + " 220 " + copy.height / 2 + " 300 " + copy.height / 2;
+const positions = (count, x, height) => Array.from({ length: count }, (_, i) => [x, entityY(i, count, height)]);
+const laneHeight = copy => Math.max(80, Math.ceil(Math.ceil(copy.steps.length / Math.max(1, copy.lanes.length)) / 4) * 72);
+const stepPositions = copy => {
+  const lanes = Math.max(1, copy.lanes.length);
+  const perLane = Math.max(1, Math.ceil(copy.steps.length / lanes));
+  return copy.steps.map((_, index) => {
+    const lane = Math.floor(index / perLane);
+    const inLane = Math.min(perLane, copy.steps.length - lane * perLane);
+    const offset = index % perLane;
+    const row = Math.floor(offset / 4);
+    const rowCount = Math.min(4, inLane - row * 4);
+    const column = offset % 4;
+    const x = rowCount === 1 ? 350 : 160 + (row % 2 ? rowCount - 1 - column : column) * 370 / (rowCount - 1);
+    return [x, 70 + lane * laneHeight(copy) + row * 72];
+  });
+};
+const stepPath = copy => stepPositions(copy).map(([x, y], i) => (i ? "L" : "M") + x + " " + y).join(" ");
+const networkRoutes = copy => {
+  const sources = positions(copy.suppliers.length, 70, copy.height);
+  const hubs = positions(copy.hubs.length, 300, copy.height);
+  const channels = positions(copy.channels.length, 530, copy.height);
+  const connect = (left, right) => left.flatMap(([x,y]) => right.map(([tx,ty]) => "M" + (x + 50) + " " + y + " C" + (x + 130) + " " + y + " " + (tx - 130) + " " + ty + " " + (tx - 50) + " " + ty));
+  return hubs.length ? [...connect(sources, hubs), ...connect(hubs, channels)] : connect(sources, channels);
+};
 
 const consolidation = {
   render: (copy) => (
     <>
       {copy.entities.map((name, i) => (
-        <g key={name}>
-          <path className={styles.base} d={streamPath(i)} />
-          <path className={styles.live} data-stream d={streamPath(i)} pathLength="1" />
+        <g key={i}>
+          <path className={styles.base} d={streamPath(i, copy)} />
+          <path className={styles.live} data-stream d={streamPath(i, copy)} pathLength="1" />
           <circle className={styles.packet} data-packet r="3" />
-          <rect x="24" y={entityY(i) - 17} width="104" height="34" rx="3" className={styles.chip} />
-          <text x="76" y={entityY(i)} className={styles.chipText}>{name}</text>
+          <rect x="24" y={entityY(i, copy.entities.length, copy.height) - 17} width="104" height="34" rx="3" className={styles.chip} />
+          <text x="76" y={entityY(i, copy.entities.length, copy.height)} className={styles.chipText}>{name}</text>
         </g>
       ))}
-      <rect x="288" y="186" width="166" height="68" rx="4" className={styles.core} data-core />
-      <text x="371" y="220" className={styles.coreText}>{copy.ledger}</text>
-      <path className={styles.base} d="M454 220 L466 220" />
-      <g transform="translate(466 108)">
+      <rect x="288" y={copy.height / 2 - 34} width="166" height="68" rx="4" className={styles.core} data-core />
+      <text x="371" y={copy.height / 2} className={styles.coreText}>{copy.ledger}</text>
+      <path className={styles.base} d={"M454 " + copy.height / 2 + " L466 " + copy.height / 2} />
+      <g transform={"translate(466 " + (copy.height / 2 - 112) + ")"}>
         <rect width="118" height="224" rx="4" className={styles.card} />
         {[0, 1, 2, 3, 4].map((i) => (
           <rect key={i} data-bar x={16 + i * 19} y="40" width="11" height="140" className={styles.bar} style={{ "--h": [0.45, 0.62, 0.55, 0.78, 0.9][i] }} />
@@ -44,7 +67,7 @@ const consolidation = {
   ),
   update(root, p, t) {
     const streams = root.querySelectorAll("[data-stream]");
-    streams.forEach((path, i) => (path.style.strokeDashoffset = String(1 - band(p, i * 0.05, 0.4))));
+    streams.forEach((path, i) => (path.style.strokeDashoffset = String(1 - band(p, i * 0.6 / Math.max(1, streams.length - 1), 0.4))));
     root.querySelectorAll("[data-packet]").forEach((dot, i) => {
       const path = streams[i];
       const along = (t * 0.25 + i * 0.2) % 1;
@@ -61,20 +84,19 @@ const consolidation = {
   },
 };
 
-const STEP_AT = [[150, 110], [270, 110], [270, 220], [400, 220], [400, 330], [530, 330]];
-const chain = STEP_AT.map(([x, y], i) => (i ? `L${x} ${y}` : `M${x} ${y}`)).join(" ");
+
 const workflow = {
   render: (copy) => (
     <>
       {copy.lanes.map((lane, i) => (
         <g key={lane}>
-          <rect x="16" y={70 + i * 110} width="568" height="80" rx="4" className={styles.lane} />
-          <text x="34" y={110 + i * 110} className={styles.laneText}>{lane}</text>
+          <rect x="16" y={30 + i * laneHeight(copy)} width="568" height={laneHeight(copy) - 10} rx="4" className={styles.lane} />
+          <text x="34" y={70 + i * laneHeight(copy)} className={styles.laneText}>{lane}</text>
         </g>
       ))}
-      <path className={styles.base} d={chain} />
-      <path className={styles.live} data-chain d={chain} pathLength="1" />
-      {STEP_AT.map(([x, y], i) => (
+      <path className={styles.base} d={stepPath(copy)} />
+      <path className={styles.live} data-chain d={stepPath(copy)} pathLength="1" />
+      {stepPositions(copy).map(([x, y], i) => (
         <g key={i} data-step>
           <rect x={x - 46} y={y - 17} width="92" height="34" rx="3" className={styles.chip} />
           <text x={x} y={y} className={styles.chipText}>{copy.steps[i]}</text>
@@ -86,34 +108,30 @@ const workflow = {
   update(root, p, t) {
     const path = root.querySelector("[data-chain]");
     path.style.strokeDashoffset = String(1 - band(p, 0.05, 0.6));
-    root.querySelectorAll("[data-step]").forEach((step, i) => (step.dataset.on = String(band(p, 0.05, 0.6) >= i / 5 - 0.01)));
+    root.querySelectorAll("[data-step]").forEach((step, i) => (step.dataset.on = String(band(p, 0.05, 0.6) >= i / Math.max(1, root.querySelectorAll("[data-step]").length - 1) - 0.01)));
     const runner = root.querySelector("[data-runner]");
-    const point = path.getPointAtLength(((t * 0.12) % 1) * path.getTotalLength());
+    const length = path.getTotalLength();
+    if (!length) { runner.style.opacity = "0"; return; }
+    const point = path.getPointAtLength(((t * 0.12) % 1) * length);
     runner.setAttribute("cx", point.x.toFixed(1));
     runner.setAttribute("cy", point.y.toFixed(1));
     runner.style.opacity = String(band(p, 0.7, 0.2));
   },
 };
 
-const SUPPLIERS = [[70, 110], [70, 220], [70, 330]];
-const HUBS = [[300, 160], [300, 290]];
-const CHANNELS = [[530, 110], [530, 220], [530, 330]];
-const routes = [
-  ...SUPPLIERS.flatMap(([x, y], i) => HUBS.filter((_, h) => h === 0 || i === 2 || i === 1).map(([hx, hy]) => `M${x + 50} ${y} C${x + 130} ${y} ${hx - 110} ${hy} ${hx - 44} ${hy}`)),
-  ...HUBS.flatMap(([x, y]) => CHANNELS.map(([cx, cy]) => `M${x + 44} ${y} C${x + 120} ${y} ${cx - 120} ${cy} ${cx - 50} ${cy}`)),
-];
+
 const network = {
   render: (copy) => (
     <>
-      {routes.map((d, i) => (
+      {networkRoutes(copy).map((d, i) => (
         <g key={i}>
           <path className={styles.base} d={d} />
           <path className={styles.live} data-route d={d} pathLength="1" />
           <circle className={styles.packet} data-truck r="3" />
         </g>
       ))}
-      {[...SUPPLIERS.map((at, i) => [at, copy.suppliers[i], 100]), ...HUBS.map((at, i) => [at, copy.hubs[i], 88]), ...CHANNELS.map((at, i) => [at, copy.channels[i], 100])].map(([[x, y], name, w]) => (
-        <g key={name} data-site>
+      {[...positions(copy.suppliers.length, 70, copy.height).map((at, i) => [at, copy.suppliers[i], 100]), ...positions(copy.hubs.length, 300, copy.height).map((at, i) => [at, copy.hubs[i], 88]), ...positions(copy.channels.length, 530, copy.height).map((at, i) => [at, copy.channels[i], 100])].map(([[x, y], name, w], index) => (
+        <g key={index} data-site>
           <rect x={x - w / 2} y={y - 17} width={w} height="34" rx="3" className={styles.chip} />
           <text x={x} y={y} className={styles.chipText}>{name}</text>
         </g>
@@ -173,11 +191,15 @@ const insight = {
 
 const SCENES = { consolidation, workflow, network, insight };
 
-export default function SolutionMetaphor({ variant, progressRef, label }) {
+function SvgSolutionMetaphor({ animation, progressRef, label }) {
   const ref = useRef(null);
   const reduced = useReducedMotion();
-  const { t } = useLocale();
-  const scene = SCENES[variant] ?? insight;
+  const scene = SCENES[animation.type];
+  const copy = { ledger: animation.centreLabel, report: animation.resultLabel, trend: animation.signalLabel, entities: animation.sources || [], lanes: animation.lanes || [], steps: animation.steps || [], suppliers: animation.suppliers || [], hubs: animation.hubs || [], channels: animation.channels || [] };
+  const contentHeight = animation.type === "consolidation" ? copy.entities.length * 60 + 80
+    : animation.type === "network" ? Math.max(copy.suppliers.length, copy.hubs.length, copy.channels.length) * 60 + 80
+    : animation.type === "workflow" ? Math.max(1, copy.lanes.length) * laneHeight(copy) + 100 : 440;
+  copy.height = Math.max(440, contentHeight);
   useEffect(() => {
     const root = ref.current;
     let frame = 0;
@@ -195,14 +217,26 @@ export default function SolutionMetaphor({ variant, progressRef, label }) {
     });
     observer.observe(root);
     render();
+    const visibility = () => {
+      cancelAnimationFrame(frame);
+      if (visible && !document.hidden) render();
+    };
+    document.addEventListener("visibilitychange", visibility);
     return () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
+      document.removeEventListener("visibilitychange", visibility);
     };
-  }, [scene, reduced, progressRef]);
+  }, [scene, reduced, progressRef, animation]);
   return (
-    <svg ref={ref} className={styles.scene} viewBox="0 0 600 440" role="img" aria-label={label}>
-      {scene.render(LABELS(t))}
+    <svg ref={ref} className={styles.scene} viewBox={"0 0 600 " + copy.height} data-solution-animation={animation.type} role="img" aria-label={label}>
+      {scene.render(copy)}
     </svg>
   );
+}
+
+export default function SolutionMetaphor({ animation, progressRef, label }) {
+  if (animation?.type === "flowing-lines") return <div className={styles.scene} data-solution-animation="flowing-lines" role="img" aria-label={label}><SignalWave shape="rise" progressRef={progressRef} /></div>;
+  if (!SCENES[animation?.type]) return null;
+  return <SvgSolutionMetaphor animation={animation} progressRef={progressRef} label={label} />;
 }

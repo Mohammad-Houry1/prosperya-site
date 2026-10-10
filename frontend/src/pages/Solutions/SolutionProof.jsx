@@ -1,3 +1,4 @@
+import { adaptCaseStudy } from "../../repositories/marketing.repository.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -14,15 +15,14 @@ import styles from "./SolutionProof.module.css";
   draggable rail of wide cards. Home shows the work as a grid; this page
   reads it function by function.
 */
-export default function SolutionProof({ solutions, studies, locale }) {
+export default function SolutionProof({ solutions, locale }) {
   const { t } = useLocale();
 
   const carousel = useCarousel();
-  const byId = Object.fromEntries(studies.map((study) => [study.id, study]));
-  const pairs = solutions.filter((solution) => byId[solution.caseStudyId]);
+  const pairs = solutions.flatMap(solution => (solution.related_case_studies || []).map(record => ({ solution, study: adaptCaseStudy(record) })));
   if (!pairs.length) return null;
   return (
-    <Section>
+    <Section className={styles.section}>
       <div className={styles.head}>
         <SectionHeader
           eyebrow={t("pages.solutions.solution-proof.in-practice-bf2d3c")}
@@ -40,18 +40,17 @@ export default function SolutionProof({ solutions, studies, locale }) {
         role="region"
         aria-label={t("pages.solutions.solution-proof.outcomes-by-function-7e7e49")}
       >
-        {pairs.map((solution, index) => {
-          const study = byId[solution.caseStudyId];
+        {pairs.map(({ solution, study }, index) => {
           const [lead] = study.metrics;
           return (
-            <article key={solution.id} className={styles.card} data-reveal="card" style={{ "--i": index }}>
+            <article key={solution.id + "-" + study.id} className={styles.card} data-reveal="card" style={{ "--i": index }}>
               <div className={styles.media} aria-hidden="true">
                 <CaseVisual study={study} sizes="320px" />
               </div>
               <div className={styles.body}>
                 <span className={styles.fn}>{solution.title}</span>
                 <h3>{study.name}</h3>
-                <p>{study.title}</p>
+                <p>{study.description}</p>
                 {lead && (
                   <div className={styles.metric}>
                     <strong>

@@ -6,6 +6,27 @@
   padding: 0;
   list-style: none;
 }
+.strip[data-many="true"] {
+  overflow-x: auto;
+}
+.strip[data-many="true"] .panel {
+  flex: 0 0 clamp(240px, 25vw, 320px);
+}
+.strip[data-has-visual="false"] {
+  height: auto;
+}
+.strip[data-has-visual="false"] .link,
+.strip[data-has-visual="false"] .copy {
+  position: relative;
+}
+.strip[data-has-visual="false"] .copy {
+  padding-top: 24px;
+}
+.scene img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
 .panel {
   position: relative;
   flex: 1 1 0;

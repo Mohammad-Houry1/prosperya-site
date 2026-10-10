@@ -105,4 +105,30 @@ class MarketingContentTest extends WebsiteTestCase
             'related_expertise' => [['_id' => (string) new ObjectId, 'expertise_title' => 'private-snapshot']]]));
         $this->getJson('/api/solutions/allowed?locale=en')->assertOk()->assertJsonPath('data.related_expertise', [])->assertDontSee('private-snapshot');
     }
+
+    public function test_solutions_expose_authored_animation_and_public_articles_in_selection_order(): void
+    {
+        $first = (string) new ObjectId;
+        $second = (string) new ObjectId;
+        $draft = (string) new ObjectId;
+        $this->collection('articles')->insertMany([
+            $this->record(['_id' => new ObjectId($first), 'slug' => 'first', 'article_title' => ['fr' => 'Premier article']]),
+            $this->record(['_id' => new ObjectId($second), 'slug' => 'second', 'article_title' => ['fr' => 'Deuxième article']]),
+            $this->record(['_id' => new ObjectId($draft), 'slug' => 'draft', 'status_id' => $this->ids['draft']]),
+        ]);
+        $this->collection('solutions')->insertOne($this->record(['slug' => 'arbitrary-solution',
+            'solution_title' => ['en' => 'Solution', 'fr' => 'Solution FR'],
+            'solution_animation_type' => 'workflow',
+            'solution_animation_centre_label' => ['en' => 'English only'],
+            'solution_animation_lanes' => [['fr' => 'Voie CMS']],
+            'solution_animation_steps' => array_map(fn ($i) => ['fr' => 'Étape '.$i], range(1, 8)),
+            'related_articles' => [$second, $draft, $first], 'internal_secret' => 'never-public']));
+        $response = $this->getJson('/api/solutions/arbitrary-solution?locale=fr')->assertOk()
+            ->assertJsonPath('data.solution_animation_type', 'workflow')
+            ->assertJsonPath('data.solution_animation_centre_label', '')
+            ->assertJsonPath('data.solution_animation_lanes.0', 'Voie CMS')
+            ->assertJsonPath('data.solution_animation_steps.7', 'Étape 8')->assertDontSee('never-public');
+        $this->assertSame([$second, $first], array_column($response->json('data.related_articles'), 'id'));
+        $this->assertSame('Deuxième article', $response->json('data.related_articles.0.title'));
+    }
 }
