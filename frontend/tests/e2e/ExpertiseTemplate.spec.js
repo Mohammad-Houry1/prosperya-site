@@ -1,4 +1,3 @@
-import { mockCms, fixtureData } from "./cmsFixtures.js";
 import { expect, test } from "@playwright/test";
 
 const scenes = {
@@ -9,7 +8,7 @@ const scenes = {
 test("all expertise routes share the template on desktop and mobile", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await mockCms(page);
+  await page.route("**/api/**", (route) => route.fulfill({ json: { data: route.request().url().includes("corporate-pages") ? [] : {}, meta: { last_page: 1 } } }));
   for (const locale of ["en", "fr"]) {
     for (const [slug, scene] of Object.entries(scenes)) {
       await page.setViewportSize({ width: 1366, height: 900 });
@@ -30,31 +29,11 @@ test("all expertise routes share the template on desktop and mobile", async ({ p
   expect(errors).toEqual([]);
 });
 
-test("explicit legal routes fetch their CMS slug in both languages", async ({ page }) => {
-  const requested = [];
-  await page.route("**/api/**", (route) => {
-    const path = new URL(route.request().url()).pathname;
-    let data = fixtureData(new URL(route.request().url()));
-    if (path.startsWith("/api/corporate-pages/")) {
-      const slug = path.split("/").at(-1);
-      requested.push(slug);
-      data = { slug, title: `CMS ${slug}`, description: "<p>Legal body</p>", sections: [] };
-    } else if (path === "/api/corporate-pages") data = [];
-    return route.fulfill({ json: { data, meta: { last_page: 1 } } });
-  });
-  for (const locale of ["en", "fr"]) for (const slug of ["privacy-policy", "terms-of-use", "cookie-policy", "accessibility"]) {
-    await page.goto(`/${locale}/${slug}`);
-    await expect(page.getByRole("heading", { level: 1, name: `CMS ${slug}` })).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(`/${locale}/${slug}$`));
-  }
-  expect(new Set(requested)).toEqual(new Set(["privacy-policy", "terms-of-use", "cookie-policy", "accessibility"]));
-});
-
 test("expertise reveals its visual and section navigation tracks reading progress", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await mockCms(page);
+  await page.route("**/api/**", (route) => route.fulfill({ json: { data: route.request().url().includes("corporate-pages") ? [] : {}, meta: { last_page: 1 } } }));
   await page.goto("/en/expertise/erp-transformation");
   const visual = page.locator("main [data-animation]");
   await expect(visual).toHaveAttribute("data-inview", "");

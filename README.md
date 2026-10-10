@@ -2,6 +2,8 @@
 
 The Prosperya website: a Laravel API (`backend/`) and a React + Vite frontend (`frontend/`).
 
+**On `staging`:** the frontend is a fully local, hardcoded reference for CMS authoring. Start `frontend` with `npm run dev`; no backend is required. **On `production`:** the frontend uses the CMS. The CMS setup and deployment instructions below apply to the production version. See [Branches](#branches) for the distinction.
+
 `frontend/` now reuses the complete supplied frontend. Pages, styling and interactions are preserved. Articles, legal content, translated labels and submissions use this backend; SEO is served in initial HTML and through the API. See [the integration guide](docs/frontend-backend-integration.md) for the exact scope and setup.
 
 The CMS (a separate private repo) owns the connected content. This repo **reads the CMS database directly** and asks the CMS one question before serving that content: *is this site's website key still good, and what may it serve?* (`GET /api/website-key`). The access limits—project, modules, languages, country and which statuses count as published—all come from that answer. Authored marketing pages now use the CMS too; see docs/cms-dynamic-audit.md for coverage and editorial requirements.
@@ -106,12 +108,10 @@ docker run --rm -v "$PWD/backend:/app" -w /app -e MONGODB_TEST_URI="mongodb://ho
 
 ## Branches
 
-`staging` is the development branch. `production` holds the reviewed release version. Both branches currently contain the completed CMS integration and local API proxy fix. Production hosting is not configured by this branch setup.
+`production` contains the CMS-connected website, including the dynamic footer and the About page slug `about-prosperya`.
 
-After verifying work on staging, promote it locally:
+`staging` is the hardcoded reference website. Its frontend restores the populated design from `c5bc27b`, including the shared expertise template and animations. Run only `npm run dev` in `frontend` to browse it; no backend or CMS connection is needed. All supplemental content comes from `frontend/src/data/staging.data.js`. Client testimonials and legal documents are explicitly marked reference text; insight layouts reuse original expertise copy. Contact and newsletter submissions are disabled.
 
-```bash
-git switch production
-git merge --ff-only staging
-git switch staging
-```
+These branches intentionally have different content sources. Do not merge the static staging frontend into production. Make future CMS integration changes on `production` (or a branch based on it). Keep staging as the visual/content reference while authoring the CMS.
+
+To switch versions locally, stop the frontend server, commit any changes, switch branches and restart `npm run dev`.

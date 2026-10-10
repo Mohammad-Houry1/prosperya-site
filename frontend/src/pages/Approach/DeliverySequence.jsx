@@ -1,4 +1,3 @@
-import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useEffect, useRef, useState } from "react";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import Eyebrow from "../../components/common/Eyebrow.jsx";
@@ -9,8 +8,6 @@ import { dragScroll, useSwipe } from "../../motion/gestures.js";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import { useMediaQuery } from "../../hooks/useMediaQuery.js";
 import styles from "./DeliverySequence.module.css";
-import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
-import CmsImage from "../../components/common/CmsImage.jsx";
 
 /*
   The methodology as one continuous path. On large screens the section pins
@@ -19,9 +16,8 @@ import CmsImage from "../../components/common/CmsImage.jsx";
   stages stay real buttons, with previous/next controls and a sideways swipe
   on the panel, so the path is fully usable by keyboard, touch and mouse.
 */
-export default function DeliverySequence({ steps }) {
-  const { t } = useLocale();
-
+export default function DeliverySequence({ steps, locale }) {
+  const fr = locale === "fr";
   const reduced = useReducedMotion();
   const wide = useMediaQuery("(min-width: 981px)");
   const pinned = wide && !reduced;
@@ -29,7 +25,7 @@ export default function DeliverySequence({ steps }) {
   const section = useRef(null);
   const trigger = useRef(null);
   const fill = useRef(null);
-  const progress = useRef(1 / Math.max(1, steps.length));
+  const progress = useRef(1 / steps.length);
   const active = steps[index];
   // Swipe the stage panel (touch or mouse drag) to walk the path.
   const swipe = useSwipe((direction) => go(index + direction));
@@ -55,7 +51,7 @@ export default function DeliverySequence({ steps }) {
   // Without the pinned scroll, the chosen stage drives the path and the field.
   useEffect(() => {
     if (pinned) return;
-    progress.current = (index + 1) / Math.max(1, steps.length);
+    progress.current = (index + 1) / steps.length;
     if (fill.current) fill.current.style.transform = `scaleX(${index / Math.max(1, steps.length - 1)})`;
   }, [index, pinned, steps.length]);
 
@@ -78,20 +74,22 @@ export default function DeliverySequence({ steps }) {
         <PageContainer>
           <header className={styles.header}>
             <div>
-              <Eyebrow>{t("pages.approach.delivery-sequence.our-methodology-d277b7")}</Eyebrow>
+              <Eyebrow>{fr ? "Notre méthode" : "Our methodology"}</Eyebrow>
               <h2 id="methodology-title">
-                {t("pages.approach.delivery-sequence.from-strategy-to-sustained-value-70c86d")}
+                {fr ? "De la stratégie à la valeur durable." : "From strategy to sustained value."}
               </h2>
             </div>
             <p>
-              {t("pages.approach.delivery-sequence.a-structured-iterative-methodology-designed-to-reduce-d704a8")}
+              {fr
+                ? "Une méthode structurée et itérative pour réduire le risque, accélérer la livraison et garantir une adoption durable."
+                : "A structured, iterative methodology designed to reduce risk, accelerate delivery and ensure lasting adoption."}
             </p>
           </header>
           <div className={styles.rail}>
             <div className={styles.track} aria-hidden="true">
               <i ref={fill} />
             </div>
-            <div ref={dragScroll} className={styles.steps} role="group" aria-label={t("pages.approach.delivery-sequence.transformation-stages-dcdb80")}>
+            <div ref={dragScroll} className={styles.steps} role="group" aria-label={fr ? "Étapes de transformation" : "Transformation stages"}>
               {steps.map((step, i) => (
                 <button
                   type="button"
@@ -121,8 +119,7 @@ export default function DeliverySequence({ steps }) {
                 </span>
                 <div key={active.id} className={styles.panelBody}>
                   <h2>{active.title}</h2>
-                  <CmsImage media={active.image} />
-                  {active.descriptions?.map((html, descriptionIndex) => <CmsRichHtml key={descriptionIndex} html={html} />)}
+                  <p>{active.description}</p>
                   {active.activities && (
                     <ul>
                       {active.activities.map((activity) => (
@@ -132,12 +129,12 @@ export default function DeliverySequence({ steps }) {
                   )}
                   {active.deliverable && (
                     <p className={styles.deliverable}>
-                      <span>{t("pages.approach.delivery-sequence.hand-over-513516")}</span>
+                      <span>{fr ? "Livrable" : "Hand-over"}</span>
                       {active.deliverable}
                     </p>
                   )}
                   <div className={styles.controls}>
-                    <button type="button" disabled={index === 0} onClick={() => go(index - 1)} aria-label={t("pages.approach.delivery-sequence.previous-stage-1b72b3")}>
+                    <button type="button" disabled={index === 0} onClick={() => go(index - 1)} aria-label={fr ? "Étape précédente" : "Previous stage"}>
                       ←
                     </button>
                     <span>
@@ -147,7 +144,7 @@ export default function DeliverySequence({ steps }) {
                       type="button"
                       disabled={index === steps.length - 1}
                       onClick={() => go(index + 1)}
-                      aria-label={t("pages.approach.delivery-sequence.next-stage-e71f2c")}
+                      aria-label={fr ? "Étape suivante" : "Next stage"}
                     >
                       →
                     </button>

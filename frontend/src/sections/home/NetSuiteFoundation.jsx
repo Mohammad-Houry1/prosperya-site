@@ -1,6 +1,20 @@
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./NetSuiteFoundation.module.css";
 
+const FAMILIES = {
+  en: [
+    ["Finance", ["Finance", "Procurement", "Projects"]],
+    ["Operations", ["Manufacturing", "Warehouse", "Inventory", "Field service"]],
+    ["Customers", ["CRM", "Ecommerce"]],
+    ["Platform", ["Automation", "Integrations", "Analytics"]],
+  ],
+  fr: [
+    ["Finance", ["Finance", "Achats", "Projets"]],
+    ["Opérations", ["Production", "Entrepôt", "Stocks", "Services terrain"]],
+    ["Clients", ["CRM", "E-commerce"]],
+    ["Plateforme", ["Automatisation", "Intégrations", "Analytique"]],
+  ],
+};
 
 /*
   Home only. "NetSuite at the core" told without a Hub (the Hub appears once
@@ -8,10 +22,10 @@ import styles from "./NetSuiteFoundation.module.css";
   family, so the columns read as a skyline built on a single base. Tiles rise
   into place once when the section enters view, then stay still.
 */
-export default function NetSuiteFoundation({ columns = [] }) {
-  const { t } = useLocale();
-
-  const families = columns.map((items,index)=>[String(index + 1).padStart(2, "0"),items]);
+export default function NetSuiteFoundation() {
+  const { locale } = useLocale();
+  const fr = locale === "fr";
+  const families = FAMILIES[locale] ?? FAMILIES.en;
   let order = 0;
   return (
     <figure className={styles.foundation}>
@@ -30,8 +44,8 @@ export default function NetSuiteFoundation({ columns = [] }) {
         ))}
       </div>
       <figcaption className={styles.slab}>
-        <strong>{t('sections.home.net-suite-foundation.copy.platform-33364a')}</strong>
-        <span>{t("sections.home.net-suite-foundation.one-foundation-one-data-model-912a1a")}</span>
+        <strong>NetSuite</strong>
+        <span>{fr ? "Un socle, un modèle de données" : "One foundation, one data model"}</span>
       </figcaption>
     </figure>
   );

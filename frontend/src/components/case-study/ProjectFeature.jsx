@@ -1,4 +1,3 @@
-import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -15,8 +14,7 @@ const LAYOUTS = ["left", "right", "wide"];
   than a grid. Only the full-width spread carries a slow parallax.
 */
 export default function ProjectFeature({ study, index, locale, capabilityNames = {}, platformNames = {} }) {
-  const { t } = useLocale();
-
+  const fr = locale === "fr";
   const layout = LAYOUTS[index % LAYOUTS.length];
   const ref = useRef(null);
   useGsapContext(
@@ -54,16 +52,16 @@ export default function ProjectFeature({ study, index, locale, capabilityNames =
         <dl className={styles.meta}>
           {study.industryName && (
             <div>
-              <dt>{t("components.case-study.project-feature.industry-b26ab6")}</dt>
+              <dt>{fr ? "Secteur" : "Industry"}</dt>
               <dd>{study.industryName}</dd>
             </div>
           )}
           <div>
-            <dt>{t("components.case-study.project-feature.capabilities-6251f6")}</dt>
+            <dt>{fr ? "Expertises" : "Capabilities"}</dt>
             <dd>{study.expertiseIds.map((id) => capabilityNames[id]).filter(Boolean).join(" · ")}</dd>
           </div>
           <div>
-            <dt>{t("components.case-study.project-feature.platforms-eb383c")}</dt>
+            <dt>{fr ? "Plateformes" : "Platforms"}</dt>
             <dd>{study.platformIds.map((id) => platformNames[id]).filter(Boolean).join(" · ")}</dd>
           </div>
         </dl>
@@ -82,7 +80,7 @@ export default function ProjectFeature({ study, index, locale, capabilityNames =
           ))}
         </div>
         <Link to={`/${locale}/work/${study.slug}`} className={styles.link}>
-          {t("components.case-study.project-feature.view-case-study-2050cc")}
+          {fr ? "Voir le cas client" : "View case study"}
           <span className="visuallyHidden"> : {study.name}</span>
           <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
         </Link>

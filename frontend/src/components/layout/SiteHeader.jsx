@@ -20,7 +20,7 @@ export default function SiteHeader() {
   const [opened, { open, close }] = useDisclosure(false);
   const { locale, t } = useLocale();
   const header = useRef(null);
-
+  const fr = locale === "fr";
   useEffect(() => {
     const update = () =>
       header.current?.toggleAttribute("data-scrolled", window.scrollY > 8);
@@ -34,7 +34,7 @@ export default function SiteHeader() {
         <BrandMark />
         <nav
           className={styles.desktopNav}
-          aria-label={t("components.layout.site-header.primary-navigation-8e5635")}
+          aria-label={fr ? "Navigation principale" : "Primary navigation"}
         >
           {links.map((key) => (
             <NavLink
@@ -60,7 +60,7 @@ export default function SiteHeader() {
             className={styles.burger}
             opened={opened}
             onClick={open}
-            aria-label={t("components.layout.site-header.open-navigation-147140")}
+            aria-label={fr ? "Ouvrir la navigation" : "Open navigation"}
             size="sm"
           />
         </div>
@@ -83,12 +83,12 @@ export default function SiteHeader() {
           body: styles.drawerBody,
         }}
         closeButtonProps={{
-          "aria-label": t("components.layout.site-header.close-navigation-6fc864"),
+          "aria-label": fr ? "Fermer la navigation" : "Close navigation",
         }}
       >
         <nav
           className={styles.mobileNav}
-          aria-label={t("components.layout.site-header.primary-navigation-8e5635")}
+          aria-label={fr ? "Navigation principale" : "Primary navigation"}
         >
           {links.map((key, index) => (
             <NavLink

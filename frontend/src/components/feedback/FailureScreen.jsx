@@ -1,15 +1,11 @@
-import { createTranslator } from "../../i18n/labels.js";
-import { useContext, useEffect, useRef } from "react";
-import { LocaleContext } from "../../i18n/LocaleContext.jsx";
+import { useEffect, useRef } from "react";
 import { ArrowRight, RotateCcw } from "lucide-react";
 import ConnectionIllustration from "./ConnectionIllustration.jsx";
 import styles from "./FailureScreen.module.css";
 
 export default function FailureScreen({ locale = "en", onRetry }) {
-  const context = useContext(LocaleContext);
-  const t = context?.t ?? createTranslator(locale);
   const fr = locale === "fr";
-  const title = t("components.feedback.failure-screen.one-small-hiccup-6c862a");
+  const title = fr ? "Un petit contretemps." : "One small hiccup.";
   const heading = useRef(null);
   useEffect(() => {
     heading.current?.focus();
@@ -25,26 +21,26 @@ export default function FailureScreen({ locale = "en", onRetry }) {
 
   return (
     <main className={styles.page}>
-      <a className={styles.brand} href={`/${fr ? "fr" : "en"}`} aria-label={t("components.feedback.failure-screen.prosperya-home-233794")}>
+      <a className={styles.brand} href={`/${fr ? "fr" : "en"}`} aria-label={fr ? "Accueil Prosperya" : "Prosperya home"}>
         <span aria-hidden="true" className={styles.brandDot} /> Prosperya
       </a>
       <div className={styles.content}>
         <ConnectionIllustration />
-        <p className={styles.eyebrow}>{t("components.feedback.failure-screen.a-moment-to-reconnect-fbc5d4")}</p>
+        <p className={styles.eyebrow}>{fr ? "La connexion fait une pause" : "A moment to reconnect"}</p>
         <h1 ref={heading} tabIndex={-1}>{title}</h1>
         <p className={styles.description}>
-          {t("components.feedback.failure-screen.this-page-couldn-t-open-give-it-042d8a")}
+          {fr ? "Cette page n’a pas pu s’ouvrir. Réessayez, ou retrouvez votre chemin depuis l’accueil." : "This page couldn’t open. Give it another try, or find your way back from home."}
         </p>
         <div className={styles.actions}>
           <button type="button" onClick={onRetry} className={styles.retry}>
-            <RotateCcw size={17} aria-hidden="true" /> {t("components.feedback.failure-screen.try-again-170551")}
+            <RotateCcw size={17} aria-hidden="true" /> {fr ? "Réessayer" : "Try again"}
           </button>
           <a href={`/${fr ? "fr" : "en"}`} className={styles.home}>
-            {t("components.feedback.failure-screen.back-home-b335e9")} <ArrowRight size={17} aria-hidden="true" />
+            {fr ? "Retour à l’accueil" : "Back home"} <ArrowRight size={17} aria-hidden="true" />
           </a>
         </div>
       </div>
-      <p className={styles.note}>{t("components.feedback.failure-screen.even-good-connections-need-a-little-reset-66e74d")}</p>
+      <p className={styles.note}>{fr ? "Les petits détours font aussi partie du chemin." : "Even good connections need a little reset."}</p>
     </main>
   );
 }

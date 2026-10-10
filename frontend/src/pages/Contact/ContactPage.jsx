@@ -12,29 +12,18 @@ import {
   normalizeProjectInquiry,
   validateProjectInquiry,
 } from "../../repositories/projectInquiry.repository.js";
-import { websiteApi } from "../../services/websiteApi.js";
+import { stagingContent } from "../../services/stagingContent.js";
 import styles from "./ContactPage.module.css";
 import Skeleton from "../../components/feedback/Skeleton.jsx";
 
 export default function ContactPage() {
-  const submissionsEnabled = import.meta.env?.VITE_CMS_SUBMISSIONS_ENABLED === "true";
-  const {locale, t } = useLocale();
-  const fieldLabels = {
-    name: t("contact.fields.name"),
-    company_name: t("contact.fields.company"),
-    work_email: t("contact.fields.email"),
-    contact_phone: t("contact.fields.phone"),
-    contact_country: t("contact.fields.country"),
-    current_erp: t("contact.fields.erp"),
-    project_type: t("contact.fields.type"),
-    project_stage: t("contact.fields.stage"),
-    project_brief: t("contact.fields.brief"),
-  };
-
+  const submissionsEnabled = false;
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
     queryKey: ["faq", locale, "contact"],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.faqs({ locale, category: "contact" }, signal);
+      const response = await stagingContent.faqs({ locale, category: "contact" }, signal);
       return response.data || [];
     },
   });
@@ -45,7 +34,7 @@ export default function ContactPage() {
   const [openSelect, setOpenSelect] = useState(null);
   const submission = useMutation({
     mutationFn: async (inquiry) => {
-      const response = await websiteApi.contact(inquiry);
+      const response = await stagingContent.contact(inquiry);
       if (!response.data.accepted) throw new Error("The CMS did not accept the project brief.");
       return response.data;
     },
@@ -55,17 +44,31 @@ export default function ContactPage() {
   const { isPending: optionsPending, isError: optionsError, data: options = {} } = useQuery({
     queryKey: ["contact-options", locale],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.contactOptions(locale, signal);
+      const response = await stagingContent.contactOptions(locale, signal);
       return response.data;
     },
     staleTime: 0,
     enabled: submissionsEnabled,
   });
   useDocumentMeta({
-    title: `${t("pages.contact.contact-page.start-a-project-908ad4")} — Prosperya`,
-    description: t("pages.contact.contact-page.outline-your-erp-transformation-integration-or-automation-be5fb5"),
+    title: `${fr ? "Démarrer un projet" : "Start a project"} — Prosperya`,
+    description: fr
+      ? "Préparez votre projet de transformation ERP, d’intégration ou d’automatisation avec Prosperya."
+      : "Outline your ERP transformation, integration or automation project with Prosperya.",
   });
-  const errorCopy = { required: t("pages.contact.contact-page.this-field-is-required-b64844"), invalid_email: t("pages.contact.contact-page.enter-a-valid-email-address-e89bf5"), invalid_option: t("pages.contact.contact-page.choose-an-option-from-the-list-f37800"), too_long: t("pages.contact.contact-page.the-text-exceeds-the-allowed-length-47d0c5") };
+  const errorCopy = fr
+    ? {
+        required: "Ce champ est obligatoire.",
+        invalid_email: "Saisissez une adresse email valide.",
+        invalid_option: "Choisissez une option de la liste.",
+        too_long: "Le texte dépasse la longueur autorisée.",
+      }
+    : {
+        required: "This field is required.",
+        invalid_email: "Enter a valid email address.",
+        invalid_option: "Choose an option from the list.",
+        too_long: "The text exceeds the allowed length.",
+      };
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!submissionsEnabled || submitLock.current || optionsPending || optionsError) return;
@@ -97,7 +100,7 @@ export default function ContactPage() {
     const selected = selections[locale]?.[field.name];
     if (field.options && (!submissionsEnabled || optionsError)) return null;
     if (field.options && optionsPending) {
-      return <div key={field.name} className={styles.field} role="status" aria-label={t("pages.contact.contact-page.loading-options-725b1f")} aria-busy="true">
+      return <div key={field.name} className={styles.field} role="status" aria-label={fr ? "Chargement des options" : "Loading options"} aria-busy="true">
         <Skeleton width="40%" height={16} />
         <Skeleton height={48} className={styles.skeletonSelect} />
       </div>;
@@ -117,7 +120,7 @@ export default function ContactPage() {
         key={field.name}
       >
         <label htmlFor={field.name}>
-          {fieldLabels[field.name]}
+          {field.label[locale] ?? field.label.en}
         </label>
         {field.options ? (
           <Select
@@ -134,8 +137,8 @@ export default function ContactPage() {
               setSelections((current) => ({ ...current, [locale]: { ...current[locale], [field.name]: value } }));
               if (submission.isSuccess || submission.isError) submission.reset();
             }}
-            placeholder={t("pages.contact.contact-page.select-one-7658c9")}
-            nothingFoundMessage={t("pages.contact.contact-page.no-options-available-39ed06")}
+            placeholder={fr ? "Sélectionnez" : "Select one"}
+            nothingFoundMessage={fr ? "Aucune option disponible" : "No options available"}
             allowDeselect={false}
             checkIconPosition="right"
             rightSection={<ChevronDown size={16} strokeWidth={1.6} aria-hidden="true" />}
@@ -161,23 +164,35 @@ export default function ContactPage() {
   // Two parts to the brief: who you are, then what needs to change.
   const split = inquiryFields.findIndex((field) => field.name === "current_erp");
   const groups = [
-    [t("pages.contact.contact-page.about-you-d40b5d"), inquiryFields.slice(0, split)],
-    [t("pages.contact.contact-page.your-project-fb792b"), inquiryFields.slice(split)],
+    [fr ? "Vous" : "About you", inquiryFields.slice(0, split)],
+    [fr ? "Votre projet" : "Your project", inquiryFields.slice(split)],
   ];
-  const steps = [[t("pages.contact.contact-page.your-brief-b39c64"), t("pages.contact.contact-page.context-goals-and-constraints-in-a-few-16b819")], [t("pages.contact.contact-page.a-first-conversation-f7708b"), t("pages.contact.contact-page.with-an-architect-not-a-sales-script-df646e")], [t("pages.contact.contact-page.a-clear-next-step-cd6efa"), t("pages.contact.contact-page.what-is-worth-changing-and-in-what-5f2545")]];
+  const steps = fr
+    ? [
+        ["Votre brief", "Contexte, objectifs, contraintes — en quelques minutes."],
+        ["Une première conversation", "Avec un architecte, pas un commercial."],
+        ["Une suite claire", "Ce qui mérite d’être changé, et dans quel ordre."],
+      ]
+    : [
+        ["Your brief", "Context, goals and constraints — in a few minutes."],
+        ["A first conversation", "With an architect, not a sales script."],
+        ["A clear next step", "What is worth changing, and in what order."],
+      ];
   return (
     <>
       <Section className={styles.contactSection}>
         <div className={styles.layout}>
           <div className={styles.intro}>
             <p className={styles.eyebrow}>
-              {t("pages.contact.contact-page.start-a-project-908ad4")}
+              {fr ? "Démarrer un projet" : "Start a project"}
             </p>
             <RevealText as="h1" onLoad key={locale}>
-              {t("pages.contact.contact-page.let-s-architect-what-comes-next-7eed29")}
+              {fr ? "Architecturons la suite." : "Let’s architect what comes next."}
             </RevealText>
             <p className={styles.lead}>
-              {t("pages.contact.contact-page.tell-us-where-you-are-today-what-dcc1ed")}
+              {fr
+                ? "Dites-nous où vous en êtes, ce que vous voulez atteindre et les contraintes qui comptent."
+                : "Tell us where you are today, what you want to achieve and the constraints that matter."}
             </p>
             <ol className={styles.steps}>
               {steps.map(([title, text], index) => (
@@ -193,8 +208,8 @@ export default function ContactPage() {
             <p className={styles.notice}>
               <ShieldCheck size={16} strokeWidth={1.5} aria-hidden="true" />
               {submissionsEnabled
-                ? (t("pages.contact.contact-page.your-project-brief-will-be-sent-to-5b9461"))
-                : (t("pages.contact.contact-page.project-enquiries-are-temporarily-unavailable-6ce5fa"))}
+                ? (fr ? "Votre demande sera transmise à Prosperya." : "Your project brief will be sent to Prosperya.")
+                : (fr ? "Référence staging — les demandes ne sont pas envoyées." : "Staging reference — project enquiries are not sent.")}
             </p>
           </div>
           <form
@@ -220,21 +235,29 @@ export default function ContactPage() {
             <div className={styles.actions}>
               <button type="submit" className={styles.submit} disabled={!submissionsEnabled || submission.isPending || optionsPending || optionsError}>
                 {submission.isPending
-                  ? t("pages.contact.contact-page.sending-b7af8e")
-                  : t("pages.contact.contact-page.send-project-brief-816a21")}
+                  ? fr
+                    ? "Envoi…"
+                    : "Sending…"
+                  : fr
+                    ? "Envoyer mon brief"
+                    : "Send project brief"}
                 <ArrowRight size={16} strokeWidth={1.6} aria-hidden="true" />
               </button>
-              <span>{t("pages.contact.contact-page.about-3-minutes-fc8196")}</span>
+              <span>{fr ? "Environ 3 minutes" : "About 3 minutes"}</span>
             </div>
             {submission.isSuccess && (
               <p className={styles.success} role="status">
                 <CircleCheck size={18} strokeWidth={1.5} aria-hidden="true" />
-                {t("pages.contact.contact-page.thank-you-your-project-brief-was-received-4a736f")}
+                {fr
+                  ? "Merci, votre demande a été reçue."
+                  : "Thank you, your project brief was received."}
               </p>
             )}
             {submission.isError && (
               <p className={styles.error} role="alert">
-                {submission.error?.status === 429 ? t("pages.contact.contact-page.too-many-requests-please-wait-before-trying-a64b07") : t("pages.contact.contact-page.your-brief-could-not-be-sent-your-c7d07a")}
+                {fr
+                  ? submission.error?.status === 429 ? "Trop de demandes. Réessayez dans un moment." : "Votre demande n’a pas pu être envoyée. Vos informations restent dans le formulaire."
+                  : submission.error?.status === 429 ? "Too many requests. Please wait before trying again." : "Your brief could not be sent. Your information remains in the form; please try again."}
               </p>
             )}
           </form>

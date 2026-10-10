@@ -1,5 +1,5 @@
-import { websiteApi } from "../../services/websiteApi.js";
-import { adaptExpertise } from "../../repositories/marketing.repository.js";
+import { expertiseData } from "../../data/expertise.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import Section from "../../components/common/Section.jsx";
 import Eyebrow from "../../components/common/Eyebrow.jsx";
@@ -16,18 +16,19 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./ExpertisePage.module.css";
 
 export default function ExpertisePage() {
-  const {locale, t } = useLocale();
-
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const { isLoading: capabilitiesIsLoading, isError: capabilitiesIsError, refetch: capabilitiesRefetch, data: capabilities = [] } = useQuery({
     queryKey: ["capabilities", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.expertise({ locale }, signal);
-      return (response.data || []).map(adaptExpertise);
+    queryFn: async () => {
+      return localizeEntity(expertiseData, locale);
     },
   });
   useDocumentMeta({
     title: "Prosperya — Expertise",
-    description: t("pages.expertise.expertise-page.erp-transformation-netsuite-implementation-integration-automation-audit-51a3ca"),
+    description: fr
+      ? "Transformation ERP, implémentation NetSuite, intégration, automatisation, audit et redressement."
+      : "ERP transformation, NetSuite implementation, integration, automation, audit and rescue.",
   });
   if (capabilitiesIsLoading) return <PageLoader />;
   if (capabilitiesIsError)
@@ -40,29 +41,33 @@ export default function ExpertisePage() {
   return (
     <>
       <PageHero
-        eyebrow={t("nav.expertise")}
-        title={t("pages.expertise.expertise-page.capabilities-that-drive-measurable-results-ad246d")}
+        eyebrow="Expertise"
+        title={fr ? "Des expertises qui produisent des résultats." : "Capabilities that drive measurable results."}
         lead={
           <p>
-            {t("pages.expertise.expertise-page.we-help-enterprises-design-connect-and-optimize-2b00c4")}
+            {fr
+              ? "Nous aidons les entreprises à concevoir, connecter et optimiser leurs systèmes pour simplifier les opérations, réduire la complexité et libérer la performance."
+              : "We help enterprises design, connect and optimize their systems to simplify operations, reduce complexity and unlock performance at scale."}
           </p>
         }
         visual={<CapabilityIndex items={items} locale={locale} />}
       />
-      <CapabilityStory items={items} locale={locale} />
+      <CapabilityStory items={items.slice(0, 4)} locale={locale} />
       <Section>
         <div className={styles.architecture}>
           <div className={styles.architectureCopy}>
-            <Eyebrow>{t("pages.expertise.expertise-page.our-architecture-approach-37ec21")}</Eyebrow>
+            <Eyebrow>{fr ? "Notre approche d’architecture" : "Our architecture approach"}</Eyebrow>
             <h2>
-              {t("pages.expertise.expertise-page.built-to-connect-5ea962")}
-              <span>{t("pages.expertise.expertise-page.designed-to-scale-4d2442")}</span>
+              {fr ? "Conçu pour connecter." : "Built to connect."}
+              <span>{fr ? "Pensé pour grandir." : "Designed to scale."}</span>
             </h2>
             <p>
-              {t("pages.expertise.expertise-page.our-architecture-framework-unifies-your-enterprise-systems-46a34d")}
+              {fr
+                ? "Notre cadre d’architecture unifie systèmes, données et processus pour créer une fondation résiliente et évolutive."
+                : "Our architecture framework unifies your enterprise systems, data and processes — creating a resilient, scalable foundation for growth."}
             </p>
             <PrimaryLink to={`/${locale}/approach`} variant="text">
-              {t("pages.expertise.expertise-page.explore-our-approach-de10c8")}
+              {fr ? "Découvrir notre approche" : "Explore our approach"}
             </PrimaryLink>
           </div>
           <ArchitectureFlowDiagram />
@@ -70,11 +75,13 @@ export default function ExpertisePage() {
       </Section>
       <CTASection
         variant="card"
-        title={t("pages.expertise.expertise-page.not-sure-which-capability-you-need-915e66")}
+        title={fr ? "Vous hésitez entre plusieurs expertises ?" : "Not sure which capability you need?"}
         description={
-          t("pages.expertise.expertise-page.describe-the-problem-we-will-point-you-b40a3b")
+          fr
+            ? "Décrivez le problème : nous vous indiquerons le bon point de départ."
+            : "Describe the problem. We will point you to the right starting point."
         }
-        secondary={{ path: "contact", label: t("pages.expertise.expertise-page.talk-to-an-expert-8e5217") }}
+        secondary={{ path: "contact", label: fr ? "Parler à un expert" : "Talk to an expert" }}
       />
     </>
   );

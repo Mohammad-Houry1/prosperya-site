@@ -1,4 +1,3 @@
-import { cmsLocale } from "../cmsFixtures.js";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -6,24 +5,22 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
 import LegalPage from "../../src/pages/Legal/LegalPage.jsx";
 import SiteFooter from "../../src/components/layout/SiteFooter.jsx";
-import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
+import { stagingContent, StagingContentError } from "../../src/services/stagingContent.js";
 
 const pages = [{ id: "about", slug: "about-prosperya", title: "About from CMS" },
   { id: "terms", slug: "terms-of-use", title: "Terms from CMS" }];
 function renderPage(locale = "en") {
   return render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 300000 } } })}>
     <MemoryRouter initialEntries={[`/${locale}/corporate/about-prosperya`]}>
-      <LocaleContext.Provider value={cmsLocale(locale)}>
+      <LocaleContext.Provider value={{ locale, t: (key) => key }}>
         <Routes><Route path="/:locale/corporate/:slug" element={<LegalPage />} /></Routes><SiteFooter />
       </LocaleContext.Provider>
     </MemoryRouter>
   </QueryClientProvider>);
 }
 beforeEach(() => {
-  vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
-  vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [] });
-  vi.spyOn(websiteApi, "corporatePages").mockResolvedValue({ data: pages, meta: { last_page: 1 } });
-  vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { ...pages[0],
+  vi.spyOn(stagingContent, "corporatePages").mockResolvedValue({ data: pages, meta: { last_page: 1 } });
+  vi.spyOn(stagingContent, "corporatePage").mockResolvedValue({ data: { ...pages[0],
     updated_at: "2026-10-09T08:02:04.596000Z", description: "<p>CMS introduction</p>", sections: [{ title: "CMS section", description: "<p>CMS body</p>" }], seo: {} } });
 });
 afterEach(() => vi.restoreAllMocks());
@@ -39,17 +36,17 @@ test.each(["en", "fr"])("shares the category list between footer and sidebar in 
     expect(within(nav).getByRole("link", { name: "About from CMS" })).toHaveAttribute("aria-current", "page");
     expect(within(nav).queryByText("Cookie policy")).not.toBeInTheDocument();
   }
-  expect(websiteApi.corporatePage).toHaveBeenCalledWith("about-prosperya", locale, expect.any(AbortSignal));
-  expect(websiteApi.corporatePages).toHaveBeenCalledTimes(1);
-  expect(websiteApi.corporatePages).toHaveBeenCalledWith({ locale, category: "corporate" }, expect.any(AbortSignal));
+  expect(stagingContent.corporatePage).toHaveBeenCalledWith("about-prosperya", locale, expect.any(AbortSignal));
+  expect(stagingContent.corporatePages).toHaveBeenCalledTimes(1);
+  expect(stagingContent.corporatePages).toHaveBeenCalledWith({ locale, category: "corporate" }, expect.any(AbortSignal));
   expect(screen.getByText("CMS body")).toBeInTheDocument();
   expect(screen.getByText(locale === "fr" ? "9 octobre 2026" : "9 October 2026")).toHaveAttribute("datetime", "2026-10-09T08:02:04.596Z");
   expect(screen.queryByText("2026-10-09T08:02:04.596000Z")).not.toBeInTheDocument();
 });
 
 test("shows skeletons while details and the category list load", () => {
-  websiteApi.corporatePage.mockReturnValue(new Promise(() => {}));
-  websiteApi.corporatePages.mockReturnValue(new Promise(() => {}));
+  stagingContent.corporatePage.mockReturnValue(new Promise(() => {}));
+  stagingContent.corporatePages.mockReturnValue(new Promise(() => {}));
   renderPage();
   expect(screen.getByRole("status", { name: "Loading page" })).toHaveAttribute("aria-busy", "true");
   expect(screen.getByRole("status", { name: "Loading pages" })).toHaveAttribute("aria-busy", "true");
@@ -57,7 +54,7 @@ test("shows skeletons while details and the category list load", () => {
 });
 
 test("keeps valid details when a category list is unavailable", async () => {
-  websiteApi.corporatePages.mockRejectedValue(new WebsiteApiError("Unavailable", 404));
+  stagingContent.corporatePages.mockRejectedValue(new StagingContentError("Unavailable", 404));
   renderPage();
   await screen.findByRole("heading", { name: "About from CMS", level: 1 });
   await waitFor(() => expect(screen.queryByRole("status", { name: "Loading pages" })).not.toBeInTheDocument());

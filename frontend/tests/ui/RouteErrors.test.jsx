@@ -50,7 +50,7 @@ test.each([
 test("the outer application boundary also gives a safe way home", () => {
   function Crash() { throw new Error("private runtime details"); }
   render(<AppErrorBoundary><Crash /></AppErrorBoundary>);
-  expect(screen.getByRole("link", { name: "prosperya.components.feedback.failure-screen.back-home-b335e9" })).toHaveAttribute("href", "/en");
-  expect(screen.getByRole("button", { name: "prosperya.components.feedback.failure-screen.try-again-170551" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Back home" })).toHaveAttribute("href", "/en");
+  expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   expect(document.body).not.toHaveTextContent("private runtime details");
 });

@@ -1,7 +1,4 @@
-import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
-import { cmsLocale } from "../cmsFixtures.js";
-import { render } from "../renderWithQueries.jsx";
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, test } from "vitest";
 import CapabilityCard from "../../src/components/expertise/CapabilityCard.jsx";
@@ -20,7 +17,7 @@ describe("CapabilityCard", () => {
   test("renders normalized capability data and a locale-aware detail link", () => {
     render(
       <MemoryRouter>
-        <LocaleContext.Provider value={cmsLocale("fr")}><CapabilityCard capability={capability} locale="fr" /></LocaleContext.Provider>
+        <CapabilityCard capability={capability} locale="fr" />
       </MemoryRouter>,
     );
     expect(

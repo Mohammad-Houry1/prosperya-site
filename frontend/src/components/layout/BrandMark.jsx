@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./BrandMark.module.css";
 export default function BrandMark() {
-  const {locale, t } = useLocale();
+  const { locale } = useLocale();
   return (
     <Link
       to={`/${locale}`}
       className={styles.brand}
-      aria-label={t("components.layout.brand-mark.prosperya-home-233794")}
+      aria-label={locale === "fr" ? "Accueil Prosperya" : "Prosperya home"}
     >
       <svg className={styles.symbol} viewBox="0 0 50 50" aria-hidden="true">
         <path

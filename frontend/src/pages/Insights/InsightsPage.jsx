@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { stagingContent } from "../../services/stagingContent.js";
 import { mapInsight } from "../../repositories/insights.repository.js";
 import { useEffect, useState } from "react";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -17,13 +17,14 @@ import { dragScroll } from "../../motion/gestures.js";
 import styles from "./InsightsPage.module.css";
 
 export default function InsightsPage() {
-  const {locale, t } = useLocale();
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState("all");
   const { isLoading, isError, refetch, data: articles = { items: [], meta: {} } } = useQuery({
     queryKey: ["insights", locale, page, category === "all" ? "" : category],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.articles({ locale, page: page, per_page: 12, category: (category === "all" ? "" : category) || undefined }, signal);
+      const response = await stagingContent.articles({ locale, page: page, per_page: 12, category: (category === "all" ? "" : category) || undefined }, signal);
       return { items: response.data.map(mapInsight), meta: response.meta };
     },
     staleTime: 0,
@@ -31,15 +32,17 @@ export default function InsightsPage() {
   const { isLoading: categoriesLoading, isError: categoriesError, refetch: refetchCategories, data: categories = [] } = useQuery({
     queryKey: ["insight-categories", locale],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.categories({ locale }, signal);
+      const response = await stagingContent.categories({ locale }, signal);
       return response.data || [];
     },
     staleTime: 0,
   });
   useEffect(() => { setPage(1); setCategory("all"); }, [locale]);
   useDocumentMeta({
-    title: `${t("pages.insights.insights-page.insights-1bdb50")} — Prosperya`,
-    description: t("pages.insights.insights-page.perspectives-on-erp-transformation-netsuite-integration-and-a12c24"),
+    title: `${fr ? "Analyses" : "Insights"} — Prosperya`,
+    description: fr
+      ? "Perspectives sur la transformation ERP, NetSuite, l’intégration et les opérations financières."
+      : "Perspectives on ERP transformation, NetSuite, integration and finance operations.",
   });
   if (isLoading || categoriesLoading) return <PageLoader />;
   if (isError || categoriesError)
@@ -56,12 +59,14 @@ export default function InsightsPage() {
   return (
     <>
       <PageHero
-        eyebrow={t("pages.insights.insights-page.insights-1bdb50")}
-        title={t("pages.insights.insights-page.ideas-and-perspectives-from-the-field-df7a44")}
+        eyebrow={fr ? "Analyses" : "Insights"}
+        title={fr ? "Idées et regards venus du terrain." : "Ideas and perspectives from the field."}
         titleClassName={styles.title}
         lead={
           <p>
-            {t("pages.insights.insights-page.practical-insights-on-erp-netsuite-and-enterprise-709d4d")}
+            {fr
+              ? "Des analyses pratiques sur l’ERP, NetSuite et la transformation d’entreprise — nourries par l’expérience, mesurées par l’impact."
+              : "Practical insights on ERP, NetSuite and enterprise transformation — shaped by experience, measured by impact."}
           </p>
         }
         layout="stacked"
@@ -71,19 +76,19 @@ export default function InsightsPage() {
       <PageContainer>
         {featured && category === "all" && (
           <div className={styles.featured}>
-            <Eyebrow>{t("pages.insights.insights-page.featured-article-2293a3")}</Eyebrow>
+            <Eyebrow>{fr ? "À la une" : "Featured article"}</Eyebrow>
             <InsightCard insight={featured} locale={locale} featured />
           </div>
         )}
-        <div ref={dragScroll} className={styles.tabs} role="group" aria-label={t("pages.insights.insights-page.filter-insights-4d063c")}>
-          {[["all", t("pages.insights.insights-page.all-insights-3e70ef")], ...categories.filter((item) => item.slug).map((item) => [item.slug, item.name])].map(([id, label]) => (
+        <div ref={dragScroll} className={styles.tabs} role="group" aria-label={fr ? "Filtrer les analyses" : "Filter insights"}>
+          {[["all", fr ? "Toutes les analyses" : "All insights"], ...categories.filter((item) => item.slug).map((item) => [item.slug, item.name])].map(([id, label]) => (
             <button key={id} type="button" aria-pressed={category === id} onClick={() => { setCategory(id); setPage(1); }}>
               {label}
             </button>
           ))}
         </div>
         <p className={styles.count} role="status">
-          {articles?.meta?.total === 1 ? t("insights.count_one", { count: 1 }) : t("insights.count_many", { count: articles?.meta?.total ?? 0 })}
+          {articles?.meta?.total ?? 0} {fr ? "analyse(s)" : articles?.meta?.total === 1 ? "article" : "articles"}
         </p>
         {list.length ? (
           <div key={category} className={styles.grid}>
@@ -95,10 +100,10 @@ export default function InsightsPage() {
           <EmptyState />
         )}
         {lastPage > 1 && (
-          <nav className={styles.pagination} aria-label={t("pages.insights.insights-page.insight-pages-21aff6")}>
-            <button type="button" disabled={page <= 1} onClick={() => setPage((value) => value - 1)}>{t("pages.insights.insights-page.previous-abad3a")}</button>
-            <span>{t("pages.insights.insights-page.page-b5a952")} {page} / {lastPage}</span>
-            <button type="button" disabled={page >= lastPage} onClick={() => setPage((value) => value + 1)}>{t("pages.insights.insights-page.next-903b82")}</button>
+          <nav className={styles.pagination} aria-label={fr ? "Pages des analyses" : "Insight pages"}>
+            <button type="button" disabled={page <= 1} onClick={() => setPage((value) => value - 1)}>{fr ? "Précédent" : "Previous"}</button>
+            <span>{fr ? "Page" : "Page"} {page} / {lastPage}</span>
+            <button type="button" disabled={page >= lastPage} onClick={() => setPage((value) => value + 1)}>{fr ? "Suivant" : "Next"}</button>
           </nav>
         )}
       </PageContainer>

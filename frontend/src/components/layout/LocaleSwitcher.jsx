@@ -3,12 +3,12 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { replaceLocaleInPath, SUPPORTED_LOCALES } from "../../i18n/locale.js";
 import styles from "./LocaleSwitcher.module.css";
 export default function LocaleSwitcher({ onNavigate }) {
-  const {locale, t } = useLocale();
+  const { locale } = useLocale();
   const location = useLocation();
   return (
     <nav
       className={styles.switcher}
-      aria-label={t("components.layout.locale-switcher.language-cff648")}
+      aria-label={locale === "fr" ? "Langue" : "Language"}
     >
       {SUPPORTED_LOCALES.map((item) => (
         <Link
@@ -16,7 +16,7 @@ export default function LocaleSwitcher({ onNavigate }) {
           lang={item}
           hrefLang={item}
           aria-current={item === locale ? "true" : undefined}
-          aria-label={item === "en" ? t("locale.english") : t("locale.french")}
+          aria-label={item === "en" ? "English" : "Français"}
           onClick={onNavigate}
           to={`${replaceLocaleInPath(location.pathname, item)}${location.search}${location.hash}`}
         >

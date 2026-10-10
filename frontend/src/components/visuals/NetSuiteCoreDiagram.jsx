@@ -29,7 +29,7 @@ const MODULES = [
 export default function NetSuiteCoreDiagram({ label = "NetSuite", autoplay = false }) {
   const ref = useRef(null);
   const reduced = useReducedMotion();
-  const {locale, t } = useLocale();
+  const { locale } = useLocale();
   useGsapContext(
     ref,
     ({ gsap, ScrollTrigger }) => {
@@ -69,7 +69,7 @@ export default function NetSuiteCoreDiagram({ label = "NetSuite", autoplay = fal
   const initial = String(reduced);
   return (
     <div ref={ref} className={styles.wrap}>
-      <svg className={styles.diagram} viewBox="0 0 800 310" role="img" aria-label={t("components.visuals.net-suite-core-diagram.netsuite-at-the-core-of-twelve-business-263582")}>
+      <svg className={styles.diagram} viewBox="0 0 800 310" role="img" aria-label={locale === "fr" ? "NetSuite au cœur de douze domaines métier" : "NetSuite at the core of twelve business domains"}>
         <rect className={styles.boundary} x="72" y="22" width="656" height="266" rx="44" />
         {MODULES.map((module, index) => (
           <g key={module.id} data-module={index} data-active={initial}>
@@ -96,14 +96,14 @@ export default function NetSuiteCoreDiagram({ label = "NetSuite", autoplay = fal
             {label}
           </text>
           <text x="400" y="174" textAnchor="middle" className={styles.coreSub}>
-            {t("components.visuals.net-suite-core-diagram.core-erp-7c219d")}
+            {locale === "fr" ? "SOCLE ERP" : "CORE ERP"}
           </text>
         </g>
       </svg>
       <div className={styles.compact} aria-hidden="true">
         <div className={styles.compactCore} data-core data-active={initial}>
           <strong>{label}</strong>
-          <span>{t("components.visuals.net-suite-core-diagram.core-erp-e561c8")}</span>
+          <span>{locale === "fr" ? "Socle ERP" : "Core ERP"}</span>
         </div>
         <ul>
           {MODULES.map((module, index) => (

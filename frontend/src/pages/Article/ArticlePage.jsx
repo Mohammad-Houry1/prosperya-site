@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { stagingContent } from "../../services/stagingContent.js";
 import { mapInsight } from "../../repositories/insights.repository.js";
 import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -24,13 +24,13 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 export default function ArticlePage() {
   const articleRef = useRef(null);
   const { slug } = useParams();
-  const {locale, t } = useLocale();
-
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const { data: insight = null, isLoading: insightIsLoading, isError: insightIsError, refetch: insightRefetch } = useQuery({
     queryKey: ["insight", locale, slug],
     queryFn: async ({ signal }) => {
       try {
-        const response = await websiteApi.article(slug, locale, signal);
+        const response = await stagingContent.article(slug, locale, signal);
         return mapInsight(response.data);
       } catch (error) {
         if (error.status === 404) return null;
@@ -43,7 +43,7 @@ export default function ArticlePage() {
   const { data: articles = { items: [], meta: {} } } = useQuery({
     queryKey: ["insights", locale, 1, ""],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.articles({ locale, page: 1, per_page: 12 }, signal);
+      const response = await stagingContent.articles({ locale, page: 1, per_page: 12 }, signal);
       return { items: response.data.map(mapInsight), meta: response.meta };
     },
     staleTime: 0,
@@ -51,7 +51,7 @@ export default function ArticlePage() {
   const { data: categoriesData = [] } = useQuery({
     queryKey: ["insight-categories", locale],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.categories({ locale }, signal);
+      const response = await stagingContent.categories({ locale }, signal);
       return response.data || [];
     },
     staleTime: 0,
@@ -60,7 +60,7 @@ export default function ArticlePage() {
   const categoryNames = Object.fromEntries((categoriesData ?? []).map((entry) => [entry.id, entry.name]));
   useDocumentMeta({
     model: "Article",
-    title: item ? `${item.seo?.title || item.title} — Prosperya` : t("pages.article.article-page.prosperya-insights-56ddec"),
+    title: item ? `${item.seo?.title || item.title} — Prosperya` : fr ? "Prosperya — Analyses" : "Prosperya — Insights",
     description: item?.seo?.description || item?.excerpt,
     canonicalPath: item?.seo?.url || undefined,
     ogImage: item?.metaImage?.src || item?.image?.src,
@@ -77,7 +77,7 @@ export default function ArticlePage() {
   if (!item)
     return (
       <Section>
-        <EmptyState title={t("pages.article.article-page.insight-not-found-6a3f0b")} />
+        <EmptyState title={fr ? "Analyse introuvable" : "Insight not found"} />
       </Section>
     );
   const others = (articles?.items ?? []).filter((entry) => entry.id !== item.id).map((entry) => ({ ...entry, category: categoryNames[entry.categoryId] || "" }));
@@ -91,7 +91,7 @@ export default function ArticlePage() {
       <header className={styles.masthead}>
         <Link to={`/${locale}/insights`} className={styles.back}>
           <ArrowLeft size={15} strokeWidth={1.6} aria-hidden="true" />
-          {t("pages.article.article-page.all-insights-3e70ef")}
+          {fr ? "Toutes les analyses" : "All insights"}
         </Link>
         <p className={styles.category}>
           {categoryNames[item.categoryId] || ""}
@@ -111,9 +111,9 @@ export default function ArticlePage() {
           </span>}
           {item.readTime && <span>
             <Clock3 size={14} strokeWidth={1.5} aria-hidden="true" />
-            {t("common.reading_time", { minutes: item.readTime })}
+            {item.readTime} min {fr ? "de lecture" : "read"}
           </span>}
-          <span>{t("pages.article.article-page.by-the-prosperya-team-63c8ff")}</span>
+          <span>{fr ? "Par l’équipe Prosperya" : "By the Prosperya team"}</span>
         </p>
       </header>
       <PageContainer>
@@ -131,10 +131,10 @@ export default function ArticlePage() {
       {related.length > 0 && (
         <Section>
           <SectionHeader
-            eyebrow={t("pages.article.article-page.keep-reading-6c0c98")}
-            title={t("pages.article.article-page.related-insights-e79261")}
+            eyebrow={fr ? "À lire ensuite" : "Keep reading"}
+            title={fr ? "Analyses liées" : "Related insights"}
             align="split"
-            action={{ to: `/${locale}/insights`, label: t("pages.article.article-page.all-insights-3e70ef") }}
+            action={{ to: `/${locale}/insights`, label: fr ? "Toutes les analyses" : "All insights" }}
           />
           <div className={styles.related}>
             {related.map((entry, index) => (
@@ -144,7 +144,7 @@ export default function ArticlePage() {
         </Section>
       )}
       <Section>
-        <Newsletter title={t("pages.article.article-page.get-the-next-article-first-79dae7")} />
+        <Newsletter title={fr ? "Recevez la prochaine analyse." : "Get the next article first."} />
       </Section>
     </>
   );

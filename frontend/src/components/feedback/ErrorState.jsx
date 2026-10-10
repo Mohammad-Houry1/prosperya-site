@@ -2,11 +2,22 @@ import ConnectionIllustration from "./ConnectionIllustration.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./State.module.css";
 
-const DEFAULT_COPY = (t) => ({ title: t("components.feedback.error-state.copy.something-went-wrong-6ccb92"), description: t("components.feedback.error-state.copy.the-content-could-not-be-loaded-c44d0a"), retry: t("components.feedback.error-state.copy.try-again-170551") });
+const DEFAULT_COPY = {
+  en: {
+    title: "Something went wrong",
+    description: "The content could not be loaded.",
+    retry: "Try again",
+  },
+  fr: {
+    title: "Une erreur est survenue",
+    description: "Le contenu n’a pas pu être chargé.",
+    retry: "Réessayer",
+  },
+};
 
 export default function ErrorState({ title, description, onRetry }) {
-  const { t } = useLocale();
-  const copy = DEFAULT_COPY(t);
+  const { locale } = useLocale();
+  const copy = DEFAULT_COPY[locale] ?? DEFAULT_COPY.en;
 
   return (
     <div className={styles.state} role="alert">

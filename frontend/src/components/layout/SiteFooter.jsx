@@ -1,65 +1,67 @@
 import { Link, useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { websiteApi } from "../../services/websiteApi.js";
-import { adaptExpertise, adaptSolution } from "../../repositories/marketing.repository.js";
 import BrandMark from "./BrandMark.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { replaceLocaleInPath } from "../../i18n/locale.js";
 import CorporatePageLinks from "../legal/CorporatePageLinks.jsx";
 import styles from "./SiteFooter.module.css";
-const sections = (t, expertise, solutions) => [
+const sections = [
   {
-    key: "expertise",
-    title: t("nav.expertise"),
+    en: "Expertise",
+    fr: "Expertise",
     links: [
-      ["expertise", t("footer.expertise_overview")],
-      ...expertise.filter(item => item.slug && item.title).map(item => [
-        `expertise/${encodeURIComponent(item.slug)}`, item.title,
-      ]),
+      ["expertise", "Overview", "Vue d’ensemble"],
+      [
+        "expertise/erp-transformation",
+        "ERP transformation",
+        "Transformation ERP",
+      ],
+      [
+        "expertise/netsuite-implementation",
+        "NetSuite implementation",
+        "Implémentation NetSuite",
+      ],
+      [
+        "expertise/systems-integration",
+        "Systems integration",
+        "Intégration des systèmes",
+      ],
+      ["expertise/erp-rescue", "ERP rescue", "Sauvetage ERP"],
+      ["expertise/automation-custom-development", "Automation & custom development", "Automatisation et développement sur mesure"],
+      ["expertise/erp-optimization", "ERP audit & optimization", "Audit et optimisation ERP"],
     ],
   },
   {
-    key: "solutions",
-    title: t("nav.solutions"),
-    links: solutions.filter(item => item.slug && item.title).map(item => [
-      `solutions/${encodeURIComponent(item.slug)}`, item.title,
-    ]),
-  },
-  {
-    key: "company",
-    title: t("footer.company"),
+    en: "Solutions",
+    fr: "Solutions",
     links: [
-      ["about", t("footer.about_us")],
-      ["approach", t("footer.our_approach")],
-      ["contact", t("nav.contact")],
+      ["solutions/finance", "Finance", "Finance"],
+      ["solutions/operations", "Operations", "Opérations"],
+      ["solutions/supply-chain", "Supply chain", "Chaîne logistique"],
+      ["solutions/data-analytics", "Data & analytics", "Données et analytique"],
     ],
   },
   {
-    key: "resources",
-    title: t("footer.resources"),
+    en: "Company",
+    fr: "Entreprise",
     links: [
-      ["insights", t("footer.insights")],
-      ["work", t("footer.case_studies")],
+      ["about", "About us", "À propos"],
+      ["approach", "Our approach", "Notre approche"],
+      ["contact", "Start a project", "Démarrer un projet"],
+    ],
+  },
+  {
+    en: "Resources",
+    fr: "Ressources",
+    links: [
+      ["insights", "Insights", "Perspectives"],
+      ["work", "Case studies", "Études de cas"],
     ],
   },
 ];
 export default function SiteFooter() {
   const { locale, t } = useLocale();
   const location = useLocation();
-  const { data: expertise = [] } = useQuery({
-    queryKey: ["capabilities", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.expertise({ locale }, signal);
-      return (response.data || []).map(adaptExpertise);
-    },
-  });
-  const { data: solutions = [] } = useQuery({
-    queryKey: ["solutions", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.solutions({ locale }, signal);
-      return (response.data || []).map(adaptSolution);
-    },
-  });
+  const fr = locale === "fr";
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -69,16 +71,16 @@ export default function SiteFooter() {
             <p>{t("footer.statement")}</p>
             <span>{t("footer.location")}</span>
           </div>
-          {sections(t, expertise, solutions).map((section) => (
+          {sections.map((section) => (
             <nav
-              key={section.key}
-              aria-label={section.title}
+              key={section.en}
+              aria-label={section[locale]}
               className={styles.column}
             >
-              <h2>{section.title}</h2>
-              {section.links.map(([path, label]) => (
+              <h2>{section[locale]}</h2>
+              {section.links.map(([path, en, frLabel]) => (
                 <Link key={path} to={`/${locale}/${path}`}>
-                  {label}
+                  {fr ? frLabel : en}
                 </Link>
               ))}
             </nav>
@@ -89,7 +91,7 @@ export default function SiteFooter() {
             © {new Date().getFullYear()} Prosperya. {t("footer.rights")}
           </span>
           <nav
-            aria-label={t("components.layout.site-footer.language-cff648")}
+            aria-label={fr ? "Langue" : "Language"}
             className={styles.languages}
           >
             {["en", "fr"].map((lang) => (
@@ -109,7 +111,7 @@ export default function SiteFooter() {
           </nav>
           <nav
             className={styles.legal}
-            aria-label={t("components.layout.site-footer.legal-information-823929")}
+            aria-label={fr ? "Informations légales" : "Legal information"}
           >
             <CorporatePageLinks inline />
           </nav>

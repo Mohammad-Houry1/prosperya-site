@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { stagingContent } from "../../services/stagingContent.js";
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ export default function LegalPage({ documentId }) {
     queryKey: ["corporate-page", locale, documentSlug],
     queryFn: async ({ signal }) => {
       try {
-        const { data: page } = await websiteApi.corporatePage(documentSlug, locale, signal);
+        const { data: page } = await stagingContent.corporatePage(documentSlug, locale, signal);
         return {
           id: page.id || documentSlug,
           title: page.title,

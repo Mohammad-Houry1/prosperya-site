@@ -10,8 +10,8 @@ import styles from "./FrequentlyAskedQuestions.module.css";
 
 // layout "aside": heading beside one column (Contact). "columns": heading above two columns (Approach).
 export default function FrequentlyAskedQuestions({ layout = "aside", data = [], isError, isPending, refetch }) {
-  const { t } = useLocale();
-
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const reduced = useReducedMotion();
   if (isError)
     return (
@@ -19,7 +19,7 @@ export default function FrequentlyAskedQuestions({ layout = "aside", data = [], 
         <ErrorState onRetry={refetch} />
       </Section>
     );
-  if (isPending) return <Section><SectionSkeleton rows={3} label={t("components.company.frequently-asked-questions.loading-questions-e854d3")} /></Section>;
+  if (isPending) return <Section><SectionSkeleton rows={3} label={fr ? "Chargement des questions" : "Loading questions"} /></Section>;
   if (!data?.length) return null;
   const list = (items) => (
     <Accordion
@@ -39,14 +39,18 @@ export default function FrequentlyAskedQuestions({ layout = "aside", data = [], 
     <Section>
       <div className={`${styles.layout} ${styles[layout]}`}>
         <div>
-          <Eyebrow>{t("components.company.frequently-asked-questions.frequently-asked-questions-3cbfaa")}</Eyebrow>
+          <Eyebrow>{fr ? "Questions fréquentes" : "Frequently asked questions"}</Eyebrow>
           <h2>
             {layout === "columns"
-              ? t("components.company.frequently-asked-questions.your-questions-answered-36e33a")
-              : t("components.company.frequently-asked-questions.before-we-begin-fc07af")}
+              ? fr
+                ? "Vos questions, nos réponses."
+                : "Your questions, answered."
+              : fr
+                ? "Avant de commencer."
+                : "Before we begin."}
           </h2>
           {layout !== "columns" && (
-            <p>{t("components.company.frequently-asked-questions.a-few-answers-to-help-you-move-841b14")}</p>
+            <p>{fr ? "Quelques réponses pour avancer en confiance." : "A few answers to help you move forward with confidence."}</p>
           )}
         </div>
         {layout === "columns" ? (

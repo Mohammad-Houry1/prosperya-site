@@ -7,16 +7,16 @@ import SectionSkeleton from "../../components/feedback/SectionSkeleton.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
 export default function ApproachPreviewSection({ data = [], isPending, isError, refetch }) {
-  const {locale, t } = useLocale();
-
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   return (
     <Section>
       <div className={styles.approach}>
         <div className={styles.approachCopy}>
-          <Eyebrow>{t("sections.home.approach-preview-section.our-approach-9bce36")}</Eyebrow>
-          <h2>{t("sections.home.approach-preview-section.a-proven-path-to-transformation-b25b8e")}</h2>
+          <Eyebrow>{fr ? "Notre approche" : "Our approach"}</Eyebrow>
+          <h2>{fr ? "Un chemin éprouvé vers la transformation." : "A proven path to transformation."}</h2>
           <PrimaryLink to={`/${locale}/approach`} variant="text">
-            {t("sections.home.approach-preview-section.explore-the-approach-dd8b38")}
+            {fr ? "Explorer l’approche" : "Explore the approach"}
           </PrimaryLink>
         </div>
         {isPending ? (

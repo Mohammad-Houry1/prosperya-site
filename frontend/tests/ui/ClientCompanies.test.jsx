@@ -1,17 +1,16 @@
-import { cmsLabels } from "../cmsFixtures.js";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { websiteApi } from "../../src/services/websiteApi.js";
+import { stagingContent } from "../../src/services/stagingContent.js";
 import { LocaleProvider } from "../../src/i18n/LocaleProvider.jsx";
 import ClientCompanies from "../../src/components/company/ClientCompanies.jsx";
 
 beforeEach(() => {
-  vi.spyOn(websiteApi, "testimonials").mockResolvedValue({ data: [{ id: "t", company: "Northline", name: "Visitor", quote: "Approved" }], meta: { last_page: 1 } });
-  vi.spyOn(websiteApi, "platforms").mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker",
+  vi.spyOn(stagingContent, "testimonials").mockResolvedValue({ data: [{ id: "t", company: "Northline", name: "Visitor", quote: "Approved" }], meta: { last_page: 1 } });
+  vi.spyOn(stagingContent, "platforms").mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker",
     logo_image: { url: "https://media.example.test/foot-locker.jpg", alt: "FL_Logo_Primary_Black_RGB.jpg", width: 3000, height: 2732 } }], meta: { last_page: 1 } });
-  vi.spyOn(websiteApi, "labels").mockResolvedValue({ data: cmsLabels("en"), meta: { last_page: 1 } });
+  vi.spyOn(stagingContent, "labels").mockResolvedValue({ data: {}, meta: { last_page: 1 } });
 });
 afterEach(() => vi.restoreAllMocks());
 
@@ -56,12 +55,12 @@ test("the still client row shows each mark once, with nothing to pause", async (
   expect(logo).toHaveAttribute("src", "https://media.example.test/foot-locker.jpg");
   expect(logo).toHaveAttribute("loading", "lazy");
   expect(screen.queryByText("Northline")).not.toBeInTheDocument();
-  expect(websiteApi.testimonials).not.toHaveBeenCalled();
+  expect(stagingContent.testimonials).not.toHaveBeenCalled();
   expect(screen.queryByRole("button", { name: /client logos/i })).not.toBeInTheDocument();
 });
 
 test("a CMS platform without a logo keeps a readable company name", async () => {
-  websiteApi.platforms.mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker", logo_image: null }], meta: { last_page: 1 } });
+  stagingContent.platforms.mockResolvedValue({ data: [{ id: "p", slug: "foot-locker", name: "Foot Locker", logo_image: null }], meta: { last_page: 1 } });
   renderStrip({ still: true });
   expect(await screen.findByText("Foot Locker")).toBeInTheDocument();
 });

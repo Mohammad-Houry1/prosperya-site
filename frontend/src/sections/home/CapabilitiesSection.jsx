@@ -5,11 +5,11 @@ import ErrorState from "../../components/feedback/ErrorState.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
 export default function CapabilitiesSection({ data = [], isLoading, isError, refetch }) {
-  const {locale, t } = useLocale();
+  const { locale } = useLocale();
   return (
     <Section className={styles.whatWeDo}>
       <h2 className={styles.kicker}>
-        {t("sections.home.capabilities-section.what-we-do-cfeef4")}
+        {locale === "fr" ? "Ce que nous faisons" : "What we do"}
       </h2>
       {isLoading ? (
         <SectionSkeleton rows={1} />

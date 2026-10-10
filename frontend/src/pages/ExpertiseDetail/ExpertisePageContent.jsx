@@ -1,4 +1,3 @@
-import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,9 +15,6 @@ import NetSuiteCoreDiagram from "../../components/visuals/NetSuiteCoreDiagram.js
 import { useHeroProgress } from "../../motion/hooks/useHeroProgress.js";
 import { useGsapContext } from "../../motion/hooks/useGsapContext.js";
 import styles from "./ExpertiseDetailPage.module.css";
-import CmsImage from '../../components/common/CmsImage.jsx';
-import ContentLinks from "../../components/sections/ContentLinks.jsx";
-import MarketingSections from '../../components/sections/MarketingSections.jsx';
 
 const SCENES = {
   "erp-transformation": "structure", "systems-integration": "connect",
@@ -33,8 +29,7 @@ function HeroAnimation({ slug, progress }) {
   return <SignalWave shape={scene} progressRef={progress} strands={42} particles={300} />;
 }
 export default function ExpertisePageContent({ page, related = [], locale }) {
-  const { t } = useLocale();
-
+  const fr = locale === "fr";
   const pageRef = useRef(null);
   const readingRef = useRef(null);
   const heroRef = useRef(null);
@@ -65,29 +60,28 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
       <div ref={heroRef} className={styles.heroWrap}>
         <PageHero className={styles.hero} title={page.title} titleClassName={styles.title}
           breadcrumb={[
-            { label: t("pages.expertise-detail.expertise-page-content.home-ded702"), to: `/${locale}` },
-            { label: t("nav.expertise"), to: `/${locale}/expertise` }, { label: page.title },
+            { label: fr ? "Accueil" : "Home", to: `/${locale}` },
+            { label: "Expertise", to: `/${locale}/expertise` }, { label: page.title },
           ]}
           lead={<CmsRichHtml html={page.description} imageAlt={page.title} />}
           actions={<>
-            <PrimaryLink to={`/${locale}/contact`}>{t("pages.expertise-detail.expertise-page-content.start-your-transformation-6e62e2")}</PrimaryLink>
-            <PrimaryLink to={`/${locale}/approach`} variant="ghost">{t("pages.expertise-detail.expertise-page-content.explore-our-approach-de10c8")}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>{fr ? "Démarrer votre projet" : "Start your transformation"}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/approach`} variant="ghost">{fr ? "Découvrir notre approche" : "Explore our approach"}</PrimaryLink>
           </>}
           visual={<div className={styles.sceneFrame} aria-hidden="true" data-reveal="scale" data-animation={SCENES[page.slug] || "structure"}>
-            <span className={styles.frameLabel}>{t("pages.expertise-detail.expertise-page-content.systems-in-motion-f02084")}</span>
+            <span className={styles.frameLabel}>{fr ? "Systèmes en mouvement" : "Systems in motion"}</span>
             <div className={styles.sceneVisual}><HeroAnimation slug={page.slug} progress={progress} /></div>
-            <span className={styles.frameCaption}>Prosperya <span>/</span> {t("nav.expertise")}</span>
+            <span className={styles.frameCaption}>Prosperya <span>/</span> Expertise</span>
           </div>}
         />
       </div>
-      {page.image?.url && <Section><CmsImage media={page.image} /></Section>}
-      {sections.length > 0 && <nav className={styles.sectionNav} aria-label={t("pages.expertise-detail.expertise-page-content.on-this-page-765502")}>
+      {sections.length > 0 && <nav className={styles.sectionNav} aria-label={fr ? "Dans cette page" : "On this page"}>
         <PageContainer className={styles.navInner}>
-          <span className={styles.navLabel}>{t("pages.expertise-detail.expertise-page-content.on-this-page-765502")}</span>
+          <span className={styles.navLabel}>{fr ? "Dans cette page" : "On this page"}</span>
           <ol className={styles.navLinks}>{sections.map((section, index) => <li key={section.id || index}>
             <a href={`#expertise-section-${index + 1}`} aria-current={activeSection === index ? "location" : undefined} onClick={() => setActiveSection(index)}>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              {section.title || t("common.section_number", { number: index + 1 })}
+              {section.title || `Section ${index + 1}`}
             </a>
           </li>)}</ol>
         </PageContainer>
@@ -100,20 +94,13 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
               <span className={styles.sectionRule} aria-hidden="true" data-reveal="line" />
               <span className={styles.sectionNumber}>{String(index + 1).padStart(2, "0")}</span>
               {section.title && <h2>{section.title}</h2>}
-              <CmsImage media={section.image}/>
             </div>
             <CmsRichHtml html={section.description} imageAlt={section.title || page.title} className={styles.sectionBody} />
           </div>
         </Section>
       ))}
-      <ContentLinks title={t("nav.solutions")} items={page.related_solutions} field="solution_title" route="solutions" />
-      <ContentLinks title={t("nav.work")} items={page.related_case_studies} field="case_study_title" route="work" />
-      {page.platforms?.length > 0 && <Section><h2>{t("about.platforms_eyebrow")}</h2><ul>{page.platforms.map(platform => <li key={platform.id}>{platform.name}</li>)}</ul></Section>}
-      <MarketingSections steps={page.steps} metrics={page.metrics} note={page.metricsNote} />
-      {page.capabilities?.length > 0 && <Section><ul>{page.capabilities.map((value,index)=><li key={index}>{value}</li>)}</ul></Section>}
-      {page.outcomes?.length > 0 && <Section><ul>{page.outcomes.map((value,index)=><li key={index}>{value}</li>)}</ul></Section>}
       {related.length > 0 && <Section>
-        <SectionHeader eyebrow={t("pages.expertise-detail.expertise-page-content.related-expertise-d6a7c0")} title={t("pages.expertise-detail.expertise-page-content.explore-complementary-capabilities-9969cf")} />
+        <SectionHeader eyebrow={fr ? "Expertises associées" : "Related expertise"} title={fr ? "Des capacités complémentaires." : "Explore complementary capabilities."} />
         <ul className={styles.related}>{related.map((item, index) => <li key={item.id || item.slug} data-reveal="card" style={{ "--i": index }}>
           <Link to={`/${locale}/expertise/${item.slug}`}>
             <span className={styles.relatedNumber}>{String(index + 1).padStart(2, "0")}</span>
@@ -121,7 +108,7 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
           </Link>
         </li>)}</ul>
       </Section>}
-      <CTASection variant="card" secondary={{ path: "contact", label: t("pages.expertise-detail.expertise-page-content.talk-to-an-expert-8e5217") }} />
+      <CTASection variant="card" secondary={{ path: "contact", label: fr ? "Parler à un expert" : "Talk to an expert" }} />
     </div>
   );
 }

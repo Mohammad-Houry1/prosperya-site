@@ -31,14 +31,6 @@ async function request(path, { query = {}, data, signal } = {}) {
 }
 
 export const websiteApi = {
-  expertise: (query, signal) => request('expertise', { query, signal }),
-  expertiseDetail: (slug, locale, signal) => request(`expertise/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  solutions: (query, signal) => request('solutions', { query, signal }),
-  solution: (slug, locale, signal) => request(`solutions/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  caseStudies: (query, signal) => request('case-studies', { query, signal }),
-  caseStudy: (slug, locale, signal) => request(`case-studies/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  approach: (slug, locale, signal) => request(`approaches/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  page: (slug, locale, signal) => request(`pages/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
   articles: (query, signal) => request("articles", { query, signal }),
   article: (slug, locale, signal) => request(`articles/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
   categories: (query, signal) => request("article-categories", { query, signal }),

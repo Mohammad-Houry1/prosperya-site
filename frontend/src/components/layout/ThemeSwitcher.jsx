@@ -4,14 +4,14 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./ThemeSwitcher.module.css";
 export default function ThemeSwitcher() {
   const { theme, toggleTheme } = useAppTheme();
-  const {t } = useLocale();
+  const { locale } = useLocale();
   const dark = theme === "dark";
   return (
     <button
       type="button"
       role="switch"
       aria-checked={dark}
-      aria-label={t("components.layout.theme-switcher.dark-mode-561d94")}
+      aria-label={locale === "fr" ? "Mode sombre" : "Dark mode"}
       className={styles.switch}
       onClick={toggleTheme}
     >

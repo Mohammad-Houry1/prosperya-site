@@ -1,4 +1,3 @@
-import { cmsLocale } from "../cmsFixtures.js";
 import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { expect, test } from "vitest";
@@ -9,7 +8,7 @@ import ExpertisePageContent from "../../src/pages/ExpertiseDetail/ExpertisePageC
 
 test("a new CMS-shaped page uses the shared template and fallback animation", () => {
   const view = render(<ThemeProvider><MemoryRouter>
-    <LocaleContext.Provider value={cmsLocale("en")}>
+    <LocaleContext.Provider value={{ locale: "en" }}>
       <ExpertisePageContent locale="en" page={{ slug: "new-cms-expertise", title: "A new expertise",
         description: "<p>CMS introduction</p>", sections: [
           { title: "First section", description: "<p>First CMS body</p><script>window.injected = true</script>" },

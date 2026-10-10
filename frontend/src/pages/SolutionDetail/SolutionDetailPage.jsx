@@ -1,5 +1,8 @@
-import { websiteApi } from "../../services/websiteApi.js";
-import { adaptExpertise, adaptSolution, adaptCaseStudy } from "../../repositories/marketing.repository.js";
+import { caseStudiesData } from "../../data/caseStudies.data.js";
+import { caseStudyDetailsData, industries } from "../../data/caseStudyDetails.data.js";
+import { expertiseData } from "../../data/expertise.data.js";
+import { localizeEntity } from "../../repositories/localize.js";
+import { solutionsData } from "../../data/solutions.data.js";
 import { useRef } from "react";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
@@ -13,6 +16,7 @@ import CTASection from "../../components/common/CTASection.jsx";
 import CapabilityCard from "../../components/expertise/CapabilityCard.jsx";
 import CaseVisual from "../../components/case-study/CaseVisual.jsx";
 import SolutionMetaphor from "../../components/visuals/SolutionMetaphor.jsx";
+import SystemIcon from "../../components/system/SystemIcon.jsx";
 import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
@@ -22,21 +26,17 @@ import { useHeroProgress } from "../../motion/hooks/useHeroProgress.js";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useDocumentMeta } from "../../hooks/useDocumentMeta.js";
 import styles from "./SolutionDetailPage.module.css";
-import CmsImage from '../../components/common/CmsImage.jsx';
-import CmsRichHtml from '../../components/common/CmsRichHtml.jsx';
-import MarketingSections from '../../components/sections/MarketingSections.jsx';
 
 function SolutionHero({ item, locale }) {
-  const { t } = useLocale();
-
+  const fr = locale === "fr";
   const ref = useRef(null);
   const progress = useHeroProgress(ref, { intro: 0.7 });
   return (
     <div ref={ref}>
       <PageHero
         breadcrumb={[
-          { label: t("pages.solution-detail.solution-detail-page.home-ded702"), to: `/${locale}` },
-          { label: t("nav.solutions"), to: `/${locale}/solutions` },
+          { label: fr ? "Accueil" : "Home", to: `/${locale}` },
+          { label: "Solutions", to: `/${locale}/solutions` },
           { label: item.title },
         ]}
         title={item.title}
@@ -44,14 +44,14 @@ function SolutionHero({ item, locale }) {
         lead={
           <>
             <p className={styles.tagline}>{item.tagline}</p>
-            <CmsRichHtml html={item.description} />
+            <p>{item.description}</p>
           </>
         }
         actions={
           <>
-            <PrimaryLink to={`/${locale}/contact`}>{t("pages.solution-detail.solution-detail-page.start-a-conversation-345cd0")}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>{fr ? "Parlons de votre projet" : "Start a conversation"}</PrimaryLink>
             <PrimaryLink to={`/${locale}/solutions`} variant="ghost">
-              {t("pages.solution-detail.solution-detail-page.all-solutions-731f69")}
+              {fr ? "Toutes les solutions" : "All solutions"}
             </PrimaryLink>
           </>
         }
@@ -63,16 +63,34 @@ function SolutionHero({ item, locale }) {
 
 export default function SolutionDetailPage() {
   const { slug } = useParams();
-  const {locale, t } = useLocale();
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const { data: solution = null, isLoading: solutionIsLoading, isError: solutionIsError, refetch: solutionRefetch } = useQuery({
     queryKey: ["solution", locale, slug],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.solution(slug, locale, signal);
-      return response.data ? adaptSolution(response.data) : null;
+    queryFn: async () => {
+      const solutions = localizeEntity(solutionsData, locale);
+      return solutions.find((solution) => solution.slug === slug) || null;
     },
     enabled: Boolean(slug),
   });
-  useDocumentMeta({ model: "Solution",
+  const { data: capabilities = [] } = useQuery({
+    queryKey: ["capabilities", locale],
+    queryFn: async () => {
+      return localizeEntity(expertiseData, locale);
+    },
+  });
+  const { data: studies = [] } = useQuery({
+    queryKey: ["case-studies", locale],
+    queryFn: async () => {
+      return localizeEntity(caseStudiesData, locale).map((study) => {
+        const industry = caseStudyDetailsData[study.id]?.industry;
+        return industry
+          ? { ...study, industry, industryName: industries[industry][locale] ?? industries[industry].en }
+          : study;
+      });
+    },
+  });
+  useDocumentMeta({
     title: solution ? `${solution.title} — Prosperya` : "Prosperya — Solutions",
     description: solution?.description,
   });
@@ -86,29 +104,25 @@ export default function SolutionDetailPage() {
   if (!solution)
     return (
       <Section>
-        <EmptyState title={t("pages.solution-detail.solution-detail-page.solution-not-found-0f1206")} />
+        <EmptyState title={fr ? "Solution introuvable" : "Solution not found"} />
       </Section>
     );
   const item = solution;
   const story = item.story;
-  const related = (item.related_expertise || []).map(adaptExpertise);
-  const proof = item.related_case_studies?.[0] ? adaptCaseStudy(item.related_case_studies[0]) : null;
+  const related = (capabilities ?? []).filter((cap) => item.expertiseIds.includes(cap.id));
+  const proof = (studies ?? []).find((study) => study.id === item.caseStudyId);
   return (
     <>
       <SolutionHero item={item} locale={locale} />
-      {item.image?.url && <Section><CmsImage media={item.image} /></Section>}
-{story.statement || story.lead && (
       <section className={styles.statement}>
         <PageContainer>
           <Eyebrow>{item.title}</Eyebrow>
           <h2 className={styles.statementTitle}>
             {story.statement}
           </h2>
-          <CmsRichHtml html={story.lead} />
+          <p>{story.lead}</p>
         </PageContainer>
       </section>
-      )}
-{story.frictionTitle || story.friction.length > 0 && (
       <Section>
         <div className={styles.friction}>
           <h2>{story.frictionTitle}</h2>
@@ -122,16 +136,14 @@ export default function SolutionDetailPage() {
           </ol>
         </div>
       </Section>
-      )}
-{item.capabilities.length > 0 || item.outcomes.length > 0 && (
       <Section className={styles.change}>
         <SectionHeader
-          eyebrow={t("pages.solution-detail.solution-detail-page.what-changes-dd20b5")}
-          title={t("pages.solution-detail.solution-detail-page.concrete-capabilities-visible-outcomes-72f078")}
+          eyebrow={fr ? "Ce qui change" : "What changes"}
+          title={fr ? "Des capacités concrètes. Des résultats visibles." : "Concrete capabilities. Visible outcomes."}
         />
         <div className={styles.changeGrid}>
           <div className={styles.changeColumn} data-reveal="card">
-            <span>{t("pages.solution-detail.solution-detail-page.what-we-put-in-place-370fb3")}</span>
+            <span>{fr ? "Ce que nous mettons en place" : "What we put in place"}</span>
             <ul className={styles.checks}>
               {item.capabilities.map((capability) => (
                 <li key={capability}>
@@ -142,22 +154,20 @@ export default function SolutionDetailPage() {
             </ul>
           </div>
           <div className={styles.changeColumn} data-reveal="card" style={{ "--i": 2 }}>
-            <span>{t("pages.solution-detail.solution-detail-page.what-you-can-expect-508821")}</span>
+            <span>{fr ? "Ce que vous obtenez" : "What you can expect"}</span>
             <ul className={styles.outcomes}>
-              {item.outcomes.map(([image, text, description], index) => (
-                <li key={index}>
+              {item.outcomes.map(([icon, text]) => (
+                <li key={text}>
                   <i>
-                    <CmsImage media={image} />
+                    <SystemIcon name={icon} size={18} strokeWidth={1.4} />
                   </i>
                   {text}
-                  <CmsRichHtml html={description} />
                 </li>
               ))}
             </ul>
           </div>
         </div>
       </Section>
-      )}
       {proof && (
         <Section>
           <article className={styles.proof}>
@@ -165,7 +175,7 @@ export default function SolutionDetailPage() {
               <CaseVisual study={proof} />
             </div>
             <div className={styles.proofCopy}>
-              <Eyebrow>{t("pages.solution-detail.solution-detail-page.in-practice-bf2d3c")}</Eyebrow>
+              <Eyebrow>{fr ? "En pratique" : "In practice"}</Eyebrow>
               <h2>{proof.name}</h2>
               <p>{proof.title}</p>
               <dl className={styles.proofMetrics}>
@@ -178,9 +188,9 @@ export default function SolutionDetailPage() {
                   </div>
                 ))}
               </dl>
-              <CmsRichHtml className={styles.note} html={story.metricsNote} />
+              <p className={styles.note}>{story.metricsNote}</p>
               <Link className={styles.proofLink} to={`/${locale}/work/${proof.slug}`}>
-                {t("pages.solution-detail.solution-detail-page.read-the-case-study-c265da")}
+                {fr ? "Lire le cas client" : "Read the case study"}
                 <ArrowRight size={15} strokeWidth={1.6} aria-hidden="true" />
               </Link>
             </div>
@@ -190,8 +200,8 @@ export default function SolutionDetailPage() {
       {related.length > 0 && (
         <Section>
           <SectionHeader
-            eyebrow={t("pages.solution-detail.solution-detail-page.capabilities-behind-the-solution-a492e7")}
-            title={t("pages.solution-detail.solution-detail-page.what-makes-it-work-f49d2d")}
+            eyebrow={fr ? "Expertises mobilisées" : "Capabilities behind the solution"}
+            title={fr ? "Ce qui rend la solution possible." : "What makes it work."}
           />
           <div className={styles.cards}>
             {related.map((cap, index) => (
@@ -200,12 +210,11 @@ export default function SolutionDetailPage() {
           </div>
         </Section>
       )}
-      <MarketingSections sections={item.sections} metrics={proof ? [] : story.metrics.map(([value, label]) => ({ value, label }))} note={proof ? "" : story.metricsNote} />
       <CTASection
         variant="band"
-        title={t("solutions.detail_cta_title", { solution: item.title.toLowerCase() })}
-        description={t("pages.solution-detail.solution-detail-page.start-with-the-friction-that-costs-you-df2223")}
-        secondary={{ path: "solutions", label: t("pages.solution-detail.solution-detail-page.all-solutions-731f69") }}
+        title={fr ? `Parlons de votre ${item.title.toLowerCase()}.` : `Let’s talk about your ${item.title.toLowerCase()}.`}
+        description={fr ? "Commencez par la friction qui vous coûte le plus." : "Start with the friction that costs you most."}
+        secondary={{ path: "solutions", label: fr ? "Toutes les solutions" : "All solutions" }}
       />
     </>
   );

@@ -3,17 +3,17 @@ import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Mail } from "lucide-react";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./Newsletter.module.css";
-import { websiteApi } from "../../services/websiteApi.js";
+import { stagingContent } from "../../services/stagingContent.js";
 
 export default function Newsletter({ title }) {
-  const submissionsEnabled = import.meta.env?.VITE_CMS_SUBMISSIONS_ENABLED === "true";
-  const {locale, t } = useLocale();
-
+  const submissionsEnabled = false;
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const [state, setState] = useState("idle");
   const lock = useRef(false);
   const { mutateAsync: subscribe } = useMutation({
     mutationFn: async (email) => {
-      const response = await websiteApi.newsletter({ email, origin: "footer", locale, website: "" });
+      const response = await stagingContent.newsletter({ email, origin: "footer", locale, website: "" });
       if (!response.data.accepted) throw new Error("Newsletter request was not accepted.");
       return response.data;
     },
@@ -42,42 +42,50 @@ export default function Newsletter({ title }) {
     <div className={styles.newsletter} data-reveal="card">
       <Mail size={44} strokeWidth={1} aria-hidden="true" />
       <div>
-        <h2>{title ?? (t("components.insight.newsletter.stay-informed-stay-ahead-606b2d"))}</h2>
+        <h2>{title ?? (fr ? "Restez informé. Gardez une longueur d’avance." : "Stay informed. Stay ahead.")}</h2>
         <p>
-          {t("components.insight.newsletter.curated-insights-on-erp-netsuite-and-enterprise-eb7688")}
+          {fr
+            ? "Des analyses choisies sur l’ERP, NetSuite et la transformation, directement dans votre boîte."
+            : "Curated insights on ERP, NetSuite and enterprise transformation, delivered to your inbox."}
         </p>
       </div>
       <form onSubmit={submit} noValidate className={styles.form}>
         <label htmlFor="newsletter-email" className="visuallyHidden">
-          {t("components.insight.newsletter.work-email-67fe32")}
+          {fr ? "Email professionnel" : "Work email"}
         </label>
         <input
           id="newsletter-email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder={t("components.insight.newsletter.enter-your-work-email-357a52")}
+          placeholder={fr ? "Votre email professionnel" : "Enter your work email"}
           aria-invalid={state === "invalid"}
           aria-describedby="newsletter-status"
           onChange={() => state !== "idle" && setState("idle")}
           disabled={!submissionsEnabled}
         />
         <button type="submit" disabled={!submissionsEnabled || state === "sending"}>
-          {state === "sending" ? (t("components.insight.newsletter.sending-b7af8e")) : (t("components.insight.newsletter.subscribe-5e59be"))}
+          {state === "sending" ? (fr ? "Envoi…" : "Sending…") : (fr ? "S’abonner" : "Subscribe")}
           <ArrowRight size={16} strokeWidth={1.6} aria-hidden="true" />
         </button>
         <p id="newsletter-status" role="status" className={styles.status} data-state={state}>
           {state === "done"
-            ? t("components.insight.newsletter.thank-you-your-subscription-was-received-b81230")
+            ? fr
+              ? "Merci. Votre inscription a été reçue."
+              : "Thank you. Your subscription was received."
             : state === "invalid"
-              ? t("components.insight.newsletter.enter-a-valid-email-address-e89bf5")
+              ? fr
+                ? "Saisissez une adresse email valide."
+                : "Enter a valid email address."
               : state === "rate-limited"
-                ? t("components.insight.newsletter.too-many-requests-please-wait-before-trying-a64b07")
+                ? fr ? "Trop de demandes. Réessayez dans un moment." : "Too many requests. Please wait before trying again."
               : state === "error"
-                ? t("components.insight.newsletter.subscription-failed-check-your-connection-and-try-d1895b")
+                ? fr ? "L’inscription a échoué. Vérifiez votre connexion et réessayez." : "Subscription failed. Check your connection and try again."
               : !submissionsEnabled
-                ? t("components.insight.newsletter.newsletter-signup-is-temporarily-unavailable-f93d44")
-                : t("components.insight.newsletter.no-spam-unsubscribe-anytime-a93953")}
+                ? fr ? "Référence staging — les inscriptions ne sont pas envoyées." : "Staging reference — subscriptions are not sent."
+                : fr
+                  ? "Pas de spam. Désinscription à tout moment."
+                  : "No spam. Unsubscribe anytime."}
         </p>
       </form>
     </div>

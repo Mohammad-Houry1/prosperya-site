@@ -20,33 +20,37 @@ export default function CTASection({
   variant = "band",
   secondary,
 }) {
-  const {locale, t } = useLocale();
-
+  const { locale } = useLocale();
+  const fr = locale === "fr";
   const copy = (
     <>
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
       <h2 className={styles.title}>
         {title ??
-          (t("components.common.ctasection.ready-to-orchestrate-what-s-possible-ddda7e"))}
+          (fr
+            ? "Prêt à orchestrer ce qui est possible ?"
+            : "Ready to orchestrate what’s possible?")}
       </h2>
     </>
   );
   const text = (
     <p className={styles.text}>
       {description ??
-        (t("components.common.ctasection.partner-with-prosperya-to-turn-complexity-into-83648d"))}
+        (fr
+          ? "Transformons la complexité en clarté et en performance."
+          : "Partner with Prosperya to turn complexity into clarity and performance.")}
     </p>
   );
   const actions = (
     <div className={styles.actions}>
       <PrimaryLink to={`/${locale}/contact`}>
-        {t("components.common.ctasection.start-a-conversation-607ba9")}
+        {fr ? "Démarrer une conversation" : "Start a conversation"}
       </PrimaryLink>
       <PrimaryLink
         to={`/${locale}/${secondary?.path ?? "expertise"}`}
         variant="ghost"
       >
-        {secondary?.label ?? (t("components.common.ctasection.explore-our-services-8dc8aa"))}
+        {secondary?.label ?? (fr ? "Découvrir nos services" : "Explore our services")}
       </PrimaryLink>
     </div>
   );

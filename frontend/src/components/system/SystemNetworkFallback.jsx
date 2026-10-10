@@ -24,7 +24,7 @@ export default function SystemNetworkFallback({
   reduced = false,
   compact = false,
 }) {
-  const { t } = useLocale();
+  const { locale } = useLocale();
   const svg = useRef();
   const field = useMemo(() => createField(STARS, 5), []);
   const initial = reduced ? 1 : clampProgress(progressRef?.current ?? 0);
@@ -147,7 +147,7 @@ export default function SystemNetworkFallback({
                 <SystemIcon name={node.icon} size={14} />
               </g>
               <text x="-27" y="0" dominantBaseline="central">
-                {(t(`diagram.systems.${node.id}`)).toUpperCase()}
+                {(node.label[locale] ?? node.label.en).toUpperCase()}
               </text>
             </>
           )}
