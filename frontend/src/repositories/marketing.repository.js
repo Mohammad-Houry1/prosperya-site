@@ -6,6 +6,7 @@ export const adaptSections = value => rows(value).map((row, index) => ({ id: Str
 
 export function adaptExpertise(record) {
   return { ...record, title: text(record.expertise_title), detailTitle: text(record.expertise_detail_title) || text(record.expertise_title),
+    animationType: text(record.expertise_animation_type),
     tagline: text(record.expertise_tagline), summary: text(record.expertise_summary), description: text(record.expertise_description),
     sections: adaptSections(record.sections), image: record.expertise_image, outcomes: rows(record.expertise_outcomes),
     capabilities: rows(record.expertise_capabilities), steps: rows(record.expertise_steps), metrics: metrics(record.metrics),

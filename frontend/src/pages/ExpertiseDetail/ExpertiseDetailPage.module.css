@@ -1,4 +1,10 @@
 .page { position: relative; }
+.platforms { display: flex; flex-wrap: wrap; gap: 24px 48px; padding: 0; list-style: none; }
+.platforms li { display: flex; align-items: center; gap: 16px; min-width: 0; overflow-wrap: anywhere; }
+.platforms img { width: 48px; height: 48px; object-fit: contain; }
+.authoredList { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px 32px; padding: 0; list-style: none; }
+.authoredList li { padding: 20px 0; border-top: 1px solid var(--border-subtle); overflow-wrap: anywhere; }
+.sectionHeading { min-width: 0; overflow-wrap: anywhere; }
 .heroWrap { position: relative; }
 .hero { padding-block: clamp(32px, 4vw, 56px) clamp(48px, 6vw, 88px); }
 .title { font-size: clamp(40px, 4.8vw, 72px); line-height: 1.06; text-wrap: balance; }

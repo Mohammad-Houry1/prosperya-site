@@ -13,20 +13,22 @@ import ExpertisePageContent from "./ExpertisePageContent.jsx";
 export default function ExpertiseDetailPage() {
   const { slug } = useParams();
   const {locale, t } = useLocale();
-  const { data: page = null, isLoading, isError, refetch } = useQuery({
+  const { data: page = null, isLoading, isError, refetch, error } = useQuery({
     queryKey: ["expertise-page", locale, slug],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.expertiseDetail(slug, locale, signal);
       return response.data ? adaptExpertise(response.data) : null;
     },
     enabled: Boolean(slug),
+    retry: (count, error) => error?.status !== 404 && error?.status !== 403 && count < 2,
   });
   const { data: capabilities = [] } = useQuery({ queryKey: ["capabilities", locale], queryFn: async ({ signal }) => {
     const response = await websiteApi.expertise({ locale }, signal);
     return (response.data || []).map(adaptExpertise);
   } });
-  useDocumentMeta({ model: "Expertise", title: page ? `${page.detailTitle} — Prosperya` : "Prosperya — Expertise" });
+  useDocumentMeta({ model: "Expertise", title: page ? `${page.detailTitle} — Prosperya` : "Prosperya — Expertise", description: page?.summary || page?.description });
   if (isLoading) return <PageLoader />;
+  if (isError && error?.status === 404) return <Section><EmptyState title={t("pages.expertise-detail.expertise-detail-page.expertise-not-found-6043fe")} /></Section>;
   if (isError) return <Section><ErrorState onRetry={refetch} /></Section>;
   if (!page) return <Section><EmptyState title={t("pages.expertise-detail.expertise-detail-page.expertise-not-found-6043fe")} /></Section>;
   const related = capabilities

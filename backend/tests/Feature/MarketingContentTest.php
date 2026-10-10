@@ -8,6 +8,27 @@ use Tests\WebsiteTestCase;
 
 class MarketingContentTest extends WebsiteTestCase
 {
+    public function test_expertise_animation_type_is_validated_and_content_stays_localized(): void
+    {
+        $this->collection('expertise')->insertMany([
+            $this->record(['slug' => 'arbitrary-animation', 'expertise_animation_type' => 'workflow',
+                'expertise_tagline' => ['fr' => 'Accroche CMS'], 'expertise_description' => ['en' => 'English only'],
+                'expertise_capabilities' => [['fr' => 'Service CMS']], 'expertise_outcomes' => [['fr' => 'Résultat CMS']],
+                'expertise_steps' => [['step_title' => ['fr' => 'Étape CMS'], 'step_description' => ['fr' => '<p>Texte</p>']]],
+                'metrics' => [['metric_value' => ['fr' => '12'], 'metric_label' => ['fr' => 'Équipes']]],
+                'expertise_metrics_note' => ['fr' => 'Note CMS'], 'internal_secret' => 'never-public']),
+            $this->record(['slug' => 'invalid-animation', 'expertise_animation_type' => 'not-a-scene']),
+            $this->record(['slug' => 'no-animation']),
+        ]);
+        $this->getJson('/api/expertise/arbitrary-animation?locale=fr')->assertOk()
+            ->assertJsonPath('data.expertise_animation_type', 'workflow')->assertJsonPath('data.expertise_tagline', 'Accroche CMS')
+            ->assertJsonPath('data.expertise_description', '')->assertJsonPath('data.expertise_capabilities.0', 'Service CMS')
+            ->assertJsonPath('data.expertise_outcomes.0', 'Résultat CMS')->assertJsonPath('data.expertise_steps.0.step_title', 'Étape CMS')
+            ->assertJsonPath('data.metrics.0.metric_label', 'Équipes')->assertJsonPath('data.expertise_metrics_note', 'Note CMS')->assertDontSee('never-public');
+        $this->getJson('/api/expertise/invalid-animation?locale=en')->assertOk()->assertJsonPath('data.expertise_animation_type', '');
+        $this->getJson('/api/expertise/no-animation?locale=en')->assertOk()->assertJsonPath('data.expertise_animation_type', '');
+    }
+
     public function test_case_studies_expose_authored_content_and_scoped_industry_records(): void
     {
         $this->grant['modules'][] = ['id' => (string) new ObjectId, 'slug' => 'industries', 'model' => 'Industry', 'record_scope' => 'all'];

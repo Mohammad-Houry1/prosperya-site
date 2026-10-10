@@ -69,8 +69,8 @@ final class MarketingPayload
             'featured' => (bool) $record->featured, 'seo' => $this->payload->seo($record, $locale), 'meta_image' => $this->payload->media($record->meta_image, $locale)];
         foreach (self::TEXT[$model] ?? [] as $field) $result[$field] = $record->text($field, $locale);
         foreach (self::LISTS[$model] ?? [] as $field) $result[$field] = $this->values($record->{$field}, $locale);
-        if (in_array($model, [Solution::class, CaseStudy::class], true)) {
-            $field = $model === Solution::class ? 'solution_animation_type' : 'case_study_animation_type';
+        if (in_array($model, [Expertise::class, Solution::class, CaseStudy::class], true)) {
+            $field = match ($model) { Expertise::class => 'expertise_animation_type', Solution::class => 'solution_animation_type', default => 'case_study_animation_type' };
             $type = $record->{$field};
             $result[$field] = is_string($type) ? (AnimatedVisualType::tryFrom($type)?->value ?? '') : '';
         }

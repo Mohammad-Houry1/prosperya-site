@@ -18,9 +18,9 @@ in CMS order, restricted by the website key and publication rules.
 | SEO, canonical and language alternates | SEO Pages record for the Expertise listing |
 
 The backend Expertise model and its required `AnimatedVisualType` enum are
-copied unchanged from the connected CMS repository. The website payload now
-allowlists `expertise_detail_title`. Animation selection for expertise details
-is separate work; this listing change does not expose that field.
+copied unchanged from the connected CMS repository. The website payload
+allowlists `expertise_detail_title` and `expertise_animation_type`. See
+[expertise-detail.md](expertise-detail.md) for the completed detail mapping.
 
 Publish Expertise records with the correct project, status, country/language
 scope and website-key module grant. Populate EN/FR titles, text, capabilities,

@@ -7,7 +7,7 @@ import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
 import ExpertisePageContent from "../../src/pages/ExpertiseDetail/ExpertisePageContent.jsx";
 
-test("a new CMS-shaped page uses the shared template and fallback animation", () => {
+test("a new CMS-shaped page uses the shared template without an unauthored animation", () => {
   const view = render(<ThemeProvider><MemoryRouter>
     <LocaleContext.Provider value={cmsLocale("en")}>
       <ExpertisePageContent locale="en" page={{ slug: "new-cms-expertise", title: "A new expertise",
@@ -20,7 +20,6 @@ test("a new CMS-shaped page uses the shared template and fallback animation", ()
   expect(screen.getByRole("heading", { level: 1, name: "A new expertise" })).toBeInTheDocument();
   expect(screen.getByText("First CMS body")).toBeInTheDocument();
   expect(screen.getByText("CMS bullet")).toBeInTheDocument();
-  expect(view.container.querySelectorAll("[data-animation]")).toHaveLength(1);
-  expect(view.container.querySelector("[data-animation]")).toHaveAttribute("data-animation", "structure");
+  expect(view.container.querySelectorAll("[data-animation]")).toHaveLength(0);
   expect(view.container.querySelector("script")).toBeNull();
 });

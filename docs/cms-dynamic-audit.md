@@ -1,5 +1,9 @@
 # CMS integration completion audit
 
+## 2026-10-11 detail completion update
+
+The subsequent page-by-page passes completed Solutions, Work and Expertise details. Their current field mappings and checks are documented in [Solutions](cms/solutions.md), [Work](cms/work.md) and [Expertise detail](cms/expertise-detail.md). Those notes supersede the historical slug-animation and CaseStudy hero-facts limitations below: animations are now CMS-selected, and CaseStudy has its own authored hero-facts repeater. Live deployment and editorial completeness remain unverified.
+
 Verified locally on 2026-10-10. The existing CMS integration has been completed in this checkout. No production deployment or live editorial changes were performed.
 
 ## Connected content

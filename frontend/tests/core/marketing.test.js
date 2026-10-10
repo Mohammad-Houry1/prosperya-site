@@ -26,6 +26,11 @@ test('expertise keeps its short card title and separate authored full heading', 
   assert.equal(adaptExpertise({ expertise_title: 'Titre FR', expertise_detail_title: '' }).detailTitle, 'Titre FR');
 });
 
+test('expertise animation selection comes from the CMS without slug-based defaults', () => {
+  assert.equal(adaptExpertise({ slug: 'netsuite-implementation', expertise_animation_type: 'workflow' }).animationType, 'workflow');
+  assert.equal(adaptExpertise({ slug: 'erp-transformation' }).animationType, '');
+});
+
 test('solution animation data comes from authored fields without invented nodes', () => {
   const solution = adaptSolution({ solution_animation_type: 'workflow', solution_animation_steps: ['One', 'Two'], solution_animation_lanes: ['CMS lane'], solution_animation_centre_label: 'CMS centre' });
   assert.equal(solution.animation.type, 'workflow');
