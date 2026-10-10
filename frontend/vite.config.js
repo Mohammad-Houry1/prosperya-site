@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: Object.fromEntries(["/api", "/sitemap.xml", "/robots.txt"].map((path) => [path, {
-      target: "http://127.0.0.1:8001", changeOrigin: true,
+      target: "http://127.0.0.1:8000", changeOrigin: true,
     }])),
   },
   resolve: {

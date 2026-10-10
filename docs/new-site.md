@@ -79,7 +79,7 @@ Each repo carries its own copy.
    ```
 5. **Run it:**
    ```bash
-   cd backend && composer install && php artisan key:generate && php artisan serve --port=8001
+   cd backend && composer install && php artisan key:generate && php artisan serve --port=8000
    cd frontend && npm ci && npm run dev
    ```
    Production: route HTML, `/api`, sitemap and robots to Laravel; static assets can come directly from `frontend/dist`. Set `WEBSITE_PUBLIC_URL`. See [frontend-backend-integration.md](frontend-backend-integration.md) and the hosting example. Run `node scripts/verify-public-artifacts.mjs` after every build.

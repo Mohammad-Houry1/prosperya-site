@@ -6,7 +6,7 @@ The CMS-driven integration is complete in the current checkout. The current conn
 
 Set server-only `CMS_BASE_URL`, `WEBSITE_KEY`, `MONGODB_URI`, `MONGODB_DATABASE`, `WEBSITE_PUBLIC_URL` and the Laravel application key in `backend/.env`. Never prefix credentials with `VITE_`. Frontend `VITE_API_BASE_URL` is empty for same-origin requests; development proxies `/api` to Laravel. `VITE_CMS_SUBMISSIONS_ENABLED` controls contact/newsletter submission availability.
 
-Install the locked dependencies with Composer in `backend` and `npm ci` in `frontend`. Run Laravel on port 8001 and Vite on port 5173. PHP/MongoDB extension requirements are declared in Composer; do not bypass platform checks.
+Install the locked dependencies with Composer in `backend` and `npm ci` in `frontend`. Run Laravel on port 8000 and Vite on port 5173. PHP/MongoDB extension requirements are declared in Composer; do not bypass platform checks.
 
 ## Public content
 

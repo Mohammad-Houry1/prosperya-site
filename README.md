@@ -34,13 +34,13 @@ cd backend
 cp .env.example .env        # fill CMS_BASE_URL, WEBSITE_KEY, MONGODB_URI, MONGODB_DATABASE, WEBSITE_PUBLIC_URL
 composer install
 php artisan key:generate
-php artisan serve --port=8001
+php artisan serve --port=8000
 ```
 
 ```bash
 cd frontend
 npm ci
-npm run dev                  # http://localhost:5173, /api proxied to :8001
+npm run dev                  # http://localhost:5173, /api proxied to :8000
 ```
 
 Production: route public HTML, `/api`, `/sitemap.xml` and `/robots.txt` to Laravel on the same domain, with `WEBSITE_PUBLIC_URL` set to the confirmed HTTPS origin. Laravel can serve the built assets, or the web server can serve them directly from `frontend/dist`. Serving the static `index.html` directly bypasses backend SEO. Run `npm run build` in `frontend`, then `node scripts/verify-public-artifacts.mjs` from the repo root; it fails if a secret leaked into the bundle. A hosting example is in `docs/hosting/nginx.conf.example`.
@@ -103,3 +103,15 @@ docker run --rm -v "$PWD/backend:/app" -w /app -e MONGODB_TEST_URI="mongodb://ho
 - No key, a wrong key, or a key that is disabled, expired, deleted or rotated: the CMS says no, and every endpoint returns **403**. The issuer losing access or a language being disabled does the same.
 - CMS unreachable: **503**. The site never serves on a guess.
 - A good answer is reused for `WEBSITE_KEY_CACHE_SECONDS` (60), so changes in the CMS take effect within a minute.
+
+## Branches
+
+`staging` is the development branch. `production` holds the reviewed release version. Both branches currently contain the completed CMS integration and local API proxy fix. Production hosting is not configured by this branch setup.
+
+After verifying work on staging, promote it locally:
+
+```bash
+git switch production
+git merge --ff-only staging
+git switch staging
+```
