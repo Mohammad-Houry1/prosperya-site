@@ -14,6 +14,8 @@ import FrequentlyAskedQuestions from "../../components/company/FrequentlyAskedQu
 import SignalWave from "../../components/visuals/SignalWave.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
+import EmptyState from "../../components/feedback/EmptyState.jsx";
+import { useParams } from "react-router-dom";
 import DeliverySequence from "./DeliverySequence.jsx";
 import CollaborationVenn from "./CollaborationVenn.jsx";
 import { useQuery } from "@tanstack/react-query";
@@ -54,6 +56,7 @@ function ApproachHero({ locale, approach }) {
 
 export default function ApproachPage() {
   const {locale, t } = useLocale();
+  const { slug = "our-approach" } = useParams();
 
   const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
     queryKey: ["faq", locale, "approach"],
@@ -62,25 +65,27 @@ export default function ApproachPage() {
       return response.data || [];
     },
   });
-  const { isLoading: processIsLoading, isError: processIsError, refetch: processRefetch, data: approach } = useQuery({
-    queryKey: ["approach", locale],
-    queryFn: async ({ signal }) => (await websiteApi.approach('approach', locale, signal)).data,
+  const { isLoading: processIsLoading, isError: processIsError, refetch: processRefetch, data: approach, error: processError } = useQuery({
+    queryKey: ["approach", locale, slug],
+    queryFn: async ({ signal }) => (await websiteApi.approach(slug, locale, signal)).data,
+    retry: (count, error) => error?.status !== 404 && error?.status !== 403 && count < 2,
   });
   const process = adaptMethodology(approach?.methodology);
   const copy = {
     loop: t('pages.approach.approach.copy.copy.continuous-value-9a31bf'), howEyebrow: t('pages.approach.approach.copy.copy.how-we-work-b7ece1'), howTitle: t('pages.approach.approach.copy.copy.a-disciplined-process-measurable-outcomes-c511aa'),
-    practices: (approach?.how_we_work ?? []).map(row=>[row.work_image,row.work_title,row.work_description,[]]),
+    practices: (approach?.how_we_work ?? []).map(row=>[row.work_image,row.work_title,row.work_description,row.work_points || []]),
     collabEyebrow: t('pages.approach.approach.copy.copy.collaboration-model-ad6c53'), collabTitle: approach?.collaboration_title, collabPoints: approach?.collaboration_items ?? [],
     collabNodes: ['client','shared','value','company'].map(key=>[approach?.[`diagram_${key}_title`],approach?.[`diagram_${key}_description`]]),
     principlesEyebrow: t('pages.approach.approach.copy.copy.delivery-principles-4ff02e'), principlesTitle: approach?.principles_title,
     principles: (approach?.principles ?? []).map(row=>[row.principle_image,row.principle_title,row.principle_description]),
   };
   useDocumentMeta({
-    title: `${t("pages.approach.approach-page.our-approach-9bce36")} — Prosperya`,
+    title: `${approach?.approach_title || t("pages.approach.approach-page.our-approach-9bce36")} — Prosperya`,
     model: 'Approach',
-    description: t("pages.approach.approach-page.a-structured-path-from-discovery-and-architecture-2b67d9"),
+    description: approach?.approach_description,
   });
   if (processIsLoading) return <PageLoader />;
+  if (processError?.status === 404 || (!processIsError && !approach)) return <Section><EmptyState /></Section>;
   if (processIsError || !approach)
     return (
       <Section>
@@ -89,8 +94,9 @@ export default function ApproachPage() {
     );
   return (
     <>
-      <ApproachHero locale={locale} approach={approach} />
-      {process.length > 0 && <DeliverySequence steps={process} locale={locale} />}
+      <ApproachHero key={`hero:${locale}:${slug}`} locale={locale} approach={approach} />
+      {approach.approach_image?.url && <Section><CmsImage media={approach.approach_image} /></Section>}
+      {process.length > 0 && <DeliverySequence key={`stages:${locale}:${slug}`} steps={process} locale={locale} />}
       <div className={styles.loopWrap}>
         <p className={styles.loop}>
           <Loop size={34} strokeWidth={1.2} aria-hidden="true" />
@@ -121,7 +127,7 @@ export default function ApproachPage() {
         </div>
       </Section>
       )}
-{copy.collabTitle || copy.collabPoints.length > 0 || copy.collabNodes.some(([title, description]) => title || description) || copy.principles.length > 0 || copy.principlesTitle && (
+{(copy.collabTitle || copy.collabPoints.length > 0 || copy.collabNodes.some(([title, description]) => title || description) || copy.principles.length > 0 || copy.principlesTitle) && (
       <Section>
         <div className={styles.split}>
           {(copy.collabTitle || copy.collabPoints.length > 0 || copy.collabNodes.some(([title, description]) => title || description)) && <div className={styles.collab}>

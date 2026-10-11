@@ -8,6 +8,19 @@ use Tests\WebsiteTestCase;
 
 class MarketingContentTest extends WebsiteTestCase
 {
+    public function test_approach_details_are_selected_by_slug_and_localize_new_repeaters(): void
+    {
+        $this->collection('approaches')->insertMany([
+            $this->record(['slug' => 'our-approach', 'approach_title' => ['fr' => 'Notre approche'],
+                'methodology' => [['methodology_title' => ['fr' => 'Étape'], 'methodology_deliverable' => ['fr' => 'Livrable']]],
+                'how_we_work' => [['work_title' => ['fr' => 'Pratique'], 'work_points' => [['fr' => 'Point CMS'], ['en' => 'English only']]]]]),
+            $this->record(['slug' => 'draft-approach', 'status_id' => $this->ids['draft']]),
+        ]);
+        $this->getJson('/api/approaches/our-approach?locale=fr')->assertOk()->assertJsonPath('data.approach_title', 'Notre approche')
+            ->assertJsonPath('data.methodology.0.methodology_deliverable', 'Livrable')->assertJsonPath('data.how_we_work.0.work_points', ['Point CMS']);
+        $this->getJson('/api/approaches/draft-approach?locale=fr')->assertNotFound();
+    }
+
     public function test_expertise_animation_type_is_validated_and_content_stays_localized(): void
     {
         $this->collection('expertise')->insertMany([

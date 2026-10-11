@@ -38,11 +38,11 @@ final class MarketingPayload
         'content_sections' => ['content_title', 'content_subtitle', 'content_description'],
         'technology_stack' => ['technology_name', 'technology_image'],
         'outcomes' => ['outcome_title', 'outcome_description', 'outcome_image'],
-        'how_we_work' => ['work_title', 'work_description', 'work_image'],
+        'how_we_work' => ['work_title', 'work_description', 'work_points', 'work_image'],
         'principles' => ['principle_title', 'principle_description', 'principle_image'],
         'about_principles' => ['principle_title', 'principle_description', 'principle_image'],
         'about_facts' => ['fact_title', 'fact_value', 'fact_image'],
-        'methodology' => ['methodology_title', 'methodology_buttons', 'methodology_descriptions', 'methodology_image'],
+        'methodology' => ['methodology_title', 'methodology_deliverable', 'methodology_buttons', 'methodology_descriptions', 'methodology_image'],
     ];
 
     private const MODEL_ROWS = [
@@ -83,12 +83,12 @@ final class MarketingPayload
                 foreach ($keys as $key) {
                     $value = $row->{$key} ?? null;
                     $data[$key] = str_ends_with($key, '_image') ? $this->payload->media($value, $locale)
-                        : (in_array($key, ['methodology_buttons', 'methodology_descriptions'], true) ? $this->values($value, $locale) : $this->content->text($row, $key, $locale));
+                        : (in_array($key, ['methodology_buttons', 'methodology_descriptions', 'work_points'], true) ? $this->values($value, $locale) : $this->content->text($row, $key, $locale));
                 }
                 return $data;
             }, array_values((array) $record->{$field}));
         }
-        $imageField = match ($model) { Expertise::class => 'expertise_image', Solution::class => 'solution_image', CaseStudy::class => 'case_study_image', Page::class => 'cover_image', default => null };
+        $imageField = match ($model) { Expertise::class => 'expertise_image', Solution::class => 'solution_image', CaseStudy::class => 'case_study_image', Approach::class => 'approach_image', Page::class => 'cover_image', default => null };
         if ($imageField) $result[$imageField] = $this->payload->media($record->{$imageField}, $locale);
         if ($model === CaseStudy::class) {
             $result['case_study_gallery'] = array_values(array_filter(array_map(fn ($media) => $this->payload->media($media, $locale), (array) $record->case_study_gallery)));

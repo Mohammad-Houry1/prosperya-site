@@ -193,8 +193,10 @@ class WebsiteSeoTest extends WebsiteTestCase
             $this->assertStringContainsString('hreflang="en"', $html);
             $this->get('/en/'.$route.'/hidden-cms-slug')->assertNotFound();
         }
-        $this->collection('approaches')->insertOne($this->record(['slug' => 'approach', 'meta_title' => ['en' => 'CMS Approach SEO']]));
+        $this->collection('approaches')->insertOne($this->record(['slug' => 'our-approach', 'meta_title' => ['en' => 'CMS Approach SEO']]));
         $this->getJson('/api/seo?path=/en/approach&model=Approach')->assertOk()->assertJsonPath('data.title', 'CMS Approach SEO');
+        $this->getJson('/api/seo?path=/en/approach/our-approach&model=Approach')->assertOk()->assertJsonPath('data.canonical', 'https://site.example.test/en/approach/our-approach');
+        $this->get('/en/approach')->assertStatus(301)->assertRedirect('/en/approach/our-approach');
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
         foreach (['expertise', 'solutions', 'work'] as $route) $this->assertStringContainsString('/en/'.$route.'/new-cms-slug', $xml);
         $this->assertStringContainsString('/en/approach', $xml);

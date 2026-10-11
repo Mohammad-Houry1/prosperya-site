@@ -16,6 +16,8 @@ The unused `ConnectionMesh` and `NetSuiteCoreDiagram` components still contain e
 
 ## Recommended order after search
 
+Update: Approach is now completed; see [Approach detail mapping](approach.md). Its main CMS slug is `our-approach`, with canonical `/en|fr/approach/our-approach` detail routes and redirects for old links.
+
 1. Approach: sync its unchanged CMS model, map deliverables/points/image and fix the populated-content condition with regression coverage.
 2. About and Home: sync Page, agree how page titles and audience lists should be authored, then map existing fields.
 3. Legal media mapping and missing-record feedback.

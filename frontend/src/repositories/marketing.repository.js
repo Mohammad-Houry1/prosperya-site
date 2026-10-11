@@ -48,6 +48,6 @@ export function adaptCaseStudy(record) {
       quote: testimonial ? [testimonial.quote,testimonial.name,testimonial.company] : [], metricsNote: text(record.case_study_metrics_note) } };
 }
 export function adaptMethodology(value) {
-  return rows(value).map((row,index) => ({ id: String(index), title: text(row.methodology_title),
+  return rows(value).map((row,index) => ({ id: String(index), title: text(row.methodology_title), deliverable: text(row.methodology_deliverable),
     activities: rows(row.methodology_buttons), descriptions: rows(row.methodology_descriptions), image: row.methodology_image }));
 }

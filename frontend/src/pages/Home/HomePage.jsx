@@ -29,7 +29,7 @@ export default function HomePage() {
   const { data: process = [], isPending: processIsPending, isError: processIsError, refetch: processRefetch } = useQuery({
     queryKey: ["process", locale],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.approach("approach", locale, signal);
+      const response = await websiteApi.approach("our-approach", locale, signal);
       return adaptMethodology(response.data?.methodology);
     },
   });

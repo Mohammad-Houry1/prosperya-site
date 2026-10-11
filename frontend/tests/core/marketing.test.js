@@ -16,6 +16,7 @@ test('adapters preserve authored CMS content without invented content or metrics
 test('methodology descriptions stay ordered and are not guessed into deliverables', () => {
   assert.deepEqual(adaptMethodology([{methodology_title:'Stage',methodology_buttons:['A'],methodology_descriptions:['One','Two']}])[0].descriptions,['One','Two']);
   assert.deepEqual(adaptMethodology([]),[]);
+  assert.equal(adaptMethodology([{ methodology_deliverable: 'Authored handover' }])[0].deliverable, 'Authored handover');
 });
 
 test('expertise keeps its short card title and separate authored full heading', () => {

@@ -20,7 +20,7 @@ class Approach extends ContentEntity
 
     public array $dependents = [];
 
-    public array $searchable = ['name', 'slug', 'approach_title', 'approach_description', 'collaboration_title', 'principles_title', 'meta_title', 'meta_keywords', 'meta_url', 'meta_description'];
+    public array $searchable = ['methodology', 'how_we_work', 'name', 'slug', 'approach_title', 'approach_description', 'collaboration_title', 'principles_title', 'meta_title', 'meta_keywords', 'meta_url', 'meta_description'];
 
     public array $fields = [
         ['key' => 'name', 'name' => 'Name', 'sortable' => true, 'localized' => true],
@@ -51,6 +51,7 @@ class Approach extends ContentEntity
             'approach_description' => LocaleMap::rules(),
             ...ListRules::of('methodology', [
                 'methodology_title' => LocaleMap::rules(max: 255),
+                'methodology_deliverable' => LocaleMap::rules(max: 255),
                 ...ListRules::values('methodology_buttons', LocaleMap::rules(max: 255)),
                 ...ListRules::values('methodology_descriptions', LocaleMap::rules()),
                 'methodology_image' => ['nullable', CmsMedia::valueOnly()],
@@ -58,6 +59,7 @@ class Approach extends ContentEntity
             ...ListRules::of('how_we_work', [
                 'work_title' => LocaleMap::rules(max: 255),
                 'work_description' => LocaleMap::rules(),
+                ...ListRules::values('work_points', LocaleMap::rules(max: 255)),
                 'work_image' => ['nullable', CmsMedia::valueOnly()],
             ]),
             'collaboration_title' => LocaleMap::rules(max: 255),
@@ -82,6 +84,7 @@ class Approach extends ContentEntity
             'meta_type' => ['nullable', 'string', 'max:100'],
             'meta_description' => LocaleMap::rules(),
             'meta_image' => ['nullable', CmsMedia::uploadable()],
+            'approach_image' => ['nullable', CmsMedia::uploadable()],
             'translations' => ['nullable', 'array'],
             'translations.*' => ['array'],
         ];
