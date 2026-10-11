@@ -15,7 +15,6 @@ import SignalWave from "../../components/visuals/SignalWave.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
-import { useParams } from "react-router-dom";
 import DeliverySequence from "./DeliverySequence.jsx";
 import CollaborationVenn from "./CollaborationVenn.jsx";
 import { useQuery } from "@tanstack/react-query";
@@ -56,7 +55,6 @@ function ApproachHero({ locale, approach }) {
 
 export default function ApproachPage() {
   const {locale, t } = useLocale();
-  const { slug = "our-approach" } = useParams();
 
   const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
     queryKey: ["faq", locale, "approach"],
@@ -66,8 +64,8 @@ export default function ApproachPage() {
     },
   });
   const { isLoading: processIsLoading, isError: processIsError, refetch: processRefetch, data: approach, error: processError } = useQuery({
-    queryKey: ["approach", locale, slug],
-    queryFn: async ({ signal }) => (await websiteApi.approach(slug, locale, signal)).data,
+    queryKey: ["approach", locale, 'our-approach'],
+    queryFn: async ({ signal }) => (await websiteApi.approach('our-approach', locale, signal)).data,
     retry: (count, error) => error?.status !== 404 && error?.status !== 403 && count < 2,
   });
   const process = adaptMethodology(approach?.methodology);
@@ -94,9 +92,9 @@ export default function ApproachPage() {
     );
   return (
     <>
-      <ApproachHero key={`hero:${locale}:${slug}`} locale={locale} approach={approach} />
+      <ApproachHero key={`hero:${locale}:our-approach`} locale={locale} approach={approach} />
       {approach.approach_image?.url && <Section><CmsImage media={approach.approach_image} /></Section>}
-      {process.length > 0 && <DeliverySequence key={`stages:${locale}:${slug}`} steps={process} locale={locale} />}
+      {process.length > 0 && <DeliverySequence key={`stages:${locale}:our-approach`} steps={process} locale={locale} />}
       <div className={styles.loopWrap}>
         <p className={styles.loop}>
           <Loop size={34} strokeWidth={1.2} aria-hidden="true" />
