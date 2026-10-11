@@ -8,6 +8,25 @@ use Tests\WebsiteTestCase;
 
 class MarketingContentTest extends WebsiteTestCase
 {
+    public function test_home_can_request_four_newest_public_expertise_without_changing_cms_order(): void
+    {
+        $rows = [];
+        foreach (range(1, 5) as $index) {
+            $rows[] = $this->record(['slug' => 'skill-'.$index, 'order' => $index, 'featured' => false,
+                'created_at' => new \MongoDB\BSON\UTCDateTime(new \DateTimeImmutable('2026-01-0'.$index))]);
+        }
+        $rows[] = $this->record(['slug' => 'draft', 'status_id' => $this->ids['draft'], 'created_at' => new \MongoDB\BSON\UTCDateTime]);
+        $rows[] = $this->record(['slug' => 'scheduled', 'published_at' => new \MongoDB\BSON\UTCDateTime(new \DateTimeImmutable('+1 day')), 'created_at' => new \MongoDB\BSON\UTCDateTime]);
+        $rows[] = $this->record(['slug' => 'other-tenant', 'tenant_id' => (string) new ObjectId, 'created_at' => new \MongoDB\BSON\UTCDateTime]);
+        $this->collection('expertise')->insertMany($rows);
+
+        $response = $this->getJson('/api/expertise?locale=en&page=1&per_page=4&sort=latest')->assertOk()->assertJsonCount(4, 'data');
+        $this->assertSame(['skill-5', 'skill-4', 'skill-3', 'skill-2'], array_column($response->json('data'), 'slug'));
+        $default = $this->getJson('/api/expertise?locale=en')->assertOk();
+        $this->assertSame(['skill-1', 'skill-2', 'skill-3', 'skill-4', 'skill-5'], array_column($default->json('data'), 'slug'));
+        $this->getJson('/api/expertise?locale=en&sort=unknown')->assertUnprocessable();
+    }
+
     public function test_approach_details_are_selected_by_slug_and_localize_new_repeaters(): void
     {
         $this->collection('approaches')->insertMany([

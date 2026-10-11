@@ -2,6 +2,7 @@ import Section from "../../components/common/Section.jsx";
 import CapabilityCard from "../../components/expertise/CapabilityCard.jsx";
 import SectionSkeleton from "../../components/feedback/SectionSkeleton.jsx";
 import ErrorState from "../../components/feedback/ErrorState.jsx";
+import EmptyState from "../../components/feedback/EmptyState.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./HomeSections.module.css";
 export default function CapabilitiesSection({ data = [], isLoading, isError, refetch }) {
@@ -15,6 +16,8 @@ export default function CapabilitiesSection({ data = [], isLoading, isError, ref
         <SectionSkeleton rows={1} />
       ) : isError ? (
         <ErrorState onRetry={refetch} />
+      ) : !data.length ? (
+        <EmptyState />
       ) : (
         <div className={styles.cards}>
           {data.slice(0, 4).map((item, index) => (
