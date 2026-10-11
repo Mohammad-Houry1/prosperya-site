@@ -8,6 +8,8 @@ Verified locally on 2026-10-10. The existing CMS integration has been completed 
 
 ## Connected content
 
+Home's current sources supersede the historical Home architecture mapping below: four newest public Expertise, three latest public Articles, `our-approach` methodology and platforms with category slug `clients`. The NetSuite/core section and `pages/home` request are removed. See [Home content sources](cms/home.md).
+
 - Expertise, Solutions and Case Studies: published lists and arbitrary slug details, localized authored fields, rich sections/media, metrics, steps and selected public relationships.
 - Approach (`approach`): methodology, ordered descriptions/buttons/images, work practices, collaboration diagram fields and principles.
 - Page (`about`): authored title/description/cover, story, facts, focus, principles, work steps and selected public leaders in CMS order.

@@ -112,4 +112,6 @@ docker run --rm -v "$PWD/backend:/app" -w /app -e MONGODB_TEST_URI="mongodb://ho
 
 Production now uses staging's Work grid and rotating spotlight, numbered Expertise listing, shared case-study layout, and split contact sections. These layouts still use production's CMS APIs, translations, sanitized rich text and published relationships. Contact and newsletter submissions, SEO, About's `about-prosperya` source and platform category filters retain their production implementations.
 
+Home shows the four newest public Expertise records and three latest public Articles, the main `our-approach` methodology and platforms in category `clients`. Its NetSuite/core section is removed. See [Home content sources](docs/cms/home.md). Future authored content and interface copy must continue to come from the CMS.
+
 Promote future presentation changes selectively on `production` (or a branch based on it). Do not merge the staging branch or copy its local data/service implementations into production. Extend the remaining API fields page by page while using staging as the visual reference.

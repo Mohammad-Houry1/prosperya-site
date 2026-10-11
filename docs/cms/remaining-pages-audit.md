@@ -2,6 +2,8 @@
 
 Read-only comparison of current production code and the connected CMS model files. No remaining-page implementation or live CMS records were changed during this audit. Styling constants and decorative geometry are distinguished from authored business content.
 
+Subsequent Home update: the requested Home layout is connected to four newest Expertise, three latest Articles, the existing main Approach methodology and `clients` platforms. The NetSuite/core section is removed. The historical Home row and audience-repeater recommendation below are superseded by [Home content sources](home.md); a new audience authoring feature is outside this agreed Home change.
+
 | Page | Already connected | Confirmed remaining work |
 | --- | --- | --- |
 | Home | Featured Expertise/Work, clients, Approach preview, four architecture columns and CMS translation copy | Hero audiences have five fixed slots/icons in `heroStory.copy.js`. The current Page model has no audience repeater. Decide the CMS authoring contract before replacing those slots. Preview limits (four expertise/three projects) are intentional presentation limits, not local records. |

@@ -1,6 +1,6 @@
 # Dynamic website content
 
-The website now reads its authored pages from CMS endpoints, with simple React Query calls in the owning page. Expertise, Solutions, Work/Case Studies, About, Approach and Home previews/architecture are connected, along with the previously connected articles, legal/corporate content, testimonials, platforms, FAQs and form options/submissions.
+The website now reads its authored pages from CMS endpoints, with simple React Query calls in the owning page. Expertise, Solutions, Work/Case Studies, About, Approach and Home previews are connected, along with articles, legal/corporate content, testimonials, platforms, FAQs and form options/submissions. Home now shows four newest Expertise records and three latest Articles, with no NetSuite/core section or Home Page request; see [Home](cms/home.md).
 
 Interface copy uses locale-specific `prosperya.*` CMS labels. Missing/blank values show the full key. No demo flags, sample records, bundled display-copy fallbacks or frontend pagination loaders are used by production pages. Pure adapters reshape CMS field names for existing views.
 
