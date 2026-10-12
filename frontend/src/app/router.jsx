@@ -46,23 +46,62 @@ export const router = createBrowserRouter([
         errorElement: <RouteErrorBoundary />,
         children: [
           { index: true, element: <HomePage /> },
-          { path: "expertise", element: <ExpertisePage /> },
-          { path: "expertise/:slug", element: <ExpertiseDetailPage /> },
-          { path: "solutions", element: <SolutionsPage /> },
-          { path: "solutions/:slug", element: <SolutionDetailPage /> },
-          { path: "work", element: <WorkPage /> },
-          { path: "work/:slug", element: <CaseStudyPage /> },
-          { path: "approach", element:<ApproachPage /> },
-          { path: "about", element: <AboutPage /> },
-          { path: "insights", element: <InsightsPage /> },
-          { path: "insights/:slug", element: <ArticlePage /> },
-          { path: "contact", element: <ContactPage /> },
-          { path: "corporate/:slug", element: <LegalPage /> },
+          {
+            path: "expertise",
+            element: <ExpertisePage />,
+          },
+          {
+            path: "expertise/:slug",
+            element: <ExpertiseDetailPage />,
+          },
+          {
+            path: "solutions",
+            element: <SolutionsPage />,
+          },
+          {
+            path: "solutions/:slug",
+            element: <SolutionDetailPage />,
+          },
+          {
+            path: "work",
+            element: <WorkPage />,
+          },
+          {
+            path: "work/:slug",
+            element: <CaseStudyPage />,
+          },
+          {
+            path: "approach",
+            element: <ApproachPage />,
+          },
+          {
+            path: "about",
+            element: <AboutPage />,
+          },
+          {
+            path: "insights",
+            element: <InsightsPage />,
+          },
+          {
+            path: "insights/:slug",
+            element: <ArticlePage />,
+          },
+          {
+            path: "contact",
+            element: <ContactPage />,
+          },
+          {
+            path: "corporate/:slug",
+            element: <LegalPage />,
+          },
           {
             path: "privacy-policy",
             element: <LegalPage documentId="privacy" />,
           },
-          { path: "terms-of-use", element: <LegalPage documentId="terms" /> },
+          {
+            path: "terms-of-use",
+            element: <LegalPage documentId="terms" />,
+          },
           {
             path: "cookie-policy",
             element: <LegalPage documentId="cookies" />,

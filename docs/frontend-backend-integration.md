@@ -18,7 +18,7 @@ Expertise, Solutions, Case Studies and the labels dictionary return their permit
 
 Build in `frontend` with `npm run build`, then run `node scripts/verify-public-artifacts.mjs` at the repository root. Route public HTML, `/api`, `/robots.txt` and `/sitemap.xml` to Laravel on the same domain. Set `WEBSITE_PUBLIC_URL` to the confirmed HTTPS origin. Static assets can be served directly from `frontend/dist`; do not serve its static index instead of Laravel HTML, which would bypass initial SEO. See [hosting/nginx.conf.example](hosting/nginx.conf.example).
 
-No production hosting connection is configured in this repository. The current work was verified locally without deployment.
+The root `Dockerfile` packages both applications for the existing Cloud Run build trigger. See [Cloud Run hosting](hosting/cloud-run.md) for runtime configuration. Local verification does not deploy the image or change Cloud Run settings.
 
 ## Verification
 

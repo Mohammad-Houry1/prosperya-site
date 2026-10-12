@@ -47,6 +47,8 @@ Production: route public HTML, `/api`, `/sitemap.xml` and `/robots.txt` to Larav
 
 ## 3. Models and endpoints
 
+For Cloud Run, the root `Dockerfile` builds and serves both applications. See [Cloud Run setup](docs/hosting/cloud-run.md) for service environment variables and local container checks.
+
 Platform categories: Home requests `/api/platforms?category=clients`; About requests `category=we-work-with`. Grant the website key the `platform_categories` module as well as `platforms`, and publish those category records within the website's permitted project/language scope. Platforms link through `platform_category` to records in the CMS's `ref_platform_categories` collection.
 
 **The models are the CMS's own files, pasted in unchanged.** When the CMS gains or changes a model, copy that file from the CMS's `backend/app/Models/` into `backend/app/Models/` here. That's all: no command, no edits.

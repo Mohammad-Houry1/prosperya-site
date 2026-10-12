@@ -1,0 +1,17 @@
+.git
+.verification
+**/node_modules
+**/vendor
+**/dist
+**/.env
+**/.env.*
+**/*.log
+**/.phpunit.result.cache
+backend/bootstrap/cache/*.php
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/tests
+frontend/tests
+docs
