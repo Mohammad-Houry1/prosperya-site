@@ -2,6 +2,11 @@
   display: grid;
   gap: 14px;
 }
+.row {
+  display: grid;
+  gap: 10px;
+  padding-block: 12px;
+}
 .inline {
   display: flex;
   flex-wrap: wrap;

@@ -1,7 +1,7 @@
 import Skeleton from './Skeleton.jsx';
 import styles from './PageSkeletons.module.css';
 
-function Copy({ large = false }) { return <div className={styles.copy}><Skeleton width="24%" height={14} /><Skeleton width="92%" height={large ? 88 : 56} /><Skeleton width="72%" height={large ? 70 : 42} /><Skeleton height={18} /><Skeleton width="84%" height={18} /><Skeleton width="42%" height={44} /></div>; }
+function Copy({ large = false }) { return <div className={styles.copy}><Skeleton width="24%" height={12} /><div className={styles.heading}><Skeleton width="92%" height={large ? 40 : 30} /><Skeleton width="72%" height={large ? 40 : 30} /></div><div className={styles.paragraph}><Skeleton height={14} /><Skeleton width="84%" height={14} /><Skeleton width="65%" height={14} /></div><Skeleton width="42%" height={40} /></div>; }
 function Image({ height = 340 }) { return <Skeleton height={height} className={styles.image} />; }
 function Rows({ count = 3 }) { return <div className={styles.rows}>{Array.from({length:count},(_,i)=><div className={styles.row} key={i}><Skeleton width="12%" height={22} /><Skeleton width="65%" height={35} /><Skeleton width="90%" height={16} /></div>)}</div>; }
 function Cards({ count = 3 }) { return <div className={styles.cards}>{Array.from({length:count},(_,i)=><div key={i}><Image height={170} /><Skeleton width="80%" height={28} /><Skeleton height={16} /><Skeleton width="60%" height={16} /></div>)}</div>; }

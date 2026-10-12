@@ -1,5 +1,7 @@
 .split { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(2rem,5vw,5rem); align-items:center; margin-bottom:5rem; }
-.copy { display:grid; gap:1.4rem; max-width:740px; margin-bottom:2rem; }
+.copy { display:grid; gap:1.75rem; max-width:740px; margin-bottom:2rem; }
+.heading { display:grid; gap:12px; }
+.paragraph { display:grid; gap:10px; }
 .image { border-radius:3px; }
 .rows { display:grid; gap:1.6rem; }
 .row { display:grid; gap:1rem; padding:1.3rem 0; border-bottom:1px solid var(--color-border); }
@@ -12,9 +14,7 @@
 .form>div { display:grid; gap:.8rem; }
 .form>span { grid-column:1/-1; }
 .strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; margin:3rem 0 5rem; }
-.deck { display:grid; grid-template-columns:1fr 1fr; gap:0; }
-.deck>span:first-child { transform:rotate(-5deg) translateX(15%); }
-.deck>span:last-child { transform:rotate(5deg) translateX(-15%); }
+.deck { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
 .document { display:grid; grid-template-columns:minmax(160px,1fr) minmax(0,3fr); gap:4rem; }
 .articleHead { max-width:900px; margin:auto; }
 @media(max-width:767px) { .split,.document { grid-template-columns:1fr; gap:2rem; } .cards { grid-template-columns:1fr; } .metrics { grid-template-columns:1fr 1fr; } .strip { grid-template-columns:1fr 1fr; } .copy>span { max-height:64px; } }

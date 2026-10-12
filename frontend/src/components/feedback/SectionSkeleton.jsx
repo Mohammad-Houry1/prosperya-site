@@ -6,7 +6,7 @@ export default function SectionSkeleton({ rows = 3, compact = false, inline = fa
   return (
     <div className={`${styles.wrap} ${inline ? styles.inline : ""}`} role="status" aria-label={label ?? t("components.feedback.section-skeleton.loading")} aria-busy="true">
       {Array.from({ length: rows }, (_, i) => (
-        <Skeleton key={i} width={compact ? 140 : "100%"} height={compact ? 16 : 84} />
+        compact ? <Skeleton key={i} width={140} height={16} /> : <div key={i} className={styles.row}><Skeleton width="38%" height={22} /><Skeleton height={14} /><Skeleton width="76%" height={14} /></div>
       ))}
     </div>
   );
