@@ -1,18 +1,19 @@
 import styles from "./CollaborationVenn.module.css";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 
 /*
   The collaboration model as two circles that meet: client leadership on one
   side, Prosperya on the other. On reveal they slide together, the shared
   goals in the overlap light up, and a return arc draws the continuous-value
   loop beneath. nodes: [[title, sub] × 4] in the order client, shared,
-  continuous, Prosperya (approach.copy.js).
+  continuous value, company, supplied by the published Approach record.
 */
 export default function CollaborationVenn({ nodes }) {
   const [client, shared, loop, prosperya] = nodes;
   const label = ([title, sub], className) => (
     <div className={`${styles.label} ${className}`}>
       <strong>{title}</strong>
-      <span>{sub}</span>
+      <CmsRichHtml html={sub} className={styles.description} />
     </div>
   );
   return (

@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Eyebrow from "./Eyebrow.jsx";
 import styles from "./SectionHeader.module.css";
+import CmsRichHtml from "./CmsRichHtml.jsx";
 export default function SectionHeader({
   eyebrow,
   title,
@@ -15,10 +16,10 @@ export default function SectionHeader({
       <div className={styles.copy}>
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         <Heading>{title}</Heading>
-        {description && align !== "split" && <p>{description}</p>}
+        {description && align !== "split" && <CmsRichHtml className={styles.description} html={description} />}
       </div>
       {description && align === "split" && (
-        <p className={styles.aside}>{description}</p>
+        <CmsRichHtml className={styles.aside} html={description} />
       )}
       {action && (
         <Link className={styles.action} to={action.to}>

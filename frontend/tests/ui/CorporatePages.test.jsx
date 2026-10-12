@@ -1,11 +1,15 @@
 import { cmsLocale } from "../cmsFixtures.js";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
+import { render } from "../renderWithMantine.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, Link } from "react-router-dom";
+import { fireEvent } from "@testing-library/react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
 import LegalPage from "../../src/pages/Legal/LegalPage.jsx";
 import SiteFooter from "../../src/components/layout/SiteFooter.jsx";
+import AboutPage from "../../src/pages/About/AboutPage.jsx";
+import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 
 const pages = [{ id: "about", slug: "about-prosperya", title: "About from CMS" },
@@ -64,4 +68,29 @@ test("keeps valid details when a category list is unavailable", async () => {
   const side = screen.getByRole("navigation", { name: "Corporate pages" });
   expect(within(side).queryByRole("link")).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
+});
+
+test("About and the corporate route share raw content without exchanging presentation shapes", async () => {
+  websiteApi.corporatePage.mockResolvedValue({ data: { ...pages[0], title: "Corporate heading", about_title: "About heading",
+    description: "<p>Shared introduction</p>", about_users: [{ id: "leader", name: "CMS leader", bio: "<p>Public biography</p>" }],
+    sections: [{ title: "Shared section", description: "<p>Shared section body</p>" }] } });
+  vi.spyOn(websiteApi, "testimonials").mockResolvedValue({ data: [] });
+  vi.spyOn(websiteApi, "platforms").mockResolvedValue({ data: [] });
+  vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: null });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 300000 } } });
+  render(<ThemeProvider><QueryClientProvider client={client}><MemoryRouter initialEntries={["/en/corporate/about-prosperya"]}>
+    <LocaleContext.Provider value={cmsLocale()}>
+      <Link to="/en/about">Open About</Link><Link to="/en/corporate/about-prosperya">Open corporate</Link>
+      <Routes><Route path="/:locale/about" element={<AboutPage />} /><Route path="/:locale/corporate/:slug" element={<LegalPage />} /></Routes>
+    </LocaleContext.Provider>
+  </MemoryRouter></QueryClientProvider></ThemeProvider>);
+  await screen.findByRole("heading", { name: "Corporate heading", level: 1 });
+  fireEvent.click(screen.getByRole("link", { name: "Open About" }));
+  await screen.findByRole("heading", { name: "About heading", level: 1 });
+  expect(screen.getByText("Shared introduction")).toBeInTheDocument();
+  expect(screen.getByText("Shared section body")).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "CMS leader" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("link", { name: "Open corporate" }));
+  await screen.findByRole("heading", { name: "Corporate heading", level: 1 });
+  expect(screen.getByText("Shared section body")).toBeInTheDocument();
 });

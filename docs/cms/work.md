@@ -4,7 +4,7 @@ The Work listing and `/en|fr/work/{slug}` detail pages use `CaseStudy`. Both `Ca
 
 ## Listing and filters
 
-`GET /api/case-studies?locale=en|fr` returns the complete published list in CMS order. Existing spotlight, project grid, expertise filters and testimonials retain their CMS sources. The selected Industry's record ID is the stable filter identity and its translated name is the display label.
+`GET /api/case-studies?locale=en|fr` returns the complete published list in CMS order. The spotlight, project grid and testimonials retain their CMS sources. Work filters only by industry; the capability filter and its separate Expertise request are removed. The selected Industry's record ID is the stable filter identity and its translated name is the display label.
 
 Grant the website key the `Industry` module and publish Industry records within the site's project, language and country scopes. A selected unpublished or ungranted Industry is omitted, including stale legacy labels and embedded snapshots. Existing case studies without an Industry selection continue to use `case_study_industry`; its default-locale value supplies a stable filter identity.
 
@@ -27,6 +27,8 @@ Authored hero facts take precedence over the existing client/duration/metrics fa
 The CaseStudy model contains no diagram-node data. Its animation selector chooses existing decorative wave presets (`flowing-lines`, `consolidation`, `workflow`, `network`, `insight`); the website does not infer or invent business processes. With both an animation and uploaded image, the animation appears in the hero and the uploaded image follows it. Without an animation, the uploaded image stays in the hero.
 
 Populate English and French content in the CMS. Empty optional content is omitted; missing detail records show the missing-case-study state. No content seeds, database migrations or changes to the CMS engine are included.
+
+Missing or unsupported hero media no longer reserves a visual panel. Empty navigation, facts, chapters and architecture columns collapse; technology-only records use a compact horizontal stack. Rich summaries, subtitles, captions and before/after entries use the shared sanitized renderer.
 
 ## Verification
 

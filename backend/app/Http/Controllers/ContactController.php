@@ -7,6 +7,7 @@ use App\Models\ContactForm;
 use App\Models\ProjectStage;
 use App\Models\ProjectType;
 use App\Services\PublicContent;
+use App\Services\GoogleRecaptcha;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -27,6 +28,7 @@ class ContactController
             ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $row->text('name', $locale)])->all();
 
         return ['data' => [
+            'captcha' => ['site_key' => config('website.recaptcha.secret') ? config('website.recaptcha.site_key') : ''],
             'project_types' => $options(ProjectType::class),
             'project_stages' => $options(ProjectStage::class),
             'countries' => $content->enabled('ref_countries')->orderBy('name')->get()
@@ -35,7 +37,7 @@ class ContactController
     }
 
     /** Stores a submission in the CMS's Contact Forms, in that module's default status. */
-    public function store(StoreContactRequest $request, PublicContent $content)
+    public function store(StoreContactRequest $request, PublicContent $content, GoogleRecaptcha $captcha)
     {
         $payload = $request->validated();
         $language = $content->language($payload['locale'] ?? null);
@@ -50,7 +52,8 @@ class ContactController
                 throw ValidationException::withMessages([$field => 'Choose an available option.']);
             }
         }
-        unset($payload['website'], $payload['locale']);
+        $captcha->verify($payload['captcha_token']);
+        unset($payload['website'], $payload['locale'], $payload['captcha_token']);
 
         $status = $content->defaultStatus('contact_forms');
         $country = $content->countryId();

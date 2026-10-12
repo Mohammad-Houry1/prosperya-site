@@ -4,13 +4,12 @@ import { MemoryRouter } from "react-router-dom";
 import { expect, test } from "vitest";
 import SolutionRow from "../../src/components/expertise/SolutionRow.jsx";
 import DeliverySequence from "../../src/pages/Approach/DeliverySequence.jsx";
-import { solutionsData } from "../../src/data/solutions.data.js";
-import { companyData } from "../../src/data/company.data.js";
-import { localizeEntity } from "../../src/repositories/localize.js";
+import { adaptSolution, adaptMethodology } from "../../src/repositories/marketing.repository.js";
 import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 test("a solution row presents pains, capabilities and outcomes with locale-aware links", async () => {
-  const [solution] = localizeEntity(solutionsData, "fr");
+  const solution = adaptSolution({ id: "cms-solution", slug: "cms-solution", solution_title: "Solution CMS",
+    solution_challenges: ["CMS pain"], solution_capabilities: ["CMS capability"], outcomes: [{ outcome_title: "CMS outcome" }] });
   render(
     <MemoryRouter>
       <SolutionRow solution={solution} locale="fr" />
@@ -25,7 +24,9 @@ test("a solution row presents pains, capabilities and outcomes with locale-aware
 });
 
 test("delivery sequence can be reversed and cannot advance past the final stage", async () => {
-  const steps = localizeEntity(companyData.process, "en").map(row => ({ ...row, descriptions: [row.deliverable] }));
+  const steps = adaptMethodology(Array.from({ length: 3 }, (_, index) => ({
+    methodology_title: `CMS stage ${index + 1}`, methodology_descriptions: [`<p>CMS stage body ${index + 1}</p>`],
+  })));
   render(
     <ThemeProvider>
       <DeliverySequence steps={steps} locale="en" />

@@ -8,6 +8,7 @@ import { dragScroll } from "../../motion/gestures.js";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import { useMediaQuery } from "../../hooks/useMediaQuery.js";
 import styles from "./SolutionStrip.module.css";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 
 const RESTING = 0.18;
 
@@ -29,7 +30,7 @@ export default function SolutionStrip({ items, locale }) {
     }
   }, [active, items, phone, progress, reduced]);
   return (
-    <ul ref={dragScroll} className={styles.strip} data-many={items.length > 4} data-has-visual={items.some(item => item.animation.type || item.image?.url)}>
+    <ul ref={dragScroll} className={styles.strip} data-many={items.length > 4} data-single={items.length === 1} data-has-visual={items.some(item => item.animation.type || item.image?.url)}>
       {items.map((item, index) => (
         <li
           key={item.id}
@@ -47,7 +48,7 @@ export default function SolutionStrip({ items, locale }) {
             <span className={styles.copy}>
               <span className={styles.number}>{String(index + 1).padStart(2, "0")}</span>
               <strong>{item.title}</strong>
-              <span className={styles.tagline}>{item.tagline}</span>
+              {item.tagline && <CmsRichHtml inline className={styles.tagline} html={item.tagline} />}
               <ArrowRight className={styles.arrow} size={18} strokeWidth={1.5} aria-hidden="true" />
             </span>
           </Link>

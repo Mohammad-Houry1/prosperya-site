@@ -30,9 +30,16 @@ class NewsletterController
                 if ($exception->getCode() !== 11000) {
                     throw $exception;
                 }
+                // A simultaneous signup may have inserted this email first.
+                $existing = true;
             }
         }
 
-        return response()->json(['data' => ['accepted' => true]], 201);
+        if ($existing) {
+            return response()->json(['data' => ['accepted' => true, 'already_subscribed' => true],
+                'message' => $language->code === 'fr' ? 'Cette adresse e-mail est déjà inscrite.' : 'This email is already subscribed.']);
+        }
+
+        return response()->json(['data' => ['accepted' => true, 'already_subscribed' => false]], 201);
     }
 }

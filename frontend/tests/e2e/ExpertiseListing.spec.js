@@ -8,7 +8,7 @@ for (const locale of ["en", "fr"]) {
     const record = {
       ...expertise("arbitrary-cms-slug", locale), expertise_title: "Connect", expertise_detail_title: fullTitle,
       expertise_tagline: "CMS tagline", expertise_summary: "CMS summary",
-      expertise_image: { url: "/images/paris-editorial.webp", alt: "Authored expertise image" },
+      expertise_image: { url: "/favicon.svg", alt: "Authored expertise image" },
     };
     await page.route("**/api/expertise**", route => {
       const slug = new URL(route.request().url()).pathname.split("/")[3];

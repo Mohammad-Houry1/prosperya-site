@@ -54,3 +54,12 @@ test("explains rate limiting and keeps the entered email", async () => {
   expect(await screen.findByText("Too many requests. Please wait before trying again.")).toBeInTheDocument();
   expect(screen.getByLabelText("Work email")).toHaveValue("a@example.com");
 });
+
+test("shows the API's already-subscribed notice instead of a new signup confirmation", async () => {
+  vi.spyOn(websiteApi, "newsletter").mockResolvedValue({ data: { accepted: true, already_subscribed: true }, message: "This email is already subscribed." });
+  renderNewsletter({});
+  fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "a@example.com" } });
+  fireEvent.click(screen.getByRole("button", { name: "Subscribe" }));
+  expect(await screen.findByText("This email is already subscribed.")).toBeInTheDocument();
+  expect(screen.queryByText("Thank you. Your subscription was received.")).not.toBeInTheDocument();
+});

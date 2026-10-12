@@ -87,6 +87,53 @@ class WebsiteIntegrationTest extends WebsiteTestCase
         $this->getJson('/api/labels?locale=de')->assertUnprocessable();
     }
 
+    public function test_corporate_page_names_remain_available_when_display_titles_are_empty(): void
+    {
+        $this->collection('corporate_pages')->insertOne($this->record(['slug' => 'terms-of-use',
+            'name' => ['en' => 'Terms of use', 'fr' => 'Conditions d’utilisation'], 'title' => ['en' => '', 'fr' => ''],
+            'internal_secret' => 'never-public']));
+        foreach (['en' => 'Terms of use', 'fr' => 'Conditions d’utilisation'] as $locale => $name) {
+            $this->getJson('/api/corporate-pages?locale='.$locale)->assertOk()->assertJsonPath('data.0.name', $name)
+                ->assertJsonPath('data.0.title', '')->assertDontSee('never-public');
+            $this->getJson('/api/corporate-pages/terms-of-use?locale='.$locale)->assertOk()->assertJsonPath('data.name', $name);
+        }
+    }
+
+    public function test_about_corporate_page_exposes_localized_content_and_selected_public_leaders(): void
+    {
+        $this->grant['modules'][] = ['id' => (string) new ObjectId, 'slug' => 'users', 'model' => 'User',
+            'record_scope' => 'all', 'owner_column' => 'author_id'];
+        Http::swap(new Factory);
+        Http::fake(['*' => Http::response($this->grant)]);
+        $leader = (string) new ObjectId;
+        $hidden = (string) new ObjectId;
+        $this->collection('users')->insertMany([
+            $this->record(['_id' => new ObjectId($leader), 'name' => 'Public leader', 'bio' => ['fr' => '<p>Biographie</p>'], 'email' => 'never-public@example.test']),
+            $this->record(['_id' => new ObjectId($hidden), 'name' => 'Private leader', 'status_id' => $this->ids['draft']]),
+        ]);
+        $this->collection('corporate_pages')->insertOne($this->record(['slug' => 'about-prosperya',
+            'name' => ['fr' => 'À propos de Prosperya'], 'title' => ['fr' => 'Notre entreprise'],
+            'description' => ['fr' => '<p>Présentation</p>'], 'content' => ['fr' => '<p>Notre histoire</p>'],
+            'about_title' => ['fr' => 'Titre About'], 'about_focus' => [['fr' => 'Systèmes']],
+            'about_facts' => [['fact_title' => ['fr' => 'Équipes'], 'fact_value' => ['fr' => '12'], 'internal_secret' => 'never-public']],
+            'about_principles' => [['principle_title' => ['fr' => 'Qualité'], 'principle_description' => ['fr' => '<p>Bien construit</p>']]],
+            'about_steps' => [['step_title' => ['fr' => 'Découvrir'], 'step_description' => ['fr' => '<p>Comprendre</p>']]],
+            'about_users' => [['_id' => $leader, 'email' => 'snapshot-never-public'], $hidden],
+            'cover_image' => ['url' => '/storage/about.jpg', 'alt' => ['fr' => 'Notre équipe']],
+            'sections' => [['title' => ['fr' => 'Chapitre'], 'description' => ['fr' => '<p>Contenu</p>']]],
+        ]));
+        $this->getJson('/api/corporate-pages/about-prosperya?locale=fr')->assertOk()
+            ->assertJsonPath('data.about_title', 'Titre About')->assertJsonPath('data.content', '<p>Notre histoire</p>')
+            ->assertJsonPath('data.about_focus.0', 'Systèmes')->assertJsonPath('data.about_facts.0.fact_title', 'Équipes')
+            ->assertJsonPath('data.about_principles.0.principle_description', '<p>Bien construit</p>')
+            ->assertJsonPath('data.about_steps.0.step_description', '<p>Comprendre</p>')
+            ->assertJsonPath('data.cover_image.url', 'https://cms.example.test/storage/about.jpg')
+            ->assertJsonCount(1, 'data.about_users')->assertJsonPath('data.about_users.0.id', $leader)
+            ->assertJsonPath('data.about_users.0.bio', '<p>Biographie</p>')->assertJsonPath('data.sections.0.title', 'Chapitre')
+            ->assertDontSee('never-public')->assertDontSee('Private leader');
+        $this->getJson('/api/corporate-pages?locale=fr')->assertOk()->assertJsonMissingPath('data.0.about_users');
+    }
+
     public function test_newsletter_is_validated_deduplicated_and_stamped_by_the_key(): void
     {
         $this->collection('newsletters')->createIndex(['tenant_id' => 1, 'website_project_id' => 1, 'email' => 1], [
@@ -96,7 +143,9 @@ class WebsiteIntegrationTest extends WebsiteTestCase
         $this->postJson('/api/newsletter', ['email' => 'visitor@example.test', 'tenant_id' => 'forged'])->assertUnprocessable();
         $this->postJson('/api/newsletter', ['email' => 'visitor@example.test', 'website' => 'bot'])->assertUnprocessable();
         $this->postJson('/api/newsletter', ['email' => ' Visitor@Example.test ', 'locale' => 'fr', 'origin' => 'footer'])->assertCreated()->assertJsonPath('data.accepted', true);
-        $this->postJson('/api/newsletter', ['email' => 'visitor@example.test', 'locale' => 'fr', 'origin' => 'footer'])->assertCreated()->assertJsonPath('data.accepted', true);
+        $this->postJson('/api/newsletter', ['email' => 'visitor@example.test', 'locale' => 'fr', 'origin' => 'footer'])->assertOk()
+            ->assertJsonPath('data.accepted', true)->assertJsonPath('data.already_subscribed', true)
+            ->assertJsonPath('message', 'Cette adresse e-mail est déjà inscrite.');
         $stored = $this->collection('newsletters')->findOne(['email' => 'visitor@example.test']);
         $this->assertSame(1, $this->collection('newsletters')->countDocuments());
         $this->assertSame($this->grant['tenant_id'], $stored['tenant_id']);
@@ -133,7 +182,31 @@ class WebsiteIntegrationTest extends WebsiteTestCase
         }
         $this->postJson('/api/contact', ['name' => 'Visitor', 'company_name' => 'Company', 'work_email' => 'visitor@example.test',
             'contact_country' => 'Lebanon', 'project_type' => $this->ids['project_types'], 'project_stage' => $this->ids['project_stages'],
-            'project_brief' => 'Please contact me.', 'locale' => 'en', 'website' => ''])->assertCreated()->assertJsonPath('data.accepted', true);
+            'project_brief' => 'Please contact me.', 'locale' => 'en', 'website' => '', 'captcha_token' => 'visitor-token'])->assertCreated()->assertJsonPath('data.accepted', true);
+    }
+
+    public function test_contact_options_expose_only_the_public_captcha_key(): void
+    {
+        $response = $this->getJson('/api/contact/options?locale=en')->assertOk()
+            ->assertJsonPath('data.captcha.site_key', 'public-site-key');
+        $this->assertStringNotContainsString('server-secret', $response->getContent());
+        config(['website.recaptcha.secret' => '']);
+        $this->getJson('/api/contact/options?locale=en')->assertOk()->assertJsonPath('data.captcha.site_key', '');
+    }
+
+    public function test_rejected_captcha_does_not_store_a_contact(): void
+    {
+        foreach (['project_types', 'project_stages'] as $name) {
+            $this->ids[$name] = (string) new ObjectId;
+            $this->collection($name)->insertOne($this->record(['_id' => new ObjectId($this->ids[$name]), 'name' => 'Option']));
+        }
+        Http::swap(new \Illuminate\Http\Client\Factory);
+        Http::fake(['www.google.com/recaptcha/api/siteverify' => Http::response(['success' => false]), '*' => Http::response($this->grant)]);
+        $this->postJson('/api/contact', ['name' => 'Visitor', 'company_name' => 'Company', 'work_email' => 'visitor@example.test',
+            'contact_country' => 'Lebanon', 'project_type' => $this->ids['project_types'], 'project_stage' => $this->ids['project_stages'],
+            'project_brief' => 'Please contact me.', 'locale' => 'en', 'website' => '', 'captcha_token' => 'rejected-token'])
+            ->assertUnprocessable()->assertJsonValidationErrors('captcha_token');
+        $this->assertSame(0, $this->collection('contact_forms')->countDocuments());
     }
 
     public function test_language_id_sidecars_localize_category_names(): void

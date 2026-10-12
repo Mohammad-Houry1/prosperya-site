@@ -9,7 +9,7 @@ for (const locale of ["en", "fr"]) {
     const records = ["alpha", "beta", "gamma"].map((id, index) => ({
       ...caseStudy, id, slug: `authored-${id}`, case_study_title: `CMS ${id}`,
       industry_id: index === 0 ? "retail" : "finance", case_study_industry: index === 0 ? "Retail" : "Finance",
-      case_study_image: { url: "/images/paris-editorial.webp", alt: "CMS cover" },
+      case_study_image: { url: "/favicon.svg", alt: "CMS cover" },
       case_study_challenge: "<p>Authored <strong>challenge</strong></p>",
       case_study_solution: "<p>Authored solution</p>",
       case_study_before: ["Separate systems"], case_study_after: ["Connected operations"],

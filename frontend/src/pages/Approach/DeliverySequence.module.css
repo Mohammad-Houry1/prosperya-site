@@ -173,14 +173,14 @@
   font-weight: 300;
   letter-spacing: var(--tracking-heading);
 }
-.panelBody > p {
+.description {
   max-width: 420px;
   margin: 12px 0 0;
   color: var(--text-secondary);
   font-size: 15px;
   line-height: 1.6;
 }
-.panelBody ul {
+.activities {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -188,7 +188,7 @@
   padding: 0;
   list-style: none;
 }
-.panelBody li {
+.activities > li {
   padding: 6px 12px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
@@ -200,7 +200,7 @@
   color: var(--text-primary);
   font-size: 14px;
 }
-.deliverable span {
+.deliverable > span:first-child {
   display: block;
   margin-bottom: 4px;
   color: var(--accent-text);

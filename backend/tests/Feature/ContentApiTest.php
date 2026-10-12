@@ -28,6 +28,7 @@ class ContentApiTest extends TestCase
         $this->databaseName = 'site_api_test_'.new ObjectId;
         $tenant = (string) new ObjectId;
         config(['website.cms_url' => 'https://cms.example.test', 'website.key' => 'site-fixture-key',
+            'website.public_url' => 'https://site.example.test', 'website.recaptcha.secret' => 'server-secret',
             'database.connections.mongodb.dsn' => env('MONGODB_TEST_URI', 'mongodb://127.0.0.1:27017'),
             'database.connections.mongodb.database' => $this->databaseName]);
         DB::purge('mongodb');
@@ -54,7 +55,7 @@ class ContentApiTest extends TestCase
             'website_settings' => ['default_locale' => 'en', 'locales' => ['en'], 'country' => null],
             'allowed_origins' => ['https://prosperya.com'],
             'statuses' => ['published' => [$this->ids['published']], 'enabled' => [$this->ids['published'], $this->ids['draft'], $this->ids['new']]]];
-        Http::fake(['*' => Http::response($this->grant)]);
+        Http::fake(['www.google.com/recaptcha/api/siteverify' => Http::response(['success' => true, 'hostname' => 'site.example.test']), '*' => Http::response($this->grant)]);
 
         foreach (['project_types', 'project_stages'] as $collection) {
             $this->ids[$collection] = (string) new ObjectId;
@@ -145,10 +146,14 @@ class ContentApiTest extends TestCase
     {
         $payload = ['name' => 'Visitor', 'company_name' => 'Company', 'work_email' => 'visitor@example.test',
             'contact_country' => 'Lebanon', 'project_type' => $this->ids['project_types'],
-            'project_stage' => $this->ids['project_stages'], 'project_brief' => 'Please contact me.'];
+            'project_stage' => $this->ids['project_stages'], 'project_brief' => 'Please contact me.', 'captcha_token' => 'visitor-token'];
         $this->postJson('/api/contact', [...$payload, 'tenant_id' => 'forged'])->assertUnprocessable();
         $this->postJson('/api/contact', [...$payload, 'status' => 'forged'])->assertUnprocessable();
         $this->postJson('/api/contact', [...$payload, 'project_stage' => 'malformed'])->assertUnprocessable();
+        $withoutCaptcha = $payload;
+        unset($withoutCaptcha['captcha_token']);
+        $this->postJson('/api/contact', $withoutCaptcha)->assertUnprocessable()->assertJsonValidationErrors('captcha_token');
+        $this->assertSame(0, DB::connection('mongodb')->getDatabase()->selectCollection('contact_forms')->countDocuments());
         $this->postJson('/api/contact', $payload)->assertCreated();
 
         $stored = DB::connection('mongodb')->getDatabase()->selectCollection('contact_forms')->findOne(['work_email' => $payload['work_email']]);
@@ -157,6 +162,7 @@ class ContentApiTest extends TestCase
         $this->assertSame($this->ids['new'], $stored['status_id']);
         $this->assertSame('new', $stored['status']['slug']);
         $this->assertEquals([$this->ids['language']], (array) $stored['language']);
+        $this->assertArrayNotHasKey('captcha_token', (array) $stored);
     }
 
     public function test_a_key_the_cms_refuses_blocks_reads_and_submissions(): void

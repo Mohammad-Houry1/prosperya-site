@@ -18,6 +18,7 @@ abstract class WebsiteTestCase extends TestCase
         $this->databaseName = 'site_integration_test_'.new ObjectId;
         config(['website.cms_url' => 'https://cms.example.test', 'website.key' => 'site-fixture-key',
             'website.public_url' => 'https://site.example.test',
+            'website.recaptcha.site_key' => 'public-site-key', 'website.recaptcha.secret' => 'server-secret',
             'database.connections.mongodb.dsn' => env('MONGODB_TEST_URI', 'mongodb://127.0.0.1:27017'),
             'database.connections.mongodb.database' => $this->databaseName]);
         DB::purge('mongodb');
@@ -47,7 +48,7 @@ abstract class WebsiteTestCase extends TestCase
             'project' => ['id' => $this->ids['project'], 'code' => 'prosperya'], 'modules' => $modules,
             'website_settings' => ['default_locale' => 'en', 'locales' => ['en', 'fr'], 'country' => null],
             'statuses' => ['published' => [$this->ids['published']], 'enabled' => array_map(fn ($key) => $this->ids[$key], ['published', 'draft', 'new'])]];
-        Http::fake(['*' => Http::response($this->grant)]);
+        Http::fake(['www.google.com/recaptcha/api/siteverify' => Http::response(['success' => true, 'hostname' => 'site.example.test']), '*' => Http::response($this->grant)]);
     }
 
     protected function tearDown(): void

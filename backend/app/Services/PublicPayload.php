@@ -88,14 +88,22 @@ final class PublicPayload
 
     public function faq(Faq $record, string $locale, string $linkedAnswer = ''): array
     {
-        return ['id' => (string) $record->id, 'question' => $record->text('name', $locale),
-            'answer' => $record->text('content', $locale) ?: $linkedAnswer,
+        $splitQuestion = $record->is_question === true;
+        return ['id' => (string) $record->id,
+            'question' => $splitQuestion ? ($record->text('content', $locale) ?: $record->text('name', $locale)) : $record->text('name', $locale),
+            // In the CMS's split schema, question content is never an answer.
+            'answer' => $splitQuestion ? $linkedAnswer : ($record->text('content', $locale) ?: $linkedAnswer),
             'category_id' => $this->referenceId($record->faq_category)];
     }
 
     public function corporatePage(CorporatePage $page, string $locale, bool $detail = true): array
     {
+        $about = $detail ? array_intersect_key(app(MarketingPayload::class)->record($page, $locale), array_flip([
+            'content', 'cover_image', 'about_title', 'about_story_title', 'about_work_title', 'about_work_description',
+            'about_focus', 'about_steps', 'about_principles', 'about_facts', 'about_users',
+        ])) : [];
         return ['id' => (string) $page->id, 'slug' => $page->slug,
+            'name' => $page->text('name', $locale),
             'title' => $page->text('title', $locale),
             'description' => $page->text('description', $locale),
             ...($detail ? ['sections' => array_map(fn ($section) => [
@@ -103,6 +111,7 @@ final class PublicPayload
                 'description' => $this->content->text((object) $section, 'description', $locale),
                 'image' => $this->media($section['section_image'] ?? null, $locale),
             ], (array) $page->sections)] : []),
+            ...$about,
             'meta_image' => $this->media($page->meta_image, $locale), 'seo' => $this->seo($page, $locale),
             'updated_at' => $page->updated_at?->toISOString()];
     }

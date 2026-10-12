@@ -41,14 +41,15 @@ class FaqController
             $query->where('faq_category', (string) $category->id);
         }
 
-        $page = $query->where('is_question', '!=', false)->orderBy('sort_order')->orderBy('_id')
+        $page = $query->where('is_question', '!=', false)->orderBy('order')->orderBy('sort_order')->orderBy('_id')
             ->paginate(min(50, (int) ($params['per_page'] ?? 50)));
         $ids = $page->getCollection()->map(fn ($row) => (string) $row->id)->all();
         $answers = (clone $base)->where('is_question', false)->whereIn('question', $ids)
-            ->orderBy('sort_order')->orderBy('_id')->get()->groupBy(fn ($row) => $payload->referenceId($row->question));
+            ->orderBy('order')->orderBy('sort_order')->orderBy('_id')->get()->groupBy(fn ($row) => $payload->referenceId($row->question));
 
         return ['data' => $page->getCollection()->map(fn ($row) => $payload->faq($row, $locale,
-            ($answers->get((string) $row->id) ?? collect())->map(fn ($answer) => $answer->text('content', $locale))->implode("\n"))),
+            ($answers->get((string) $row->id) ?? collect())->map(fn ($answer) => $answer->text('content', $locale))
+                ->filter(fn ($answer) => trim($answer) !== '')->implode("\n"))),
             'meta' => $payload->pagination($page)];
     }
 

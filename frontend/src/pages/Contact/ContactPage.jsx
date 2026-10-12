@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import FrequentlyAskedQuestions from "../../components/company/FrequentlyAskedQuestions.jsx";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Select } from "@mantine/core";
 import { ArrowRight, ChevronDown, CircleCheck, ShieldCheck } from "lucide-react";
 import RevealText from "../../motion/components/RevealText.jsx";
@@ -15,6 +15,8 @@ import {
 import { websiteApi } from "../../services/websiteApi.js";
 import styles from "./ContactPage.module.css";
 import Skeleton from "../../components/feedback/Skeleton.jsx";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
+import GoogleCaptcha from "../../components/forms/GoogleCaptcha.jsx";
 
 export default function ContactPage() {
   const submissionsEnabled = import.meta.env?.VITE_CMS_SUBMISSIONS_ENABLED === "true";
@@ -30,6 +32,10 @@ export default function ContactPage() {
     project_stage: t("contact.fields.stage"),
     project_brief: t("contact.fields.brief"),
   };
+  const contactCopy = useQuery({
+    queryKey: ["corporate-page", locale, "contact-form"],
+    queryFn: async ({ signal }) => (await websiteApi.corporatePage("contact-form", locale, signal)).data,
+  });
 
   const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
     queryKey: ["faq", locale, "contact"],
@@ -43,6 +49,9 @@ export default function ContactPage() {
   const [errors, setErrors] = useState({});
   const [selections, setSelections] = useState({});
   const [openSelect, setOpenSelect] = useState(null);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
+  useEffect(() => { setCaptchaToken(""); setCaptchaReset(value => value + 1); }, [locale]);
   const submission = useMutation({
     mutationFn: async (inquiry) => {
       const response = await websiteApi.contact(inquiry);
@@ -68,11 +77,12 @@ export default function ContactPage() {
   const errorCopy = { required: t("pages.contact.contact-page.this-field-is-required-b64844"), invalid_email: t("pages.contact.contact-page.enter-a-valid-email-address-e89bf5"), invalid_option: t("pages.contact.contact-page.choose-an-option-from-the-list-f37800"), too_long: t("pages.contact.contact-page.the-text-exceeds-the-allowed-length-47d0c5") };
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!submissionsEnabled || submitLock.current || optionsPending || optionsError) return;
+    if (!submissionsEnabled || submitLock.current || optionsPending || optionsError || !options.captcha?.site_key || !captchaToken) return;
     const payload = normalizeProjectInquiry(
       Object.fromEntries(new FormData(event.currentTarget)),
       locale,
     );
+    payload.captcha_token = captchaToken;
     const nextErrors = validateProjectInquiry(payload, options);
     setErrors(nextErrors);
     submission.reset();
@@ -89,19 +99,17 @@ export default function ContactPage() {
       onError: (error) => {
         if (error.status === 422) setErrors(Object.fromEntries(Object.entries(error.errors).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value])));
       },
-      onSettled: () => { submitLock.current = false; },
+      onSettled: () => {
+        submitLock.current = false;
+        setCaptchaToken("");
+        setCaptchaReset(value => value + 1);
+      },
     });
   };
   const renderField = (field) => {
     const choices = field.name === "project_type" ? options?.project_types : options?.project_stages;
     const selected = selections[locale]?.[field.name];
     if (field.options && (!submissionsEnabled || optionsError)) return null;
-    if (field.options && optionsPending) {
-      return <div key={field.name} className={styles.field} role="status" aria-label={t("pages.contact.contact-page.loading-options-725b1f")} aria-busy="true">
-        <Skeleton width="40%" height={16} />
-        <Skeleton height={48} className={styles.skeletonSelect} />
-      </div>;
-    }
     const attributes = {
       id: field.name,
       name: field.name,
@@ -164,7 +172,6 @@ export default function ContactPage() {
     [t("pages.contact.contact-page.about-you-d40b5d"), inquiryFields.slice(0, split)],
     [t("pages.contact.contact-page.your-project-fb792b"), inquiryFields.slice(split)],
   ];
-  const steps = [[t("pages.contact.contact-page.your-brief-b39c64"), t("pages.contact.contact-page.context-goals-and-constraints-in-a-few-16b819")], [t("pages.contact.contact-page.a-first-conversation-f7708b"), t("pages.contact.contact-page.with-an-architect-not-a-sales-script-df646e")], [t("pages.contact.contact-page.a-clear-next-step-cd6efa"), t("pages.contact.contact-page.what-is-worth-changing-and-in-what-5f2545")]];
   return (
     <>
       <Section className={styles.contactSection}>
@@ -176,20 +183,7 @@ export default function ContactPage() {
             <RevealText as="h1" onLoad key={locale}>
               {t("pages.contact.contact-page.let-s-architect-what-comes-next-7eed29")}
             </RevealText>
-            <p className={styles.lead}>
-              {t("pages.contact.contact-page.tell-us-where-you-are-today-what-dcc1ed")}
-            </p>
-            <ol className={styles.steps}>
-              {steps.map(([title, text], index) => (
-                <li key={title}>
-                  <span className={styles.stepIndex}>{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <strong>{title}</strong>
-                    <span>{text}</span>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            {contactCopy.isPending ? <div className={styles.lead} aria-busy="true"><Skeleton height={18} /><Skeleton width="85%" height={18} /><Skeleton width="65%" height={18} /></div> : contactCopy.isError ? <button type="button" onClick={() => contactCopy.refetch()}>{t("components.feedback.error-state.copy.try-again-170551")}</button> : <CmsRichHtml className={styles.lead} html={contactCopy.data?.description} />}
             <p className={styles.notice}>
               <ShieldCheck size={16} strokeWidth={1.5} aria-hidden="true" />
               {submissionsEnabled
@@ -197,7 +191,11 @@ export default function ContactPage() {
                 : (t("pages.contact.contact-page.project-enquiries-are-temporarily-unavailable-6ce5fa"))}
             </p>
           </div>
-          <form
+          {submissionsEnabled && optionsPending ? <div className={`${styles.form} ${styles.formSkeleton}`} role="status" aria-label={t("pages.contact.contact-page.loading-options-725b1f")} aria-busy="true">
+            <Skeleton width="45%" height={24} />
+            <div className={styles.fields}>{Array.from({ length: 8 }, (_, index) => <div className={styles.field} key={index}><Skeleton width="45%" height={14} /><Skeleton height={48} /></div>)}</div>
+            <Skeleton height={130} /><Skeleton width={164} height={144} /><Skeleton width="50%" height={48} />
+          </div> : <form
             ref={formRef}
             className={styles.form}
             noValidate
@@ -217,8 +215,21 @@ export default function ContactPage() {
                 <div className={styles.fields}>{fields.map(renderField)}</div>
               </fieldset>
             ))}
+            {submissionsEnabled && options.captcha?.site_key && <div className={styles.captcha}>
+              <GoogleCaptcha key={locale} siteKey={options.captcha.site_key} onChange={token => {
+                setCaptchaToken(token);
+                if (token) setErrors(current => {
+                  const next = { ...current };
+                  delete next.captcha_token;
+                  return next;
+                });
+              }} resetKey={captchaReset}
+                errorText={t("components.feedback.error-state.copy.the-content-could-not-be-loaded-c44d0a")} retryText={t("components.feedback.error-state.copy.try-again-170551")} />
+              {errors.captcha_token && <p className={styles.error} role="alert">{errors.captcha_token}</p>}
+            </div>}
+            {submissionsEnabled && (optionsError || !options.captcha?.site_key) && <p className={styles.notice} role="status">{t("pages.contact.contact-page.project-enquiries-are-temporarily-unavailable-6ce5fa")}</p>}
             <div className={styles.actions}>
-              <button type="submit" className={styles.submit} disabled={!submissionsEnabled || submission.isPending || optionsPending || optionsError}>
+              <button type="submit" className={styles.submit} disabled={!submissionsEnabled || submission.isPending || optionsPending || optionsError || !options.captcha?.site_key || !captchaToken}>
                 {submission.isPending
                   ? t("pages.contact.contact-page.sending-b7af8e")
                   : t("pages.contact.contact-page.send-project-brief-816a21")}
@@ -237,7 +248,7 @@ export default function ContactPage() {
                 {submission.error?.status === 429 ? t("pages.contact.contact-page.too-many-requests-please-wait-before-trying-a64b07") : t("pages.contact.contact-page.your-brief-could-not-be-sent-your-c7d07a")}
               </p>
             )}
-          </form>
+          </form>}
         </div>
       </Section>
       <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} />

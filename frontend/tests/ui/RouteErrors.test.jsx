@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
+import { render } from "../renderWithMantine.jsx";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import AppErrorBoundary from "../../src/app/AppErrorBoundary.jsx";
 import { AppProviders } from "../../src/app/providers/AppProviders.jsx";

@@ -33,8 +33,9 @@ test("Work grid filters arbitrary CMS records without affecting the spotlight", 
   fireEvent.click(screen.getByRole("button", { name: "Finance", exact: true }));
   expect(within(grid).getAllByRole("article")).toHaveLength(1);
   expect(within(grid).getByRole("heading", { name: "CMS Beta" })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "CMS capability", exact: true }));
-  expect(screen.queryByRole("heading", { name: "CMS Beta" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "CMS capability", exact: true })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "All industries", exact: true }));
+  expect(within(grid).getAllByRole("article")).toHaveLength(2);
   expect(screen.getByRole("button", { name: "CMS Alpha", exact: true })).toBeInTheDocument();
   expect(websiteApi.caseStudies).toHaveBeenCalledWith({ locale: "en" }, expect.any(AbortSignal));
 });

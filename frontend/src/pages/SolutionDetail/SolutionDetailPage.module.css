@@ -56,7 +56,7 @@
   line-height: 1.3;
   letter-spacing: -0.01em;
 }
-.friction li span {
+.friction li > span:first-child {
   color: var(--accent-text);
   font-size: 12px;
   letter-spacing: 0.1em;
@@ -82,7 +82,7 @@
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
-.changeColumn ul {
+.changeColumn > ul {
   display: grid;
   gap: 18px;
   margin: 22px 0 0;
@@ -100,13 +100,26 @@
   flex: none;
   color: var(--accent-text);
 }
-.outcomes li {
+.outcomes > li {
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr);
   gap: 16px;
   align-items: center;
 }
-.outcomes i {
+.outcomes > li[data-has-image="false"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.outcomeCopy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.outcomeDescription {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.outcomes > li > i {
   display: grid;
   place-items: center;
   width: 40px;
@@ -145,7 +158,7 @@
   font-weight: 300;
   line-height: 1.1;
 }
-.proofCopy > p {
+.proofSummary {
   margin: 14px 0 0;
   color: var(--text-secondary);
   font-size: 16px;

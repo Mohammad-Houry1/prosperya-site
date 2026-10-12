@@ -12,7 +12,8 @@ function response(item) {
   else if (item.path === "platforms") data = [{ id: "platform", slug: "cms-platform", name: "CMS Platform",
     logo_image: { url: "/cms-logo.svg", alt: "uploaded-file.svg", width: 100, height: 100 } }];
   else if (item.path === "faqs") data = [{ id: "faq", question: fr ? "Question du CMS ?" : "CMS question?", answer: "<p>Published CMS answer</p><script>window.cmsInjected=true</script>" }];
-  else if (item.path === "contact/options") data = { project_types: [{ id: "type", name: "CMS Integration" }], project_stages: [{ id: "stage", name: "CMS Planning" }], countries: [] };
+  else if (item.path === "contact/options") data = { project_types: [{ id: "type", name: "CMS Integration" }], project_stages: [{ id: "stage", name: "CMS Planning" }], countries: [], captcha: { site_key: "fixture-public-key" } };
+  else if (item.path === "corporate-pages/contact-form") data = { description: "<p>CMS contact explanation.</p>" };
   else if (item.path === "contact" || item.path === "newsletter") data = { accepted: true };
   return { id: item.id, status: item.method === "POST" ? 201 : 200, body: { data, meta: { last_page: 1, current_page: 1, total: Array.isArray(data) ? data.length : 0 } } };
 }
@@ -20,6 +21,7 @@ function response(item) {
 for (const locale of ["en", "fr"]) {
   test(`CMS sections load in ${locale} through named endpoints`, async ({ page }) => {
     const calls = [];
+    await page.route("https://www.google.com/recaptcha/api.js*", route => route.fulfill({ contentType: "application/javascript", body: `window.grecaptcha={render(target,options){const button=document.createElement('button');button.type='button';button.textContent='Complete test verification';button.onclick=()=>options.callback('browser-captcha-token');target.append(button);return 1;},reset(){}};window.prosperyaRecaptchaReady();` }));
     await page.route("**/cms-logo.svg", (route) => route.fulfill({ contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="black"/></svg>' }));
     await page.route("**/api/**", async (route) => {
       const url = new URL(route.request().url());
@@ -73,13 +75,14 @@ for (const locale of ["en", "fr"]) {
       await expect(page.getByRole("option", { name: "CMS Planning", exact: true })).toBeVisible();
       await page.screenshot({ path: "../.verification/contact-dropdown-dark.png" });
       await page.getByRole("combobox", { name: "Project stage", exact: true }).press("Escape");
+      await page.getByRole("button", { name: "Complete test verification" }).click();
       await page.getByRole("button", { name: "Send project brief" }).click();
       await expect(page.getByText("Thank you, your project brief was received.")).toBeVisible();
       await page.goto("/en/insights");
       await page.getByLabel("Work email", { exact: true }).fill("visitor@example.test");
       await page.getByRole("button", { name: "Subscribe", exact: true }).click();
       await expect(page.getByText("Thank you. Your subscription was received.")).toBeVisible();
-      expect(calls.find((item) => item.path === "contact").data).toMatchObject({ project_type: "type", project_stage: "stage", locale: "en" });
+      expect(calls.find((item) => item.path === "contact").data).toMatchObject({ project_type: "type", project_stage: "stage", locale: "en", captcha_token: "browser-captcha-token" });
       expect(calls.find((item) => item.path === "newsletter").data.email).toBe("visitor@example.test");
     }
   });

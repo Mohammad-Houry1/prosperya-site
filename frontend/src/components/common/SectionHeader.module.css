@@ -15,7 +15,7 @@
   line-height: 1.12;
   letter-spacing: var(--tracking-heading);
 }
-.copy p {
+.description {
   max-width: 600px;
   margin: 16px 0 0;
   color: var(--text-secondary);

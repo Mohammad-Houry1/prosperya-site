@@ -12,10 +12,10 @@ test("Home and About keep their platform categories separate when navigating", a
   await expect(page.locator('main [data-mark="clients"]').first()).toBeVisible();
   await page.locator("header").getByRole("link", { name: "About", exact: true }).click();
   await expect(page.locator("main h1")).toHaveText("CMS About");
-  await expect(page.locator('main [data-mark="we-work-with"]')).toBeVisible();
+  await expect(page.locator('main [data-mark="good-company"]')).toBeVisible();
   await expect(page.locator("main")).not.toContainText("CMS Client");
   expect(categories).toContain("clients");
-  expect(categories).toContain("we-work-with");
+  expect(categories).toContain("good-company");
   expect(categories).not.toContain(null);
 });
 

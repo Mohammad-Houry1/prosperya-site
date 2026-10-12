@@ -1,4 +1,4 @@
-import { adaptExpertise, adaptCaseStudy } from "../../repositories/marketing.repository.js";
+import { adaptCaseStudy } from "../../repositories/marketing.repository.js";
 import { websiteApi } from "../../services/websiteApi.js";
 import { useId, useState } from "react";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -7,6 +7,8 @@ import Section from "../../components/common/Section.jsx";
 import CTASection from "../../components/common/CTASection.jsx";
 import { Link } from "react-router-dom";
 import CaseVisual from "../../components/case-study/CaseVisual.jsx";
+import { hasCaseStudyImage } from "../../components/case-study/caseStudyMedia.js";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import Testimonials from "../../components/company/Testimonials.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
@@ -51,15 +53,7 @@ export default function WorkPage() {
       return (response.data || []).map(adaptCaseStudy);
     },
   });
-  const { data: capabilities = [] } = useQuery({
-    queryKey: ["capabilities", locale],
-    queryFn: async ({ signal }) => {
-      const response = await websiteApi.expertise({ locale }, signal);
-      return (response.data || []).map(adaptExpertise);
-    },
-  });
   const [industry, setIndustry] = useState("all");
-  const [capability, setCapability] = useState("all");
   useDocumentMeta({
     title: t("pages.work.work-page.work-prosperya-bb3774"),
     description: t("pages.work.work-page.erp-transformation-integration-and-connected-operations-through-732c8a"),
@@ -71,14 +65,8 @@ export default function WorkPage() {
         <ErrorState onRetry={() => refetch()} />
       </Section>
     );
-  const capabilityNames = Object.fromEntries((capabilities ?? []).map((c) => [c.id, c.detailTitle || c.title]));
   const industries = [...new Map(data.filter((s) => s.industry).map((s) => [s.industry, s.industryName]))];
-  const capabilityIds = [...new Set(data.flatMap((s) => s.expertiseIds))];
-  const filtered = data.filter(
-    (study) =>
-      (industry === "all" || study.industry === industry) &&
-      (capability === "all" || study.expertiseIds.includes(capability)),
-  );
+  const filtered = data.filter(study => industry === "all" || study.industry === industry);
   return (
     <>
       <PageHero
@@ -107,15 +95,6 @@ export default function WorkPage() {
               ...industries,
             ]}
           />
-          <Filter
-            label={t("pages.work.work-page.filter-by-capability-9f728f")}
-            value={capability}
-            onChange={setCapability}
-            options={[
-              ["all", t("pages.work.work-page.all-capabilities-3d897f")],
-              ...capabilityIds.map((id) => [id, capabilityNames[id] ?? id]),
-            ]}
-          />
         </div>
         <p className={styles.count} role="status">
           {filtered.length === 1 ? t("work.count_one", { count: filtered.length }) : t("work.count_many", { count: filtered.length })}
@@ -132,7 +111,7 @@ export default function WorkPage() {
                 data-reveal="card"
                 style={{ "--i": index }}
               >
-                <Link
+                {hasCaseStudyImage(study) && <Link
                   to={`/${locale}/work/${study.slug}`}
                   className={styles.projectImage}
                   tabIndex={-1}
@@ -142,7 +121,7 @@ export default function WorkPage() {
                     study={study}
                     sizes="(max-width: 700px) 100vw, 50vw"
                   />
-                </Link>
+                </Link>}
                 <div className={styles.projectCopy}>
                   {study.industryName && (
                     <span className={styles.industry}>
@@ -154,7 +133,7 @@ export default function WorkPage() {
                       {study.name || study.title}
                     </Link>
                   </h2>
-                  {study.description && <p>{study.description}</p>}
+                  {study.description && <CmsRichHtml html={study.description} className={styles.projectDescription} />}
                   {study.case_study_client && (
                     <span className={styles.client}>{study.case_study_client}</span>
                   )}

@@ -1,6 +1,7 @@
 import { cmsLocale } from "../cmsFixtures.js";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
+import { render } from "../renderWithMantine.jsx";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, test, vi } from "vitest";
 import WorkDeck from "../../src/pages/Work/WorkDeck.jsx";
@@ -26,14 +27,15 @@ test("the spotlight advances through every project and loops back to the first",
 test("hover, keyboard focus and the pause button stop rotation; manual selection resets the timer", () => {
   vi.useFakeTimers();
   const { container } = show();
-  fireEvent.mouseEnter(container.firstChild);
+  const deck = container.querySelector('[class*="deck"]');
+  fireEvent.mouseEnter(deck);
   advance();
   expect(selected()).toHaveAccessibleName("Project 1");
-  fireEvent.mouseLeave(container.firstChild);
+  fireEvent.mouseLeave(deck);
   fireEvent.focus(screen.getByRole("button", { name: "Project 3" }));
   advance();
   expect(selected()).toHaveAccessibleName("Project 1");
-  fireEvent.blur(container.firstChild, { relatedTarget: null });
+  fireEvent.blur(deck, { relatedTarget: null });
   act(() => vi.advanceTimersByTime(4000));
   fireEvent.click(screen.getByRole("button", { name: "Project 3" }));
   act(() => vi.advanceTimersByTime(1000));

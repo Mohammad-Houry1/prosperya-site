@@ -53,6 +53,80 @@ test("listing uses selected proof and authored architecture without another case
   expect(view.container.querySelector('[data-solution-animation]')).toBeNull();
 });
 
+test("listing uses selected expertise content without another expertise collection request", async () => {
+  vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [{ id: "finance", slug: "finance", solution_title: "Finance",
+    solution_capabilities: [], outcomes: [], solution_challenges: [],
+    related_expertise: [{ id: "selected", expertise_capabilities: ['<p><strong>Selected capability</strong></p>'], expertise_outcomes: ['<p>Selected outcome</p>'] }] }] });
+  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: {} });
+  const expertiseRequest = vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
+  const view = show(SolutionsPage);
+  const heading = await screen.findByRole("heading", { name: "Finance" });
+  const row = heading.closest("article");
+  expect(within(row).getByText("Selected capability").tagName).toBe("STRONG");
+  expect(within(row).getByText("Selected outcome")).toBeInTheDocument();
+  expect(row.textContent).not.toContain("<p>");
+  expect(within(row).queryByText("Pains", { exact: true })).not.toBeInTheDocument();
+  expect(expertiseRequest).not.toHaveBeenCalled();
+  expect(view.container.querySelector('li p p')).toBeNull();
+});
+
+test("listing omits empty content columns instead of leaving empty labels", async () => {
+  vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [{ id: "empty", slug: "empty", solution_title: "Empty solution",
+    solution_challenges: [], solution_capabilities: [], outcomes: [], related_expertise: [{ id: "selected", expertise_capabilities: [], expertise_outcomes: [] }] }] });
+  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: {} });
+  show(SolutionsPage);
+  const heading = await screen.findByRole("heading", { name: "Empty solution" });
+  const row = heading.closest("article");
+  for (const label of ["Pains", "Capabilities", "Outcomes"]) expect(within(row).queryByText(label, { exact: true })).not.toBeInTheDocument();
+});
+
+test("listing treats blank localized list rows and empty outcome records as missing content", async () => {
+  vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [{ id: "blank", slug: "blank", solution_title: "Blank localized solution",
+    solution_challenges: ["", "  "], solution_capabilities: [""], outcomes: [{ outcome_title: "", outcome_description: "", outcome_image: null }], related_expertise: [] }] });
+  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: {} });
+  show(SolutionsPage);
+  const heading = await screen.findByRole("heading", { name: "Blank localized solution" });
+  const row = heading.closest("article");
+  for (const label of ["Pains", "Capabilities", "Outcomes"]) expect(within(row).queryByText(label, { exact: true })).not.toBeInTheDocument();
+});
+
+test("selected case study summaries render sanitized rich text in solution listing proof", async () => {
+  vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [{ id: "proof", slug: "proof", solution_title: "Proof solution", related_case_studies: [
+    { id: "case", slug: "case", case_study_title: "Proof title", case_study_summary: '<p><strong>Rich proof summary</strong></p><script>bad()</script>' },
+  ] }] });
+  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: {} });
+  const view = show(SolutionsPage);
+  await screen.findByRole("heading", { name: "Proof title" });
+  expect(screen.getByText("Rich proof summary").tagName).toBe("STRONG");
+  expect(view.container.querySelector("script")).toBeNull();
+  expect(view.container.textContent).not.toContain("<p>");
+});
+
+test("selected case study summaries render sanitized rich text in solution details", async () => {
+  vi.spyOn(websiteApi, "solution").mockResolvedValue({ data: { id: "proof", slug: "proof", solution_title: "Proof solution", related_case_studies: [
+    { id: "case", slug: "case", case_study_title: "Proof title", case_study_summary: '<p><em>Rich detail summary</em></p><script>bad()</script>' },
+  ] } });
+  const view = show(SolutionDetailPage, "solutions/proof");
+  await screen.findByRole("heading", { name: "Proof title" });
+  expect(screen.getByText("Rich detail summary").tagName).toBe("EM");
+  expect(view.container.querySelector("script")).toBeNull();
+  expect(view.container.textContent).not.toContain("<p>");
+});
+
+test("selected expertise preview content preserves the solution detail's authored capabilities and rich outcomes", async () => {
+  vi.spyOn(websiteApi, "solution").mockResolvedValue({ data: { id: "detail", slug: "detail", solution_title: "Authored solution",
+    solution_capabilities: ["Authored detail capability"], outcomes: [{ outcome_title: "Authored detail outcome", outcome_description: '<p><strong>Authored outcome explanation</strong></p>', outcome_image: { url: "/outcome.png", alt: "Authored outcome image" } }],
+    related_expertise: [{ id: "selected", slug: "selected", expertise_title: "Selected expertise", expertise_capabilities: ["Expertise preview capability"], expertise_outcomes: ["Expertise preview outcome"] }],
+  } });
+  show(SolutionDetailPage, "solutions/detail");
+  await screen.findByRole("heading", { name: "Authored solution" });
+  expect(screen.getByText("Authored detail capability")).toBeInTheDocument();
+  expect(screen.getByText("Authored detail outcome")).toBeInTheDocument();
+  expect(screen.getByText("Authored outcome explanation").tagName).toBe("STRONG");
+  expect(screen.getByAltText("Authored outcome image")).toBeInTheDocument();
+  expect(screen.queryByText("Expertise preview capability")).not.toBeInTheDocument();
+});
+
 test.each(["workflow", "network", "consolidation"])("%s diagram renders every authored item, without reference labels", type => {
   const animation = { type, centreLabel: "CMS centre", resultLabel: "CMS result", signalLabel: "CMS signal", sources: ["Source one"], lanes: ["Lane one"], steps: Array.from({ length: 9 }, (_, i) => `Step ${i}`), suppliers: ["Supplier one"], hubs: ["Hub one"], channels: ["Channel one"] };
   const view = render(<SolutionMetaphor animation={animation} label="CMS diagram" />);

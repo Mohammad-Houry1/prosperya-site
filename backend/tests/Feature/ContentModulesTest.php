@@ -83,4 +83,33 @@ class ContentModulesTest extends WebsiteTestCase
         }
     }
 
+    public function test_split_faq_records_use_question_content_and_linked_answer_content(): void
+    {
+        $category = (string) new ObjectId;
+        $first = (string) new ObjectId;
+        $second = (string) new ObjectId;
+        $this->collection('faq_categories')->insertOne($this->record(['_id' => new ObjectId($category), 'slug' => 'approach']));
+        $this->collection('faqs')->insertMany([
+            $this->record(['_id' => new ObjectId($first), 'name' => 'Internal first question label', 'is_question' => true,
+                'content' => ['en' => '<p>First question?</p>', 'fr' => '<p>Première question ?</p>'], 'faq_category' => $category, 'order' => 2]),
+            $this->record(['_id' => new ObjectId($second), 'name' => 'Internal second question label', 'is_question' => true,
+                'content' => ['en' => '<p>Second <strong>question</strong>?</p>'], 'faq_category' => $category, 'order' => 1]),
+            $this->record(['name' => 'Answer label', 'is_question' => false, 'question' => $first, 'faq_category' => $category,
+                'content' => ['en' => '<p>Answer one.</p>', 'fr' => '<p>Réponse un.</p>'], 'order' => 2]),
+            $this->record(['name' => 'Earlier answer label', 'is_question' => false, 'question' => $first,
+                'content' => ['en' => '<p>Answer zero.</p>'], 'order' => 1]),
+            $this->record(['name' => 'Empty answer', 'is_question' => false, 'question' => $second, 'content' => []]),
+            $this->record(['is_question' => false, 'question' => $first, 'content' => ['en' => 'Hidden draft answer'], 'status_id' => $this->ids['draft']]),
+        ]);
+        $this->getJson('/api/faqs?locale=en&category=approach')->assertOk()->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.id', $second)->assertJsonPath('data.0.question', '<p>Second <strong>question</strong>?</p>')
+            ->assertJsonPath('data.0.answer', '')
+            ->assertJsonPath('data.1.question', '<p>First question?</p>')
+            ->assertJsonPath('data.1.answer', "<p>Answer zero.</p>\n<p>Answer one.</p>")
+            ->assertDontSee('Hidden draft answer')->assertDontSee('Internal first question label');
+        $this->getJson('/api/faqs?locale=fr&category=approach')->assertOk()
+            ->assertJsonPath('data.1.question', '<p>Première question ?</p>')
+            ->assertJsonPath('data.1.answer', '<p>Réponse un.</p>');
+    }
+
 }

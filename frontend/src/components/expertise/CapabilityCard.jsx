@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import SystemIcon from "../system/SystemIcon.jsx";
 import styles from "./CapabilityCard.module.css";
+import CmsRichHtml from "../common/CmsRichHtml.jsx";
 export default function CapabilityCard({ capability, locale, index = 0, heading = "title" }) {
   const { t } = useLocale();
 
@@ -17,7 +18,7 @@ export default function CapabilityCard({ capability, locale, index = 0, heading 
         <SystemIcon name={capability.icon} size={22} strokeWidth={1.4} />
       </span>
       <h3>{name}</h3>
-      <p>{capability.summary ?? capability.description}</p>
+      <p><CmsRichHtml inline html={capability.summary ?? capability.description} /></p>
       <Link className={styles.link} to={`/${locale}/expertise/${capability.slug}`}>
         {t("components.expertise.capability-card.learn-more-f2ab41")}
         <span className="visuallyHidden"> : {name}</span>

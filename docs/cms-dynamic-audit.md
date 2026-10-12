@@ -2,6 +2,8 @@
 
 ## 2026-10-11 detail completion update
 
+The later rich-text/layout pass and About correction are documented in [rich text and loading states](cms/rich-text.md) and [About](cms/about.md). About now reads Corporate Page `about-prosperya`; Work retains only industry filtering; corporate navigation uses CMS names, and shared skeletons use Mantine. These current mappings supersede the historical Static Page About and capability-filter notes below.
+
 The subsequent page-by-page passes completed Solutions, Work and Expertise details. Their current field mappings and checks are documented in [Solutions](cms/solutions.md), [Work](cms/work.md) and [Expertise detail](cms/expertise-detail.md). Those notes supersede the historical slug-animation and CaseStudy hero-facts limitations below: animations are now CMS-selected, and CaseStudy has its own authored hero-facts repeater. Live deployment and editorial completeness remain unverified.
 
 Verified locally on 2026-10-10. The existing CMS integration has been completed in this checkout. No production deployment or live editorial changes were performed.
@@ -28,7 +30,7 @@ To follow the user's simple one-request query requirement without truncation, au
 
 UI copy comes from CMS Translations. Only the requested locale is used; blank/missing labels display the complete `prosperya.*` key. No bundled dictionary, source-text or cross-locale fallback is imported by production pages. The editable label manifest is `docs/cms/prosperya-labels.json` (531 entries); it is an import artifact, not a runtime fallback.
 
-Missing authored records show the unavailable state. Optional authored sections/media remain absent rather than showing sample claims, illustrative quotes or replacement photography. Scene geometry, routes, slug animation mappings, validation rules, icons and brand marks are implementation constants. Older unused datasets/copy files remain in the repository for existing fixture tests and are absent from production imports/builds.
+Missing authored records show the unavailable state. Optional authored sections/media remain absent rather than showing sample claims, illustrative quotes or replacement photography. Scene geometry, routes, validation rules, icons and brand marks are implementation constants. The production cleanup removed unused demo datasets, copy files, old localization fallbacks, legacy page components and sample photography. Tests now use local CMS fixtures rather than importing demo content from runtime source.
 
 Loading layouts match the route family during lazy and data loading. Labels loading blocks interactive site chrome; a labels failure provides retry. EN/FR routes, reduced motion and the shared expertise animation/template remain supported.
 
@@ -57,10 +59,10 @@ Before the user's request to keep verification local, the configured key granted
 - Syntax/import/dependency/CSS checks, production build, touched PHP syntax and API route registration passed. Public artifacts contained no server/fixture secrets.
 - Desktop expertise and mobile case-study screenshots were visually inspected. Browser submissions used mocked endpoints only.
 
-Review fixes cover relationship order, scoped testimonial attribution, HTML/media rendering, omission of empty authored sections, metrics notes and arbitrary diagram node counts. Deferred minor cleanup: unused historical fixture datasets/copy files and the two development fast-refresh warnings. Source-only verification cannot confirm unpopulated live editorial content.
+Review fixes cover relationship order, scoped testimonial attribution, HTML/media rendering, omission of empty authored sections, metrics notes and arbitrary diagram node counts. The later production cleanup removed the historical demo files. Two development fast-refresh warnings remain. Source-only verification cannot confirm unpopulated live editorial content.
 
 ## Footer update
 
 The footer Expertise column keeps its fixed overview link, then lists the public CMS Expertise records in CMS order. Solutions lists public CMS Solution records in CMS order. Both use inline queries and the same locale-specific caches as their listing pages. Company/resources links and the header remain fixed routes with CMS labels, as requested.
 
-One remaining display-text exception was found in `NetSuiteCoreDiagram.jsx`: its EN/FR module names and default central NetSuite label are still embedded in code. Other diagrams use CMS text but retain fixed item slots/geometry; the Home hero retains five audience slots and fixed icons. These were identified, not changed as part of the footer request.
+The later production cleanup deleted the unused NetSuiteCoreDiagram and other legacy diagrams containing embedded business names. Active diagrams use CMS text while retaining their presentation geometry; the Home hero retains five audience slots and fixed icons.

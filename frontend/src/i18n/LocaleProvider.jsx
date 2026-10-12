@@ -8,7 +8,7 @@ import { createTranslator } from "./labels.js";
 export function LocaleProvider({ children }) {
   const { locale: routeLocale } = useParams();
   const locale = normalizeLocale(routeLocale);
-  const { data: labels = {}, isPending: labelsLoading, isError: labelsError, refetch: retryLabels } = useQuery({
+  const { data, isPending: labelsLoading, isError, refetch: retryLabels } = useQuery({
     queryKey: ["labels", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.labels({ locale }, signal);
@@ -16,6 +16,8 @@ export function LocaleProvider({ children }) {
     },
     retry: false,
   });
+  const labels = useMemo(() => data || {}, [data]);
+  const labelsError = isError && !data;
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);

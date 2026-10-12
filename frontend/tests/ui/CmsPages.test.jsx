@@ -12,7 +12,8 @@ import { websiteApi, WebsiteApiError } from "../../src/services/websiteApi.js";
 import { ThemeProvider } from "../../src/theme/ThemeProvider.jsx";
 
 beforeEach(() => {
-  vi.spyOn(websiteApi, "page").mockResolvedValue({ data: { about_title: "CMS About", about_users: [] } });
+  vi.spyOn(websiteApi, "page").mockRejectedValue(new WebsiteApiError("Missing static page", 404));
+  vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { slug: "about-prosperya", title: "CMS About", about_users: [] } });
   vi.spyOn(websiteApi, "caseStudies").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: {} });
@@ -40,10 +41,28 @@ test.each([
   await screen.findByText(locale === "fr" ? /Nos équipes travaillent ensemble/ : /Our teams work together/);
   expect(websiteApi.testimonials).toHaveBeenCalledWith({ locale }, expect.any(AbortSignal));
   if (_name === "about") {
-    expect(websiteApi.platforms).toHaveBeenCalledWith({ locale, category: "we-work-with" }, expect.any(AbortSignal));
+    expect(websiteApi.corporatePage).toHaveBeenCalledWith("about-prosperya", locale, expect.any(AbortSignal));
+    expect(websiteApi.page).not.toHaveBeenCalled();
+    expect(websiteApi.platforms).toHaveBeenCalledWith({ locale, category: "good-company" }, expect.any(AbortSignal));
   } else {
     expect(websiteApi.platforms).not.toHaveBeenCalled();
   }
+});
+
+test("About uses Corporate Page fields, rich sections and selected leaders", async () => {
+  websiteApi.corporatePage.mockResolvedValue({ data: { slug: "about-prosperya", name: "About Prosperya", title: "Our company",
+    description: "<p><strong>Company introduction</strong></p>",
+    sections: [{ title: "Corporate chapter", description: "<p><em>Corporate story</em></p>" }],
+    about_focus: ["<p><strong>Enterprise systems</strong></p>"],
+    about_users: [{ id: "leader", name: "Selected leader", bio: "<p>Leader biography</p>" }] } });
+  renderPage(<AboutPage />);
+  await screen.findByRole("heading", { name: "Our company", level: 1 });
+  expect(screen.getByText("Company introduction").tagName).toBe("STRONG");
+  expect(screen.getByRole("heading", { name: "Corporate chapter" })).toBeInTheDocument();
+  expect(screen.getByText("Corporate story").tagName).toBe("EM");
+  expect(screen.getByText("Enterprise systems").tagName).toBe("STRONG");
+  expect(screen.getByRole("heading", { name: "Selected leader" })).toBeInTheDocument();
+  expect(screen.getByText("Leader biography")).toBeInTheDocument();
 });
 
 test("insights renders API articles with their category and pagination", async () => {

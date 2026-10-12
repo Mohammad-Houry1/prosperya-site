@@ -6,6 +6,8 @@ Solutions list and detail routes use the CMS `Solution` model. Work routes conti
 
 `GET /api/solutions?locale=en|fr` supplies the published cards, images, summaries, diagrams and selected case studies. The proof carousel follows each solution's `related_case_studies` selection order; it does not query a global list of case studies.
 
+The overview's capabilities and outcomes use the selected public Expertise records, in CMS selection order, from that same response. They are the same values shown on Expertise detail. Solutions without those relationships retain their own authored preview values. This preview mapping does not overwrite the Solution detail's capabilities or image/title/description outcomes. Empty columns are omitted, and a single solution's diagram uses a compact desktop card that stacks on mobile.
+
 The `solutions` Page record supplies the shared architecture via `architecture_title`, `architecture_description`, and `architecture_column_1` through `architecture_column_4`. Empty columns and an empty architecture are omitted. The four column positions retain their translated experience, solution, platform and foundation labels.
 
 ## Detail

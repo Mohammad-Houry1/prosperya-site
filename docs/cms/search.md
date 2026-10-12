@@ -1,6 +1,6 @@
-# Website search
+# Search API
 
-The header Search button opens an accessible panel on desktop and mobile. Search is submitted explicitly, not on every keystroke. Results link to published Expertise, Solutions, Work and Insights pages in the selected language. Escape, close and result navigation dismiss the panel; the modal handles focus trapping and restoration.
+The website's search button and panel have been removed from desktop and mobile. The unused frontend component, styles, API method and search UI/browser tests have also been removed. The existing backend endpoint remains available; its contract is documented below.
 
 `GET /api/search?q=...&locale=en|fr&page=1&per_page=20` searches the public title/summary fields of `Expertise`, `Solution`, `CaseStudy` and `Article`. Optional `type` restricts one of `expertise`, `solutions`, `work`, `insights`. Terms are trimmed, require 2–100 characters and are escaped as literal case-insensitive substrings; user input is never executable regex. Results expose only ID, slug, type, public title, plain-text summary and local page link.
 
@@ -12,6 +12,6 @@ Literal substring matching can scan the permitted collections; no claim of index
 
 ## Labels
 
-Import the nine `prosperya.search.*` records added to `docs/cms/prosperya-labels.json` into CMS Translations for both English and French. They are an authoring artifact, not a bundled runtime fallback. The website continues to show full keys for missing labels. Existing loading/failure text uses existing CMS labels.
+The historical `prosperya.search.*` label entries remain in the import manifest but are no longer used by the website interface.
 
-Verification covers literal matching, locale overrides, forbidden/draft/future/deleted records, cross-family pagination, missing grants, empty states, retry, keyboard focus, result navigation and English/French desktop/mobile rendering. Browser tests use mocked public responses; backend tests query only the isolated temporary test database.
+Backend coverage retains literal matching, locale overrides, forbidden/draft/future/deleted records, cross-family pagination and missing grants. Backend tests query only the isolated temporary test database.

@@ -28,8 +28,8 @@ export default function FrequentlyAskedQuestions({ layout = "aside", data = [], 
     >
       {items.map((item) => (
         <Accordion.Item key={item.id} value={item.id}>
-          <Accordion.Control>{item.question}</Accordion.Control>
-          <Accordion.Panel><CmsRichHtml html={item.answer} imageAlt={item.question} /></Accordion.Panel>
+          <Accordion.Control><CmsRichHtml html={item.question} inline /></Accordion.Control>
+          <Accordion.Panel><CmsRichHtml html={item.answer} /></Accordion.Panel>
         </Accordion.Item>
       ))}
     </Accordion>

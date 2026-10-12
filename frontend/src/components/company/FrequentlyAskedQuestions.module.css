@@ -23,10 +23,12 @@
   letter-spacing: var(--tracking-heading);
 }
 .layout p {
-  max-width: 280px;
   color: var(--text-secondary);
   line-height: 1.7;
   font-size: 14px;
+}
+.layout > div:first-child > p {
+  max-width: 280px;
 }
 .item {
   border-bottom: 1px solid var(--border-subtle);
@@ -74,7 +76,7 @@
   .columns {
     gap: 0;
   }
-  .layout p {
+  .layout > div:first-child > p {
     max-width: 400px;
   }
 }

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ResponsiveImage from "../common/ResponsiveImage.jsx";
 import CoverArt from "../visuals/CoverArt.jsx";
 import styles from "./InsightCard.module.css";
+import CmsRichHtml from "../common/CmsRichHtml.jsx";
 
 const date = (value, locale) =>
   new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(value));
@@ -46,7 +47,7 @@ export default function InsightCard({ insight, locale, featured = false, large =
         <div className={styles.featuredCopy}>
           <span className={styles.category}>{insight.category}</span>
           <h3>{insight.title}</h3>
-          <p>{insight.excerpt}</p>
+          <p><CmsRichHtml inline html={insight.excerpt} /></p>
           <Link to={to} className={styles.more}>
             {t("components.insight.insight-card.read-the-full-article-9410c4")}
             <span className="visuallyHidden"> : {insight.title}</span>
@@ -67,7 +68,7 @@ export default function InsightCard({ insight, locale, featured = false, large =
           {insight.title}
         </Link>
       </h3>
-      <p>{insight.excerpt}</p>
+      <p><CmsRichHtml inline html={insight.excerpt} /></p>
       <Meta insight={insight} locale={locale} />
     </article>
   );

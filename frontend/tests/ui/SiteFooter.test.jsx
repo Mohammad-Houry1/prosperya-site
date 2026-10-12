@@ -44,3 +44,21 @@ test("empty collections keep the overview and omit fixed detail links", () => {
   expect(within(screen.getByRole("navigation", { name: "Expertise" })).getAllByRole("link")).toHaveLength(1);
   expect(within(screen.getByRole("navigation", { name: "Solutions" })).queryAllByRole("link")).toHaveLength(0);
 });
+
+test("all five corporate footer links use the CMS names even when page titles are empty", async () => {
+  websiteApi.corporatePages.mockResolvedValue({ data: [
+    { id: "cookies", slug: "cookie-policy", name: "Cookie Policy", title: "Cookie heading" },
+    { id: "about", slug: "about-prosperya", name: "About Prosperya", title: "High-Performance Transformed Enterprise Systems" },
+    { id: "privacy", slug: "privacy-policy", name: "Privacy policy", title: "" },
+    { id: "terms", slug: "terms-of-use", name: "Terms of use", title: "" },
+    { id: "accessibility", slug: "accessibility", name: "Accessibility", title: "" },
+  ] });
+  show("en");
+  const legal = screen.getByRole("navigation", { name: "Legal information" });
+  await within(legal).findByRole("link", { name: "Privacy policy" });
+  expect(within(legal).getAllByRole("link").map(link => link.textContent)).toEqual([
+    "Cookie Policy", "About Prosperya", "Privacy policy", "Terms of use", "Accessibility",
+  ]);
+  expect(within(legal).getByRole("link", { name: "Terms of use" })).toHaveAttribute("href", "/en/terms-of-use");
+  expect(within(legal).queryByText("High-Performance Transformed Enterprise Systems")).not.toBeInTheDocument();
+});

@@ -45,14 +45,39 @@ test.each(["en", "fr"])("case-study detail renders new authored sections, logos 
 });
 
 test("Work filters by the selected industry record's translated name", async () => {
+  vi.mocked(websiteApi.caseStudies).mockResolvedValue({ data: [record, { ...record, id: "finance", slug: "finance", case_study_title: "Finance project", industry_id: "finance-industry", industry_record: { id: "finance-industry", name: "Finance FR" } }] });
   const view = show(false, "fr");
   await screen.findByRole("heading", { name: "Authored project" });
+  const grid = view.container.querySelector('[class*="projectGrid"]');
+  expect(within(grid).getAllByRole("article")).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: "Commerce FR", exact: true }));
-  expect(within(view.container.querySelector('[class*="projectGrid"]')).getAllByRole("article")).toHaveLength(1);
+  expect(within(grid).getAllByRole("article")).toHaveLength(1);
+  expect(within(grid).queryByRole("heading", { name: "Finance project" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Tous les secteurs", exact: true }));
+  expect(within(grid).getAllByRole("article")).toHaveLength(2);
+});
+
+test("Work has only the industry filter and does not request capability options", async () => {
+  show(false);
+  await screen.findByRole("heading", { name: "Authored project" });
+  expect(screen.getByRole("group", { name: "Filter by industry" })).toBeInTheDocument();
+  expect(screen.queryByRole("group", { name: "Filter by capability" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "All capabilities" })).not.toBeInTheDocument();
+  expect(websiteApi.expertise).not.toHaveBeenCalled();
 });
 
 test("a missing case study shows the missing-record state", async () => {
   vi.mocked(websiteApi.caseStudy).mockRejectedValue(Object.assign(new Error("Missing"), { status: 404 }));
   show();
   await screen.findByRole("heading", { name: "Case study not found" });
+});
+
+test("Work renders authored rich summaries without empty image panels", async () => {
+  vi.mocked(websiteApi.caseStudies).mockResolvedValue({ data: [{ ...record, case_study_summary: '<p><strong>Formatted summary</strong></p><script>bad()</script>', case_study_image: null }] });
+  const view = show(false);
+  await screen.findByRole("heading", { name: "Authored project" });
+  const grid = view.container.querySelector('[class*="projectGrid"]');
+  expect(within(grid).getByText("Formatted summary").tagName).toBe("STRONG");
+  expect(grid.querySelector('[class*="projectImage"]')).toBeNull();
+  expect(grid.querySelector("script")).toBeNull();
 });

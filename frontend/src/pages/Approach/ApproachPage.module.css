@@ -45,12 +45,23 @@
 }
 .practice {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   padding: 24px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--bg-card);
+}
+.practiceWithImage {
+  grid-template-columns: 40px minmax(0, 1fr);
+}
+.practiceCopy {
+  min-width: 0;
+}
+.practiceImage {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 .practice > svg {
   color: var(--accent-text);

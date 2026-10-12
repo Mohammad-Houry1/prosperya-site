@@ -3,7 +3,7 @@ import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 import CmsImage from "../../components/common/CmsImage.jsx";
 import { websiteApi } from "../../services/websiteApi.js";
 import { useRef } from "react";
-import { CircleCheck, Infinity as Loop } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import PageHero from "../../components/common/PageHero.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import Section from "../../components/common/Section.jsx";
@@ -31,18 +31,23 @@ function ApproachHero({ locale, approach }) {
   return (
     <div ref={ref} className={styles.heroWrap}>
       <div className={styles.field} aria-hidden="true">
-        <SignalWave shape="rise" progressRef={progress} strands={44} particles={360} />
+        <SignalWave
+          shape="rise"
+          progressRef={progress}
+          strands={44}
+          particles={360}
+        />
       </div>
       <PageHero
         eyebrow={t("pages.approach.approach-page.our-approach-9bce36")}
         title={approach.approach_title}
         titleClassName={styles.title}
-        lead={
-          <CmsRichHtml html={approach.approach_description} />
-        }
+        lead={<CmsRichHtml html={approach.approach_description} />}
         actions={
           <>
-            <PrimaryLink to={`/${locale}/contact`}>{t("pages.approach.approach-page.start-a-conversation-607ba9")}</PrimaryLink>
+            <PrimaryLink to={`/${locale}/contact`}>
+              {t("pages.approach.approach-page.start-a-conversation-607ba9")}
+            </PrimaryLink>
             <PrimaryLink to={`/${locale}/expertise`} variant="ghost">
               {t("pages.approach.approach-page.explore-our-services-8dc8aa")}
             </PrimaryLink>
@@ -54,36 +59,80 @@ function ApproachHero({ locale, approach }) {
 }
 
 export default function ApproachPage() {
-  const {locale, t } = useLocale();
+  const { locale, t } = useLocale();
 
-  const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
+  const {
+    data: faqs = [],
+    isPending: faqsIsPending,
+    isError: faqsIsError,
+    refetch: faqsRefetch,
+  } = useQuery({
     queryKey: ["faq", locale, "approach"],
     queryFn: async ({ signal }) => {
-      const response = await websiteApi.faqs({ locale, category: "approach" }, signal);
+      const response = await websiteApi.faqs(
+        { locale, category: "approach" },
+        signal,
+      );
       return response.data || [];
     },
   });
-  const { isLoading: processIsLoading, isError: processIsError, refetch: processRefetch, data: approach, error: processError } = useQuery({
-    queryKey: ["approach", locale, 'our-approach'],
-    queryFn: async ({ signal }) => (await websiteApi.approach('our-approach', locale, signal)).data,
-    retry: (count, error) => error?.status !== 404 && error?.status !== 403 && count < 2,
+  const {
+    isLoading: processIsLoading,
+    isError: processIsError,
+    refetch: processRefetch,
+    data: approach,
+    error: processError,
+  } = useQuery({
+    queryKey: ["corporate-page", "our-approach", locale],
+    queryFn: async ({ signal }) =>
+      (await websiteApi.approach("our-approach", locale, signal)).data,
+    retry: (count, error) =>
+      error?.status !== 404 && error?.status !== 403 && count < 2,
   });
   const process = adaptMethodology(approach?.methodology);
   const copy = {
-    loop: t('pages.approach.approach.copy.copy.continuous-value-9a31bf'), howEyebrow: t('pages.approach.approach.copy.copy.how-we-work-b7ece1'), howTitle: t('pages.approach.approach.copy.copy.a-disciplined-process-measurable-outcomes-c511aa'),
-    practices: (approach?.how_we_work ?? []).map(row=>[row.work_image,row.work_title,row.work_description,row.work_points || []]),
-    collabEyebrow: t('pages.approach.approach.copy.copy.collaboration-model-ad6c53'), collabTitle: approach?.collaboration_title, collabPoints: approach?.collaboration_items ?? [],
-    collabNodes: ['client','shared','value','company'].map(key=>[approach?.[`diagram_${key}_title`],approach?.[`diagram_${key}_description`]]),
-    principlesEyebrow: t('pages.approach.approach.copy.copy.delivery-principles-4ff02e'), principlesTitle: approach?.principles_title,
-    principles: (approach?.principles ?? []).map(row=>[row.principle_image,row.principle_title,row.principle_description]),
+    loop: t("pages.approach.approach.copy.copy.continuous-value-9a31bf"),
+    howEyebrow: t("pages.approach.approach.copy.copy.how-we-work-b7ece1"),
+    howTitle: t(
+      "pages.approach.approach.copy.copy.a-disciplined-process-measurable-outcomes-c511aa",
+    ),
+    practices: (approach?.how_we_work ?? []).map((row) => [
+      row.work_image,
+      row.work_title,
+      row.work_description,
+      row.work_points || [],
+    ]),
+    collabEyebrow: t(
+      "pages.approach.approach.copy.copy.collaboration-model-ad6c53",
+    ),
+    collabTitle: approach?.collaboration_title,
+    collabPoints: approach?.collaboration_items ?? [],
+    collabNodes: ["client", "shared", "value", "company"].map((key) => [
+      approach?.[`diagram_${key}_title`],
+      approach?.[`diagram_${key}_description`],
+    ]),
+    principlesEyebrow: t(
+      "pages.approach.approach.copy.copy.delivery-principles-4ff02e",
+    ),
+    principlesTitle: approach?.principles_title,
+    principles: (approach?.principles ?? []).map((row) => [
+      row.principle_image,
+      row.principle_title,
+      row.principle_description,
+    ]),
   };
   useDocumentMeta({
     title: `${approach?.approach_title || t("pages.approach.approach-page.our-approach-9bce36")} — Prosperya`,
-    model: 'Approach',
+    model: "Approach",
     description: approach?.approach_description,
   });
   if (processIsLoading) return <PageLoader />;
-  if (processError?.status === 404 || (!processIsError && !approach)) return <Section><EmptyState /></Section>;
+  if (processError?.status === 404 || (!processIsError && !approach))
+    return (
+      <Section>
+        <EmptyState />
+      </Section>
+    );
   if (processIsError || !approach)
     return (
       <Section>
@@ -92,82 +141,119 @@ export default function ApproachPage() {
     );
   return (
     <>
-      <ApproachHero key={`hero:${locale}:our-approach`} locale={locale} approach={approach} />
-      {approach.approach_image?.url && <Section><CmsImage media={approach.approach_image} /></Section>}
-      {process.length > 0 && <DeliverySequence key={`stages:${locale}:our-approach`} steps={process} locale={locale} />}
-      <div className={styles.loopWrap}>
-        <p className={styles.loop}>
-          <Loop size={34} strokeWidth={1.2} aria-hidden="true" />
-          {copy.loop}
-        </p>
-      </div>
-{copy.practices.length > 0 && (
-      <Section>
-        <SectionHeader eyebrow={copy.howEyebrow} title={copy.howTitle} />
-        <div className={styles.practices}>
-          {copy.practices.map(([icon, title, text, points], index) => (
-            <article key={title} className={styles.practice} data-reveal="card" style={{ "--i": index }}>
-              <CmsImage media={icon} />
-              <div>
-                <h3>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  {title}
-                </h3>
-                <CmsRichHtml html={text} />
+      <ApproachHero
+        key={`hero:${locale}:our-approach`}
+        locale={locale}
+        approach={approach}
+      />
+      {approach.approach_image?.url && (
+        <Section>
+          <CmsImage media={approach.approach_image} />
+        </Section>
+      )}
+      {process.length > 0 && (
+        <DeliverySequence
+          key={`stages:${locale}:our-approach`}
+          steps={process}
+          locale={locale}
+        />
+      )}
+      {copy.practices.length > 0 && (
+        <Section>
+          <SectionHeader eyebrow={copy.howEyebrow} title={copy.howTitle} />
+          <div className={styles.practices}>
+            {copy.practices.map(([icon, title, text, points], index) => (
+              <article
+                key={title}
+                className={`${styles.practice} ${icon?.url ? styles.practiceWithImage : ""}`}
+                data-reveal="card"
+                style={{ "--i": index }}
+              >
+                <CmsImage media={icon} className={styles.practiceImage} />
+                <div className={styles.practiceCopy}>
+                  <h3>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    {title}
+                  </h3>
+                  <CmsRichHtml html={text} />
+                  <ul>
+                    {points.map((point) => (
+                      <li key={point}>
+                        <CmsRichHtml inline html={point} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+        </Section>
+      )}
+      {(copy.collabTitle ||
+        copy.collabPoints.length > 0 ||
+        copy.collabNodes.some(([title, description]) => title || description) ||
+        copy.principles.length > 0 ||
+        copy.principlesTitle) && (
+        <Section>
+          <div className={styles.split}>
+            {(copy.collabTitle ||
+              copy.collabPoints.length > 0 ||
+              copy.collabNodes.some(
+                ([title, description]) => title || description,
+              )) && (
+              <div className={styles.collab}>
+                <div>
+                  <Eyebrow>{copy.collabEyebrow}</Eyebrow>
+                  <h2>{copy.collabTitle}</h2>
+                  <ul>
+                    {copy.collabPoints.map((point) => (
+                      <li key={point}>
+                        <CircleCheck
+                          size={18}
+                          strokeWidth={1.4}
+                          aria-hidden="true"
+                        />
+                        <CmsRichHtml inline html={point} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <CollaborationVenn nodes={copy.collabNodes} />
+              </div>
+            )}
+            {(copy.principlesTitle || copy.principles.length > 0) && (
+              <div className={styles.principles}>
+                <Eyebrow>{copy.principlesEyebrow}</Eyebrow>
+                <h2>{copy.principlesTitle}</h2>
                 <ul>
-                  {points.map((point) => (
-                    <li key={point}>{point}</li>
+                  {copy.principles.map(([icon, title, text]) => (
+                    <li key={title}>
+                      <span>
+                        <CmsImage media={icon} />
+                      </span>
+                      <strong>{title}</strong>
+                      <CmsRichHtml html={text} />
+                    </li>
                   ))}
                 </ul>
               </div>
-            </article>
-          ))}
-        </div>
-      </Section>
+            )}
+          </div>
+        </Section>
       )}
-{(copy.collabTitle || copy.collabPoints.length > 0 || copy.collabNodes.some(([title, description]) => title || description) || copy.principles.length > 0 || copy.principlesTitle) && (
-      <Section>
-        <div className={styles.split}>
-          {(copy.collabTitle || copy.collabPoints.length > 0 || copy.collabNodes.some(([title, description]) => title || description)) && <div className={styles.collab}>
-            <div>
-              <Eyebrow>{copy.collabEyebrow}</Eyebrow>
-              <h2>{copy.collabTitle}</h2>
-              <ul>
-                {copy.collabPoints.map((point) => (
-                  <li key={point}>
-                    <CircleCheck size={18} strokeWidth={1.4} aria-hidden="true" />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <CollaborationVenn nodes={copy.collabNodes} />
-          </div>}
-          {(copy.principlesTitle || copy.principles.length > 0) && <div className={styles.principles}>
-            <Eyebrow>{copy.principlesEyebrow}</Eyebrow>
-            <h2>{copy.principlesTitle}</h2>
-            <ul>
-              {copy.principles.map(([icon, title, text]) => (
-                <li key={title}>
-                  <span>
-                    <CmsImage media={icon} />
-                  </span>
-                  <strong>{title}</strong>
-                  <CmsRichHtml html={text} />
-                </li>
-              ))}
-            </ul>
-          </div>}
-        </div>
-      </Section>
-      )}
-      <FrequentlyAskedQuestions data={faqs} isPending={faqsIsPending} isError={faqsIsError} refetch={faqsRefetch} layout="columns" />
+      <FrequentlyAskedQuestions
+        data={faqs}
+        isPending={faqsIsPending}
+        isError={faqsIsError}
+        refetch={faqsRefetch}
+        layout="columns"
+      />
       <CTASection
         variant="split"
         title={t("pages.approach.approach-page.map-your-path-with-us-0a8424")}
-        description={
-          t("pages.approach.approach-page.share-your-goals-and-we-ll-craft-bb713a")
-        }
+        description={t(
+          "pages.approach.approach-page.share-your-goals-and-we-ll-craft-bb713a",
+        )}
       />
     </>
   );

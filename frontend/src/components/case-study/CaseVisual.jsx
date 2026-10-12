@@ -1,8 +1,9 @@
 import ResponsiveImage from "../common/ResponsiveImage.jsx";
+import { hasCaseStudyImage } from "./caseStudyMedia.js";
 
 // Only authored media is rendered.
 export default function CaseVisual({ study, priority = false, alt = "", sizes }) {
-  if (study.image)
+  if (hasCaseStudyImage(study))
     return (
       <ResponsiveImage
         src={study.image.src}

@@ -4,6 +4,7 @@ import PageHero from "../../components/common/PageHero.jsx";
 import Section from "../../components/common/Section.jsx";
 import { Link } from "react-router-dom";
 import CmsImage from "../../components/common/CmsImage.jsx";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
 import CTASection from "../../components/common/CTASection.jsx";
 import PageLoader from "../../components/feedback/PageLoader.jsx";
@@ -71,15 +72,15 @@ export default function ExpertisePage() {
                   </Link>
                 </h2>
                 {item.tagline && (
-                  <p className={styles.tagline}>{item.tagline}</p>
+                  <p className={styles.tagline}><CmsRichHtml inline html={item.tagline} /></p>
                 )}
                 {item.summary && (
-                  <p className={styles.summary}>{item.summary}</p>
+                  <CmsRichHtml className={styles.summary} html={item.summary} />
                 )}
                 {item.capabilities?.length > 0 && (
                   <ul className={styles.capabilities}>
                     {item.capabilities.map((service) => (
-                      <li key={service}>{service}</li>
+                      <li key={service}><CmsRichHtml inline html={service} /></li>
                     ))}
                   </ul>
                 )}

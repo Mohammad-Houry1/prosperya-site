@@ -10,4 +10,8 @@ return [
     'cache_seconds' => (int) env('WEBSITE_KEY_CACHE_SECONDS', 60),
     'public_url' => env('WEBSITE_PUBLIC_URL', env('APP_URL', 'http://localhost:8001')),
     'frontend_dist' => dirname(__DIR__, 2).'/frontend/dist',
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY', ''),
+        'secret' => env('RECAPTCHA_SECRET_KEY', ''),
+    ],
 ];

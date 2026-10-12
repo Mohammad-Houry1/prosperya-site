@@ -5,10 +5,10 @@ import { NavLink } from "react-router-dom";
 import BrandMark from "./BrandMark.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import LocaleSwitcher from "./LocaleSwitcher.jsx";
-import SiteSearch from "./SiteSearch.jsx";
 import PrimaryLink from "../common/PrimaryLink.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./SiteHeader.module.css";
+import ShellLabel from "./ShellLabel.jsx";
 const links = [
   "expertise",
   "solutions",
@@ -45,17 +45,16 @@ export default function SiteHeader() {
               }
               to={`/${locale}/${key}`}
             >
-              {t(`nav.${key}`)}
+              <ShellLabel name={`nav.${key}`} />
             </NavLink>
           ))}
         </nav>
         <div className={styles.actions}>
-          <SiteSearch />
           <div className={styles.desktopActions}>
             <LocaleSwitcher />
             <ThemeSwitcher />
             <PrimaryLink to={`/${locale}/contact`} className={styles.cta}>
-              {t("nav.contact")}
+              <ShellLabel name="nav.contact" width={96} />
             </PrimaryLink>
           </div>
           <Burger
@@ -100,7 +99,7 @@ export default function SiteHeader() {
               style={{ "--i": index }}
             >
               <span>{String(index + 1).padStart(2, "0")}</span>
-              {t(`nav.${key}`)}
+              <ShellLabel name={`nav.${key}`} />
             </NavLink>
           ))}
         </nav>
@@ -109,7 +108,7 @@ export default function SiteHeader() {
           onClick={close}
           className={styles.mobileCta}
         >
-          {t("nav.contact")}
+          <ShellLabel name="nav.contact" width={96} />
         </PrimaryLink>
         <div className={styles.mobileControls}>
           <LocaleSwitcher onNavigate={close} />

@@ -7,12 +7,14 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { replaceLocaleInPath } from "../../i18n/locale.js";
 import CorporatePageLinks from "../legal/CorporatePageLinks.jsx";
 import styles from "./SiteFooter.module.css";
-const sections = (t, expertise, solutions) => [
+import ShellLabel from "./ShellLabel.jsx";
+import Skeleton from "../feedback/Skeleton.jsx";
+const sections = (expertise, solutions) => [
   {
     key: "expertise",
-    title: t("nav.expertise"),
+    title: "nav.expertise",
     links: [
-      ["expertise", t("footer.expertise_overview")],
+      ["expertise", null, "footer.expertise_overview"],
       ...expertise.filter(item => item.slug && item.title).map(item => [
         `expertise/${encodeURIComponent(item.slug)}`, item.title,
       ]),
@@ -20,40 +22,40 @@ const sections = (t, expertise, solutions) => [
   },
   {
     key: "solutions",
-    title: t("nav.solutions"),
+    title: "nav.solutions",
     links: solutions.filter(item => item.slug && item.title).map(item => [
       `solutions/${encodeURIComponent(item.slug)}`, item.title,
     ]),
   },
   {
     key: "company",
-    title: t("footer.company"),
+    title: "footer.company",
     links: [
-      ["about", t("footer.about_us")],
-      ["approach", t("footer.our_approach")],
-      ["contact", t("nav.contact")],
+      ["about", null, "footer.about_us"],
+      ["approach", null, "footer.our_approach"],
+      ["contact", null, "nav.contact"],
     ],
   },
   {
     key: "resources",
-    title: t("footer.resources"),
+    title: "footer.resources",
     links: [
-      ["insights", t("footer.insights")],
-      ["work", t("footer.case_studies")],
+      ["insights", null, "footer.insights"],
+      ["work", null, "footer.case_studies"],
     ],
   },
 ];
 export default function SiteFooter() {
   const { locale, t } = useLocale();
   const location = useLocation();
-  const { data: expertise = [] } = useQuery({
+  const { data: expertise = [], isPending: expertisePending } = useQuery({
     queryKey: ["capabilities", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.expertise({ locale }, signal);
       return (response.data || []).map(adaptExpertise);
     },
   });
-  const { data: solutions = [] } = useQuery({
+  const { data: solutions = [], isPending: solutionsPending } = useQuery({
     queryKey: ["solutions", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.solutions({ locale }, signal);
@@ -66,27 +68,28 @@ export default function SiteFooter() {
         <div className={styles.top}>
           <div className={styles.identity}>
             <BrandMark />
-            <p>{t("footer.statement")}</p>
-            <span>{t("footer.location")}</span>
+            <p><ShellLabel name="footer.statement" width="90%" /></p>
+            <span><ShellLabel name="footer.location" /></span>
           </div>
-          {sections(t, expertise, solutions).map((section) => (
+          {sections(expertise, solutions).map((section) => (
             <nav
               key={section.key}
-              aria-label={section.title}
+              aria-label={t(section.title)}
               className={styles.column}
             >
-              <h2>{section.title}</h2>
-              {section.links.map(([path, label]) => (
+              <h2><ShellLabel name={section.title} /></h2>
+              {section.links.map(([path, label, labelKey]) => (
                 <Link key={path} to={`/${locale}/${path}`}>
-                  {label}
+                  {labelKey ? <ShellLabel name={labelKey} /> : label}
                 </Link>
               ))}
+              {((section.key === "expertise" && expertisePending) || (section.key === "solutions" && solutionsPending)) && <div className={styles.pendingLinks} aria-busy="true">{[0, 1, 2].map(index => <Skeleton key={index} width="80%" height={14} />)}</div>}
             </nav>
           ))}
         </div>
         <div className={styles.bottom}>
           <span>
-            © {new Date().getFullYear()} Prosperya. {t("footer.rights")}
+            © {new Date().getFullYear()} Prosperya. <ShellLabel name="footer.rights" width={120} />
           </span>
           <nav
             aria-label={t("components.layout.site-footer.language-cff648")}

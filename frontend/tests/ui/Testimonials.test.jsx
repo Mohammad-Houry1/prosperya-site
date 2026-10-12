@@ -1,5 +1,6 @@
 import { cmsLocale } from "../cmsFixtures.js";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { render } from "../renderWithMantine.jsx";
 import { expect, test } from "vitest";
 import { LocaleContext } from "../../src/i18n/LocaleContext.jsx";
 import Testimonials from "../../src/components/company/Testimonials.jsx";

@@ -55,7 +55,7 @@
   min-width: 0;
   transition: transform 420ms var(--ease-out);
 }
-.text strong {
+.text > strong {
   font-size: clamp(19px, 1.7vw, 25px);
   font-weight: 350;
   letter-spacing: var(--tracking-heading);

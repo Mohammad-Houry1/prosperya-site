@@ -10,12 +10,13 @@ export default function Newsletter({ title }) {
   const {locale, t } = useLocale();
 
   const [state, setState] = useState("idle");
+  const [notice, setNotice] = useState("");
   const lock = useRef(false);
   const { mutateAsync: subscribe } = useMutation({
     mutationFn: async (email) => {
       const response = await websiteApi.newsletter({ email, origin: "footer", locale, website: "" });
       if (!response.data.accepted) throw new Error("Newsletter request was not accepted.");
-      return response.data;
+      return { ...response.data, message: response.message };
     },
     retry: false,
     gcTime: 0,
@@ -29,8 +30,9 @@ export default function Newsletter({ title }) {
     lock.current = true;
     setState("sending");
     try {
-      await subscribe(email);
-      setState("done");
+      const result = await subscribe(email);
+      setNotice(result.message || "");
+      setState(result.already_subscribed ? "already-subscribed" : "done");
       form.reset();
     } catch (error) {
       setState(error.status === 429 ? "rate-limited" : "error");
@@ -67,7 +69,9 @@ export default function Newsletter({ title }) {
           <ArrowRight size={16} strokeWidth={1.6} aria-hidden="true" />
         </button>
         <p id="newsletter-status" role="status" className={styles.status} data-state={state}>
-          {state === "done"
+          {state === "already-subscribed"
+            ? notice
+            : state === "done"
             ? t("components.insight.newsletter.thank-you-your-subscription-was-received-b81230")
             : state === "invalid"
               ? t("components.insight.newsletter.enter-a-valid-email-address-e89bf5")

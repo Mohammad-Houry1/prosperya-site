@@ -122,19 +122,19 @@ export default function DeliverySequence({ steps }) {
                 <div key={active.id} className={styles.panelBody}>
                   <h2>{active.title}</h2>
                   <CmsImage media={active.image} />
-                  {active.descriptions?.map((html, descriptionIndex) => <CmsRichHtml key={descriptionIndex} html={html} />)}
+                  {active.descriptions?.map((html, descriptionIndex) => <CmsRichHtml key={descriptionIndex} html={html} className={styles.description} />)}
                   {active.activities && (
-                    <ul>
+                    <ul className={styles.activities}>
                       {active.activities.map((activity) => (
-                        <li key={activity}>{activity}</li>
+                        <li key={activity}><CmsRichHtml inline html={activity} /></li>
                       ))}
                     </ul>
                   )}
                   {active.deliverable && (
-                    <p className={styles.deliverable}>
+                    <div className={styles.deliverable}>
                       <span>{t("pages.approach.delivery-sequence.hand-over-513516")}</span>
-                      {active.deliverable}
-                    </p>
+                      <CmsRichHtml inline html={active.deliverable} />
+                    </div>
                   )}
                   <div className={styles.controls}>
                     <button type="button" disabled={index === 0} onClick={() => go(index - 1)} aria-label={t("pages.approach.delivery-sequence.previous-stage-1b72b3")}>

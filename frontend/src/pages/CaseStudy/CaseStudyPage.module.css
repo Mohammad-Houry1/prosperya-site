@@ -4,6 +4,10 @@
   text-wrap: balance;
 }
 
+.textHero h1 {
+  max-width: 960px;
+}
+
 .disclaimer {
   color: var(--text-tertiary);
   font-size: 11px;
@@ -53,13 +57,22 @@
   padding-top: 64px;
 }
 
+.story.singleColumn,
+.architecture.singleColumn {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.compactStory {
+  padding-top: clamp(28px, 4vw, 48px);
+}
+
 .navigation {
   align-self: start;
   position: sticky;
   top: 110px;
 }
 
-.navigation > span, .platforms > span, .sectionLabel {
+.contents > span, .platforms > span, .sectionLabel {
   color: var(--accent-text);
   font-size: 11px;
   letter-spacing: var(--tracking-label);
@@ -92,6 +105,27 @@
   margin-top: 42px;
 }
 
+.navigation > .platforms:first-child {
+  margin-top: 0;
+}
+
+.standaloneStack {
+  margin-top: 28px;
+  padding-block: 24px;
+  border-block: 1px solid var(--border-subtle);
+}
+
+.standaloneStack .platforms {
+  margin-top: 0;
+}
+
+.standaloneStack ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 36px;
+  margin-top: 12px;
+}
+
 .platforms li {
   display: grid;
   gap: 4px;
@@ -119,6 +153,11 @@
   margin-bottom: 48px;
   border-bottom: 1px solid var(--border-subtle);
   scroll-margin-top: 110px;
+}
+
+.section:last-child {
+  padding-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .section h2 {
@@ -182,7 +221,7 @@
   line-height: 1.6;
 }
 
-.deliverables li span {
+.deliverables > li > span {
   color: var(--accent-text);
   font-size: 10px;
   padding-top: 3px;
@@ -213,7 +252,7 @@
   color: var(--accent-text);
 }
 
-.architecture p {
+.architectureCaption {
   color: var(--text-tertiary);
   font-size: 12px;
   line-height: 1.7;
@@ -303,7 +342,7 @@
   object-fit: cover;
 }
 
-.next span {
+.nextEyebrow {
   color: var(--accent-text);
   font-size: 11px;
   letter-spacing: var(--tracking-label);
@@ -317,11 +356,16 @@
   text-wrap: balance;
 }
 
-.next p {
+.nextSummary {
+  display: block;
   max-width: 55ch;
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.nextText {
+  grid-template-columns: minmax(0, 1fr) 28px;
 }
 
 .next > svg {
@@ -365,6 +409,9 @@
   }
   .next {
     grid-template-columns: minmax(120px, .3fr) minmax(0, 1fr);
+  }
+  .nextText {
+    grid-template-columns: minmax(0, 1fr);
   }
   .next > svg {
     display: none;
@@ -417,6 +464,7 @@
 }
 
 .subtitle {
+  margin: 0 0 24px;
   color: var(--text-secondary);
   font-size: 18px;
   line-height: 1.6;

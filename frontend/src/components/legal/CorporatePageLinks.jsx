@@ -19,6 +19,6 @@ export default function CorporatePageLinks({ inline = false }) {
   if (isError) return null;
   return pages.filter((page) => page.slug).map((page) => {
     const path = corporatePagePath(locale, page.slug);
-    return <Link key={page.id || page.slug} to={path} aria-current={pathname === path ? "page" : undefined}>{page.title}</Link>;
+    return <Link key={page.id || page.slug} to={path} aria-current={pathname === path ? "page" : undefined}>{page.name || page.title}</Link>;
   });
 }

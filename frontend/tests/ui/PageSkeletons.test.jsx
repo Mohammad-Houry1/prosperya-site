@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { render } from '../renderWithMantine.jsx';
 import { MemoryRouter } from 'react-router-dom';
 import { test, expect, vi } from 'vitest';
 import PageLoader from '../../src/components/feedback/PageLoader.jsx';
@@ -12,4 +13,5 @@ test.each([
   render(<MemoryRouter initialEntries={[path]}><PageLoader /></MemoryRouter>);
   expect(screen.getByRole('status')).toHaveAttribute('data-skeleton',kind);
   expect(screen.getByRole('status')).toHaveAttribute('aria-busy','true');
+  expect(screen.getByRole('status').querySelector('.mantine-Skeleton-root')).toBeInTheDocument();
 });

@@ -99,9 +99,7 @@ export default function ArticlePage() {
         <RevealText as="h1" onLoad>
           {item.title}
         </RevealText>
-        <p className={styles.dek}>
-          {item.excerpt}
-        </p>
+        <CmsRichHtml className={styles.dek} html={item.excerpt} />
         <p className={styles.meta}>
           {item.publishedAt && <span>
             <CalendarDays size={14} strokeWidth={1.5} aria-hidden="true" />

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\{Approach, Article, CaseStudy, Expertise, Industry, Page, Platform, Solution, Testimonial, User};
+use App\Models\{Approach, Article, CaseStudy, CorporatePage, Expertise, Industry, Page, Platform, Solution, Testimonial, User};
 use App\Enums\AnimatedVisualType;
 use App\Models\Base\ContentEntity;
 
@@ -17,6 +17,7 @@ final class MarketingPayload
         CaseStudy::class => ['case_study_title', 'case_study_chapeau', 'case_study_client', 'case_study_industry', 'case_study_duration', 'case_study_summary', 'case_study_description', 'case_study_challenge', 'case_study_solution', 'case_study_results', 'case_study_before_title', 'case_study_after_title', 'case_study_metrics_note'],
         Approach::class => ['approach_title', 'approach_description', 'collaboration_title', 'principles_title', 'diagram_client_title', 'diagram_client_description', 'diagram_shared_title', 'diagram_shared_description', 'diagram_company_title', 'diagram_company_description', 'diagram_value_title', 'diagram_value_description'],
         Page::class => ['description', 'content', 'about_title', 'about_story_title', 'about_work_title', 'about_work_description', 'architecture_title', 'architecture_description'],
+        CorporatePage::class => ['content', 'about_title', 'about_story_title', 'about_work_title', 'about_work_description'],
     ];
 
     private const LISTS = [
@@ -25,6 +26,7 @@ final class MarketingPayload
         CaseStudy::class => ['case_study_challenge_points', 'case_study_before', 'case_study_after', 'case_study_deliverables'],
         Approach::class => ['collaboration_items'],
         Page::class => ['about_focus', 'architecture_column_1', 'architecture_column_2', 'architecture_column_3', 'architecture_column_4'],
+        CorporatePage::class => ['about_focus'],
     ];
 
     private const ROWS = [
@@ -51,6 +53,7 @@ final class MarketingPayload
         CaseStudy::class => ['sections', 'implementation_steps', 'case_study_metrics', 'case_study_hero_facts', 'content_sections', 'technology_stack'],
         Approach::class => ['methodology', 'how_we_work', 'principles'],
         Page::class => ['sections', 'about_steps', 'about_principles', 'about_facts'],
+        CorporatePage::class => ['about_steps', 'about_principles', 'about_facts'],
     ];
 
     private const RELATIONS = [
@@ -58,6 +61,7 @@ final class MarketingPayload
         Solution::class => ['related_expertise' => Expertise::class, 'related_case_studies' => CaseStudy::class, 'related_articles' => Article::class],
         CaseStudy::class => ['related_expertise' => Expertise::class, 'related_solutions' => Solution::class, 'platforms' => Platform::class, 'case_study_testimonial' => Testimonial::class],
         Page::class => ['about_users' => User::class],
+        CorporatePage::class => ['about_users' => User::class],
     ];
 
     public function __construct(private readonly PublicContent $content, private readonly PublicPayload $payload, private readonly WebsiteAccess $access) {}
@@ -88,7 +92,7 @@ final class MarketingPayload
                 return $data;
             }, array_values((array) $record->{$field}));
         }
-        $imageField = match ($model) { Expertise::class => 'expertise_image', Solution::class => 'solution_image', CaseStudy::class => 'case_study_image', Approach::class => 'approach_image', Page::class => 'cover_image', default => null };
+        $imageField = match ($model) { Expertise::class => 'expertise_image', Solution::class => 'solution_image', CaseStudy::class => 'case_study_image', Approach::class => 'approach_image', Page::class, CorporatePage::class => 'cover_image', default => null };
         if ($imageField) $result[$imageField] = $this->payload->media($record->{$imageField}, $locale);
         if ($model === CaseStudy::class) {
             $result['case_study_gallery'] = array_values(array_filter(array_map(fn ($media) => $this->payload->media($media, $locale), (array) $record->case_study_gallery)));

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { mockCms, caseStudy } from "./cmsFixtures.js";
+import { mockCms, caseStudy, labels } from "./cmsFixtures.js";
 
 const pixel = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=";
 const types = ["flowing-lines", "consolidation", "workflow", "network", "insight"];
@@ -32,8 +32,13 @@ for (const locale of ["en", "fr"]) {
     await page.goto(`/${locale}/work`);
     const grid = page.locator('main [class*="projectGrid"]');
     await expect(grid.getByRole("article")).toHaveCount(5);
+    const copy = labels(locale);
+    await expect(page.getByRole("group", { name: copy["prosperya.pages.work.work-page.filter-by-capability-9f728f"] })).toHaveCount(0);
+    await expect(page.getByRole("group", { name: copy["prosperya.pages.work.work-page.filter-by-industry-3fbb2d"] })).toBeVisible();
     await page.getByRole("button", { name: "Finance CMS", exact: true }).click();
     await expect(grid.getByRole("article")).toHaveCount(2);
+    await page.getByRole("button", { name: copy["prosperya.pages.work.work-page.all-industries-42b72e"], exact: true }).click();
+    await expect(grid.getByRole("article")).toHaveCount(5);
     await page.setViewportSize({ width: 390, height: 844 });
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: `../.verification/work-${locale}-mobile.png`, fullPage: true });

@@ -14,7 +14,7 @@ Subsequent Home update: the requested Home layout is connected to four newest Ex
 | Contact | Public form options, FAQs, validation and submission | No missing basic API connection identified. Verify project-type/stage publication and actual email/submission setup separately; browser fixtures do not establish live delivery. |
 | Legal | Public corporate pages, categories, rich text, dates and SEO | Backend exposes section media, but `LegalPage.jsx` drops it in the layout adapter. Missing records also share generic failure feedback. |
 
-The unused `ConnectionMesh` and `NetSuiteCoreDiagram` components still contain embedded business names; they are no longer imported by Expertise details. Verify a production import path before treating their source as visible hardcoded content. Home's foundation columns are authored CMS data, not the old fixed NetSuite module diagram.
+The subsequent production cleanup deleted the unused legacy diagrams, demo datasets, copy files and removed Home foundation components. Current active source imports only the CMS-connected pages and their required presentation code. The table above is a historical audit; current About/Home/Approach mappings are documented in their individual CMS notes.
 
 ## Recommended order after search
 

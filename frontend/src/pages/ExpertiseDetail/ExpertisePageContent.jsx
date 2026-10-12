@@ -57,7 +57,7 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
             { label: t("pages.expertise-detail.expertise-page-content.home-ded702"), to: `/${locale}` },
             { label: t("nav.expertise"), to: `/${locale}/expertise` }, { label: page.title },
           ]}
-          lead={<>{page.tagline && <p>{page.tagline}</p>}<CmsRichHtml html={page.description || page.summary} imageAlt={page.title} /></>}
+          lead={<>{page.tagline && <p><CmsRichHtml inline html={page.tagline} /></p>}<CmsRichHtml html={page.description || page.summary} imageAlt={page.title} /></>}
           actions={<>
             <PrimaryLink to={`/${locale}/contact`}>{t("pages.expertise-detail.expertise-page-content.start-your-transformation-6e62e2")}</PrimaryLink>
             <PrimaryLink to={`/${locale}/approach`} variant="ghost">{t("pages.expertise-detail.expertise-page-content.explore-our-approach-de10c8")}</PrimaryLink>
@@ -99,8 +99,8 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
       <ContentLinks title={t("nav.work")} items={page.related_case_studies} field="case_study_title" route="work" />
       {page.platforms?.length > 0 && <Section><h2>{t("about.platforms_eyebrow")}</h2><ul className={styles.platforms}>{page.platforms.map(platform => <li key={platform.id}><CmsImage media={platform.logo_image} /><span>{platform.name}</span></li>)}</ul></Section>}
       <MarketingSections steps={page.steps} metrics={page.metrics} note={page.metricsNote} />
-      {page.capabilities?.length > 0 && <Section><h2>{t("components.expertise.solution-row.capabilities-912c87")}</h2><ul className={styles.authoredList}>{page.capabilities.map((value,index)=><li key={index}>{value}</li>)}</ul></Section>}
-      {page.outcomes?.length > 0 && <Section><h2>{t("components.expertise.solution-row.outcomes-28c664")}</h2><ul className={styles.authoredList}>{page.outcomes.map((value,index)=><li key={index}>{value}</li>)}</ul></Section>}
+      {page.capabilities?.length > 0 && <Section><h2>{t("components.expertise.solution-row.capabilities-912c87")}</h2><ul className={styles.authoredList}>{page.capabilities.map((value,index)=><li key={index}><CmsRichHtml inline html={value} /></li>)}</ul></Section>}
+      {page.outcomes?.length > 0 && <Section><h2>{t("components.expertise.solution-row.outcomes-28c664")}</h2><ul className={styles.authoredList}>{page.outcomes.map((value,index)=><li key={index}><CmsRichHtml inline html={value} /></li>)}</ul></Section>}
       {related.length > 0 && <Section>
         <SectionHeader eyebrow={t("pages.expertise-detail.expertise-page-content.related-expertise-d6a7c0")} title={t("pages.expertise-detail.expertise-page-content.explore-complementary-capabilities-9969cf")} />
         <ul className={styles.related}>{related.map((item, index) => <li key={item.id || item.slug} data-reveal="card" style={{ "--i": index }}>

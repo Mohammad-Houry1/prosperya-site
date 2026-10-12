@@ -1,5 +1,5 @@
 import { screen, fireEvent } from "@testing-library/react";
-import { MemoryRouter, Routes, Route, Link } from "react-router-dom";
+import { MemoryRouter, Routes, Route, Link, useParams } from "react-router-dom";
 import { beforeEach, afterEach, expect, test, vi } from "vitest";
 import { render } from "../renderWithQueries.jsx";
 import { cmsLocale } from "../cmsFixtures.js";
@@ -22,7 +22,7 @@ afterEach(() => vi.restoreAllMocks());
 function show(locale = "en", slug = "our-approach") {
   return render(<ThemeProvider><MemoryRouter initialEntries={[`/${locale}/approach/${slug}`]}><LocaleContext.Provider value={cmsLocale(locale)}><Routes><Route path="/:locale/approach/:slug" element={<ApproachPage />} /></Routes></LocaleContext.Provider></MemoryRouter></ThemeProvider>);
 }
-test.each(["en", "fr"])("Approach loads its slug and renders detailed authored fields in %s", async locale => {
+test.each(["en", "fr"])("Approach loads the main record and renders detailed authored fields in %s", async locale => {
   show(locale);
   await screen.findByRole("heading", { name: "CMS detailed approach" });
   expect(websiteApi.approach).toHaveBeenCalledWith("our-approach", locale, expect.any(AbortSignal));
@@ -30,28 +30,33 @@ test.each(["en", "fr"])("Approach loads its slug and renders detailed authored f
   expect(screen.getByRole("heading", { name: "CMS collaboration" })).toBeInTheDocument();
   expect(screen.getByAltText("CMS approach image")).toHaveAttribute("src", "/cms-approach.png");
 });
-test("missing Approach slug uses missing-record feedback", async () => {
+test("missing main Approach record uses missing-record feedback", async () => {
   vi.mocked(websiteApi.approach).mockRejectedValue(Object.assign(new Error("Missing"), { status: 404 }));
   show("en", "missing");
   await screen.findByRole("heading", { name: "Nothing to show yet" });
 });
 
-test("switching between cached Approach slugs starts at a valid methodology stage", async () => {
-  vi.mocked(websiteApi.approach).mockImplementation(async slug => ({ data: { slug, approach_title: `Page ${slug}`,
-    methodology: Array.from({ length: slug === "long" ? 3 : 1 }, (_, i) => ({ methodology_title: `${slug} stage ${i + 1}` })) } }));
-  render(<ThemeProvider><MemoryRouter initialEntries={["/en/approach/long"]}><LocaleContext.Provider value={cmsLocale()}>
-    <Link to="/en/approach/long">Open long</Link><Link to="/en/approach/short">Open short</Link>
-    <Routes><Route path="/:locale/approach/:slug" element={<ApproachPage />} /></Routes>
-  </LocaleContext.Provider></MemoryRouter></ThemeProvider>);
-  await screen.findByRole("heading", { name: "Page long" });
-  fireEvent.click(screen.getByRole("link", { name: "Open short" }));
-  await screen.findByRole("heading", { name: "Page short" });
-  fireEvent.click(screen.getByRole("link", { name: "Open long" }));
-  await screen.findByRole("heading", { name: "Page long" });
+test("switching between cached Approach locales starts at a valid methodology stage", async () => {
+  vi.mocked(websiteApi.approach).mockImplementation(async (slug, locale) => ({ data: { slug, approach_title: `Page ${locale}`,
+    methodology: Array.from({ length: locale === "en" ? 3 : 1 }, (_, i) => ({ methodology_title: `${locale} stage ${i + 1}` })) } }));
+  function LocalizedApproach() {
+    const { locale } = useParams();
+    return <LocaleContext.Provider value={cmsLocale(locale)}><ApproachPage /></LocaleContext.Provider>;
+  }
+  render(<ThemeProvider><MemoryRouter initialEntries={["/en/approach"]}>
+    <Link to="/en/approach">Open English</Link><Link to="/fr/approach">Open French</Link>
+    <Routes><Route path="/:locale/approach" element={<LocalizedApproach />} /></Routes>
+  </MemoryRouter></ThemeProvider>);
+  await screen.findByRole("heading", { name: "Page en" });
+  fireEvent.click(screen.getByRole("link", { name: "Open French" }));
+  await screen.findByRole("heading", { name: "Page fr" });
+  fireEvent.click(screen.getByRole("link", { name: "Open English" }));
+  await screen.findByRole("heading", { name: "Page en" });
   fireEvent.click(screen.getByRole("button", { name: "Next stage" }));
   fireEvent.click(screen.getByRole("button", { name: "Next stage" }));
-  expect(screen.getByRole("heading", { name: "long stage 3" })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("link", { name: "Open short" }));
-  await screen.findByRole("heading", { name: "Page short" });
-  expect(screen.getByRole("heading", { name: "short stage 1" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "en stage 3" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("link", { name: "Open French" }));
+  await screen.findByRole("heading", { name: "Page fr" });
+  expect(screen.getByRole("heading", { name: "fr stage 1" })).toBeInTheDocument();
+  expect(websiteApi.approach.mock.calls.every(([slug]) => slug === "our-approach")).toBe(true);
 });

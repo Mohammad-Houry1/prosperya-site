@@ -4,6 +4,7 @@ import PrimaryLink from "./PrimaryLink.jsx";
 import SignalWave from "../visuals/SignalWave.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./CTASection.module.css";
+import CmsRichHtml from "./CmsRichHtml.jsx";
 
 /*
   The Close: the last section of a page. Its Wave moves (owner preference);
@@ -33,10 +34,8 @@ export default function CTASection({
     </>
   );
   const text = (
-    <p className={styles.text}>
-      {description ??
-        (t("components.common.ctasection.partner-with-prosperya-to-turn-complexity-into-83648d"))}
-    </p>
+    <CmsRichHtml className={styles.text} html={description ??
+      t("components.common.ctasection.partner-with-prosperya-to-turn-complexity-into-83648d")} />
   );
   const actions = (
     <div className={styles.actions}>

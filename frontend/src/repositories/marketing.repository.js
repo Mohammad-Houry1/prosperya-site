@@ -13,9 +13,20 @@ export function adaptExpertise(record) {
     metricsNote: text(record.expertise_metrics_note) };
 }
 export function adaptSolution(record) {
+  // Overview previews use the selected expertise content already in the public
+  // response. Detail pages retain their own authored capabilities and outcomes.
+  const selectedExpertise = rows(record.related_expertise).filter(row => Array.isArray(row?.expertise_capabilities) || Array.isArray(row?.expertise_outcomes));
+  const capabilities = rows(record.solution_capabilities);
+  const outcomes = rows(record.outcomes).map(row => [row.outcome_image, text(row.outcome_title), text(row.outcome_description)]);
+  const overviewCapabilities = selectedExpertise.length
+    ? selectedExpertise.flatMap(row => rows(row.expertise_capabilities))
+    : capabilities;
+  const overviewOutcomes = selectedExpertise.length
+    ? selectedExpertise.flatMap(row => rows(row.expertise_outcomes)).map(value => [null, text(value), ''])
+    : outcomes;
   return { ...record, title: text(record.solution_title), tagline: text(record.solution_tagline), description: text(record.solution_description),
-    image: record.solution_image, pains: rows(record.solution_challenges), capabilities: rows(record.solution_capabilities),
-    outcomes: rows(record.outcomes).map(row => [row.outcome_image, text(row.outcome_title), text(row.outcome_description)]),
+    image: record.solution_image, pains: rows(record.solution_challenges), capabilities,
+    outcomes, overviewCapabilities, overviewOutcomes,
     expertiseIds: ids(record.related_expertise), caseStudyId: rows(record.related_case_studies)[0]?.id,
     animation: { type: text(record.solution_animation_type), centreLabel: text(record.solution_animation_centre_label),
       resultLabel: text(record.solution_animation_result_label), signalLabel: text(record.solution_animation_signal_label),

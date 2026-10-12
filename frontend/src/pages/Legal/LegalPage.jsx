@@ -18,24 +18,25 @@ export default function LegalPage({ documentId }) {
     queryKey: ["corporate-page", locale, documentSlug],
     queryFn: async ({ signal }) => {
       try {
-        const { data: page } = await websiteApi.corporatePage(documentSlug, locale, signal);
-        return {
-          id: page.id || documentSlug,
-          title: page.title,
-          intro: page.description,
-          sections: (page.sections || []).map((section, index) => ({
-            id: "section-" + (index + 1), title: section.title, body: section.description,
-          })),
-          lastUpdated: page.updated_at,
-          seo: page.seo,
-          metaImage: page.meta_image?.url || null,
-          path: corporatePagePath(locale, page.slug || documentSlug),
-        };
+        return (await websiteApi.corporatePage(documentSlug, locale, signal)).data;
       } catch (error) {
         if (error.status === 404) return null;
         throw error;
       }
     },
+    // Share the raw CMS cache with About; this route's presentation stays local.
+    select: page => page ? ({
+      id: page.id || documentSlug,
+      title: page.title || page.name,
+      intro: page.description,
+      sections: (page.sections || []).map((section, index) => ({
+        id: "section-" + (index + 1), title: section.title, body: section.description,
+      })),
+      lastUpdated: page.updated_at,
+      seo: page.seo,
+      metaImage: page.meta_image?.url || null,
+      path: corporatePagePath(locale, page.slug || documentSlug),
+    }) : null,
     enabled: Boolean(documentSlug),
     staleTime: 0,
   });

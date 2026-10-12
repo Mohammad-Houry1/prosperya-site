@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { mockCms } from "./cmsFixtures.js";
 
 for (const locale of ["en", "fr"]) {
-  test(`our-approach is a detailed slug page and old links redirect in ${locale}`, async ({ page }) => {
+  test(`Approach renders the main published record in ${locale}`, async ({ page }) => {
     const requested = [];
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
@@ -22,7 +22,7 @@ for (const locale of ["en", "fr"]) {
         approach_image: { url: "/favicon.svg", alt: "CMS approach image" } } } });
     });
     await page.goto(`/${locale}/approach`);
-    await expect(page).toHaveURL(new RegExp(`/${locale}/approach/our-approach$`));
+    await expect(page).toHaveURL(new RegExp(`/${locale}/approach$`));
     await expect(page.getByRole("heading", { name: "CMS detailed approach" })).toBeVisible();
     await expect(page.locator('[class*="deliverable"]')).toContainText("CMS discovery handover");
     await page.getByRole("button", { name: locale === "en" ? "Next stage" : "Étape suivante" }).click();
@@ -36,11 +36,12 @@ for (const locale of ["en", "fr"]) {
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(requested).toContain("our-approach");
     expect(requested).not.toContain("approach");
-    await page.goto(`/${locale}/approach/missing`);
-    await expect(page.getByRole("heading", { name: locale === "en" ? "Nothing to show yet" : "Aucun contenu pour le moment" })).toBeVisible();
     await page.goto(`/${locale}`);
     await expect(page.locator("main")).toContainText("CMS discovery");
     expect(requested).not.toContain("approach");
+    await page.route("**/api/approaches/our-approach?**", route => route.fulfill({ status: 404, json: { message: "Missing" } }));
+    await page.goto(`/${locale}/approach`);
+    await expect(page.getByRole("heading", { name: locale === "en" ? "Nothing to show yet" : "Aucun contenu pour le moment" })).toBeVisible();
     expect(errors).toEqual([]);
   });
 }

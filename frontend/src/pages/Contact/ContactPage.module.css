@@ -98,6 +98,8 @@
 .form:focus-within {
   border-color: var(--border-strong);
 }
+.formSkeleton { display: grid; gap: 28px; align-content: start; }
+.captcha { margin-top: 28px; }
 .group {
   min-width: 0;
   margin: 0;

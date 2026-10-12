@@ -81,11 +81,11 @@
   line-height: 1.72;
   color: var(--text-primary);
 }
-.body > p {
+.body > div > p {
   margin: 0 0 1.3em;
   color: var(--text-secondary);
 }
-.body > p:first-child {
+.body > div > p:first-child {
   color: var(--text-primary);
   font-size: 1.12em;
   line-height: 1.6;

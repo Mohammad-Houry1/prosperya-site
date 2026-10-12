@@ -9,6 +9,7 @@ import CaseVisual from "../../components/case-study/CaseVisual.jsx";
 import AnimatedCounter from "../../motion/components/AnimatedCounter.jsx";
 import { useCarousel } from "../../motion/gestures.js";
 import styles from "./SolutionProof.module.css";
+import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 
 /*
   Each business function paired with the engagement that proves it, as one
@@ -50,7 +51,7 @@ export default function SolutionProof({ solutions, locale }) {
               <div className={styles.body}>
                 <span className={styles.fn}>{solution.title}</span>
                 <h3>{study.name}</h3>
-                <p>{study.description}</p>
+                {study.description && <CmsRichHtml className={styles.summary} html={study.description} />}
                 {lead && (
                   <div className={styles.metric}>
                     <strong>

@@ -13,7 +13,8 @@ class StoreContactRequest extends FormRequest
             'project_type' => ['required','string','regex:/^[a-f0-9]{24}$/i'],
             'project_stage' => ['required','string','regex:/^[a-f0-9]{24}$/i'],
             'project_brief' => ['required','string','max:10000'], 'website' => ['nullable','string','max:0'],
-            'locale' => ['sometimes','string','max:20']];
+            'locale' => ['sometimes','string','max:20'],
+            'captcha_token' => ['required','string','max:4096']];
     }
     protected function prepareForValidation(): void
     {

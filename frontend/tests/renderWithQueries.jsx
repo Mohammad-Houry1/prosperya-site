@@ -1,4 +1,4 @@
-import { render as renderView } from "@testing-library/react";
+import { render as renderView } from "./renderWithMantine.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { LocaleContext } from "../src/i18n/LocaleContext.jsx";

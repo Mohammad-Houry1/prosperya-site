@@ -1,0 +1,14 @@
+.block {
+  margin-top:15px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.block > :first-child {
+  margin-top: 0;
+}
+.block > :last-child {
+  margin-bottom: 0;
+}
+.inline {
+  overflow-wrap: anywhere;
+}

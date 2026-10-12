@@ -82,7 +82,7 @@
   letter-spacing: var(--tracking-heading);
   line-height: 1.2;
 }
-.body p {
+.summary {
   margin: 10px 0 0;
   color: var(--text-secondary);
   font-size: 14px;
