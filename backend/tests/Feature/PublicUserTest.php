@@ -3,11 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Services\PublicContent;
-use App\Services\PublicPayload;
 use App\Services\WebsiteAccess;
 use Illuminate\Support\Facades\Http;
-use ReflectionProperty;
 use Illuminate\Http\Client\Factory;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
@@ -26,17 +23,16 @@ class PublicUserTest extends TestCase
 
     public function test_only_public_profile_fields_are_serialized(): void
     {
-        $content = app(PublicContent::class);
-        (new ReflectionProperty($content, 'languages'))->setValue($content, ['en' => (object) ['id' => 'en-id', 'code' => 'en']]);
         $user = new User;
         $user->setRawAttributes(['_id' => '6ac8886280862f68e40a2864', 'slug' => 'public-profile',
             'name' => 'Public Person', 'position' => 'Engineer', 'bio' => 'Profile',
             'email' => 'private@example.test', 'password' => 'secret', 'role_ids' => ['admin'],
             'remember_token' => 'token', 'locker' => ['private' => true]]);
-        $data = (new PublicPayload($content))->user($user, 'en');
-        $this->assertSame(['id', 'slug', 'name', 'position', 'bio', 'avatar'], array_keys($data));
+        $data = $user->toArray();
+        $this->assertEqualsCanonicalizing(['_id', 'slug', 'name', 'position', 'bio'], array_keys($data));
         $this->assertSame('Public Person', $data['name']);
-        $this->assertNull($data['avatar']);
+        $this->assertArrayNotHasKey('password', $data);
+        $this->assertArrayNotHasKey('role_ids', $data);
     }
 
     public function test_role_filters_are_validated_before_database_access(): void

@@ -35,6 +35,13 @@ final class WebsiteSeo
 
     public function resolve(string $path, ?string $model = null): array
     {
+        $metadata = $this->lookup($path, $model);
+
+        return [...$metadata, 'siteName' => $this->label('site.name', $metadata['locale'])];
+    }
+
+    private function lookup(string $path, ?string $model): array
+    {
         $origin = $this->origin();
         $route = $this->routes->parse($path);
         if (! $route || ! in_array($route['locale'], $this->locales(), true)) {
@@ -48,8 +55,7 @@ final class WebsiteSeo
             $status = $route['kind'] === 'page' ? 200 : 404;
 
             return [...$this->missing($route['path']), 'status' => $status,
-                'title' => $status === 200 ? 'Prosperya' : 'Page not found — Prosperya',
-                'ogTitle' => $status === 200 ? 'Prosperya' : 'Page not found — Prosperya',
+                ...($status === 200 ? ['title' => $this->label('site.name', $route['locale']), 'ogTitle' => $this->label('site.name', $route['locale'])] : []),
                 'canonical' => $status === 200 ? $origin.$route['path'] : null];
         }
         $metadata = $this->metadata($record, $route);
@@ -180,10 +186,19 @@ final class WebsiteSeo
 
     private function missing(string $path): array
     {
-        return ['path' => $path, 'locale' => str_starts_with($path, '/fr') ? 'fr' : 'en', 'status' => 404,
-            'title' => 'Page not found — Prosperya', 'description' => '', 'keywords' => '', 'canonical' => null,
-            'ogTitle' => 'Page not found — Prosperya', 'ogDescription' => '', 'ogImage' => null, 'ogType' => 'website',
+        $locale = str_starts_with($path, '/fr') ? 'fr' : 'en';
+        $title = $this->label('pages.not-found.not-found-page.page-not-found-prosperya-9423d8', $locale);
+
+        return ['path' => $path, 'locale' => $locale, 'status' => 404,
+            'title' => $title, 'description' => '', 'keywords' => '', 'canonical' => null,
+            'ogTitle' => $title, 'ogDescription' => '', 'ogImage' => null, 'ogType' => 'website',
             'robots' => 'noindex, follow', 'alternates' => [], 'structuredData' => null];
+    }
+
+    /** A CMS label (prosperya.<key>) for server-rendered metadata; '' when the language or label is unavailable. */
+    private function label(string $key, string $locale): string
+    {
+        return in_array($locale, $this->locales(), true) ? $this->content->label('prosperya.'.$key, $locale) : '';
     }
 
     private function locales(): array

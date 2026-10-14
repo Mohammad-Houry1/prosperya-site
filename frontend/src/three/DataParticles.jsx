@@ -3,14 +3,13 @@ import { useMemo, useRef } from "react";
 import { AdditiveBlending, NormalBlending } from "three";
 import { getDotTexture } from "./dotTexture.js";
 import { scenePosition, sceneState } from "./sceneGeometry.js";
-import { SYSTEM_NODES } from "./systemScene.data.js";
 
 const PER_LINK = 3;
 
 // Data packets travel both ways along every connection once automation begins.
-export default function DataParticles({ progressRef, dark }) {
+export default function DataParticles({ nodes, progressRef, dark }) {
   const points = useRef();
-  const count = SYSTEM_NODES.length * PER_LINK;
+  const count = nodes.length * PER_LINK;
   const positions = useMemo(() => new Float32Array(count * 3), [count]);
   const phases = useMemo(
     () => Array.from({ length: count }, (_, i) => (i * 0.618) % 1),
@@ -22,7 +21,7 @@ export default function DataParticles({ progressRef, dark }) {
     const { flow } = sceneState(s);
     points.current.visible = flow > 0.01;
     if (!points.current.visible) return;
-    SYSTEM_NODES.forEach((node, n) => {
+    nodes.forEach((node, n) => {
       const [x, y, z] = scenePosition(node, s, clock.elapsedTime);
       for (let k = 0; k < PER_LINK; k++) {
         const i = n * PER_LINK + k;
@@ -35,7 +34,7 @@ export default function DataParticles({ progressRef, dark }) {
     points.current.material.opacity = flow;
   });
   return (
-    <points ref={points} frustumCulled={false} visible={false}>
+    <points key={count} ref={points} frustumCulled={false} visible={false}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>

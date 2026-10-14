@@ -49,10 +49,10 @@ class ContentModulesTest extends WebsiteTestCase
             $this->getJson('/api/'.str_replace('_', '-', $table).'?locale=fr&per_page=1')
                 ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('meta.total', 1)->assertDontSee('never-public');
         }
-        $this->getJson('/api/testimonials?locale=fr')->assertJsonPath('data.0.quote', 'Avis')->assertJsonPath('data.0.company', 'Company');
-        $this->getJson('/api/platforms?locale=fr')->assertJsonPath('data.0.logo_image.alt', 'Public FR');
-        $this->getJson('/api/faqs?locale=fr')->assertJsonPath('data.0.answer', '<p>Réponse</p>');
-        $this->getJson('/api/corporate-pages/public?locale=fr')->assertOk()->assertJsonPath('data.title', 'Titre');
+        $this->getJson('/api/testimonials?locale=fr')->assertJsonPath('data.0.testimonial_description.fr', 'Avis')->assertJsonPath('data.0.user_company', 'Company');
+        $this->getJson('/api/platforms?locale=fr')->assertJsonPath('data.0.name.fr', 'Public FR')->assertJsonPath('data.0.logo_image.url', '/logo.png');
+        $this->getJson('/api/faqs?locale=fr')->assertJsonPath('data.0.content.fr', '<p>Réponse</p>');
+        $this->getJson('/api/corporate-pages/public?locale=fr')->assertOk()->assertJsonPath('data.title.fr', 'Titre');
         $this->getJson('/api/platforms?per_page=0')->assertUnprocessable();
     }
 
@@ -74,7 +74,7 @@ class ContentModulesTest extends WebsiteTestCase
             $this->record(['question' => $question, 'is_question' => false, 'content' => ['fr' => 'never-public'], 'status_id' => $this->ids['draft']]),
         ]);
         $this->getJson('/api/faqs?locale=fr&category=contact')->assertOk()->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.question', 'Comment ?')->assertJsonPath('data.0.answer', '<p>Comme ceci.</p>')->assertDontSee('never-public');
+            ->assertJsonPath('data.0.name.fr', 'Comment ?')->assertJsonPath('answers.0.content.fr', '<p>Comme ceci.</p>')->assertDontSee('never-public');
         foreach (['faq-categories', 'corporate-page-categories'] as $path) {
             $this->getJson('/api/'.$path.'?locale=fr')->assertOk()->assertJsonCount(1, 'data');
         }
@@ -102,14 +102,14 @@ class ContentModulesTest extends WebsiteTestCase
             $this->record(['is_question' => false, 'question' => $first, 'content' => ['en' => 'Hidden draft answer'], 'status_id' => $this->ids['draft']]),
         ]);
         $this->getJson('/api/faqs?locale=en&category=approach')->assertOk()->assertJsonCount(2, 'data')
-            ->assertJsonPath('data.0.id', $second)->assertJsonPath('data.0.question', '<p>Second <strong>question</strong>?</p>')
-            ->assertJsonPath('data.0.answer', '')
-            ->assertJsonPath('data.1.question', '<p>First question?</p>')
-            ->assertJsonPath('data.1.answer', "<p>Answer zero.</p>\n<p>Answer one.</p>")
-            ->assertDontSee('Hidden draft answer')->assertDontSee('Internal first question label');
+            ->assertJsonPath('data.0.id', $second)->assertJsonPath('data.0.content.en', '<p>Second <strong>question</strong>?</p>')
+            ->assertJsonMissingPath('data.0.answer')
+            ->assertJsonPath('data.1.content.en', '<p>First question?</p>')
+            ->assertJsonPath('answers.1.content.en', '<p>Answer zero.</p>')->assertJsonPath('answers.2.content.en', '<p>Answer one.</p>')
+            ->assertDontSee('Hidden draft answer');
         $this->getJson('/api/faqs?locale=fr&category=approach')->assertOk()
-            ->assertJsonPath('data.1.question', '<p>Première question ?</p>')
-            ->assertJsonPath('data.1.answer', '<p>Réponse un.</p>');
+            ->assertJsonPath('data.1.content.fr', '<p>Première question ?</p>')
+            ->assertJsonPath('answers.2.content.fr', '<p>Réponse un.</p>');
     }
 
 }

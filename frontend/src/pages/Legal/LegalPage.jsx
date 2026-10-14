@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useQuery } from "@tanstack/react-query";
@@ -10,7 +10,7 @@ import Section from "../../components/common/Section.jsx";
 import { LEGAL_CMS_SLUGS, corporatePagePath } from "../../i18n/legalRoutes.js";
 
 export default function LegalPage({ documentId }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { pathname } = useLocation();
   const { slug } = useParams();
   const documentSlug = documentId ? LEGAL_CMS_SLUGS[documentId] : slug;
@@ -18,7 +18,7 @@ export default function LegalPage({ documentId }) {
     queryKey: ["corporate-page", locale, documentSlug],
     queryFn: async ({ signal }) => {
       try {
-        return (await websiteApi.corporatePage(documentSlug, locale, signal)).data;
+        return contentView(await websiteApi.corporatePage(documentSlug, locale, signal));
       } catch (error) {
         if (error.status === 404) return null;
         throw error;
@@ -42,7 +42,7 @@ export default function LegalPage({ documentId }) {
   });
   useDocumentMeta({
     model: "CorporatePage",
-    title: document ? `${document.seo?.title || document.title} — Prosperya` : "Prosperya",
+    title: document ? `${document.seo?.title || document.title} — ${t("site.name")}` : t("site.name"),
     description: document?.seo?.description,
     keywords: document?.seo?.keywords,
     ogImage: document?.metaImage || undefined,

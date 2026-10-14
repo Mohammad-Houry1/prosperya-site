@@ -20,15 +20,13 @@ class TestimonialAttributionTest extends WebsiteTestCase
             $this->record(['order' => 1, 'use_existing_user' => true, 'user' => $public, 'testimonial_description' => 'Public quote']),
             $this->record(['order' => 2, 'use_existing_user' => true, 'user' => ['_id' => $private, 'name' => 'Private Snapshot'], 'testimonial_description' => 'Another quote']),
         ]);
-        $this->getJson('/api/testimonials?locale=en')->assertOk()->assertJsonPath('data.0.name', 'CMS Person')
-            ->assertJsonPath('data.0.company', 'CMS Company')->assertJsonPath('data.1.name', '')
+        $this->getJson('/api/testimonials?locale=en')->assertOk()->assertJsonPath('data.0.user', $public)->assertJsonPath('data.1.user', $private)
             ->assertDontSee('Private Snapshot')->assertDontSee('never-public');
     }
     public function test_denied_user_module_keeps_the_public_quote_without_snapshot_attribution(): void
     {
         $this->collection('testimonials')->insertOne($this->record(['use_existing_user' => true,
             'user' => ['_id' => (string) new ObjectId, 'name' => 'Private Snapshot'], 'testimonial_description' => 'Public quote']));
-        $this->getJson('/api/testimonials?locale=en')->assertOk()->assertJsonPath('data.0.quote', 'Public quote')
-            ->assertJsonPath('data.0.name', '')->assertDontSee('Private Snapshot');
+        $this->getJson('/api/testimonials?locale=en')->assertOk()->assertJsonPath('data.0.testimonial_description', 'Public quote')->assertJsonMissingPath('data.0.name')->assertDontSee('Private Snapshot');
     }
 }

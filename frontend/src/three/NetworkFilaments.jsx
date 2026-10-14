@@ -3,7 +3,6 @@ import { useMemo, useRef } from "react";
 import { AdditiveBlending, NormalBlending } from "three";
 import { getDotTexture } from "./dotTexture.js";
 import { scenePosition, sceneState } from "./sceneGeometry.js";
-import { FRAGMENT_LINKS, SYSTEM_NODES } from "./systemScene.data.js";
 
 const RAYS = 18;
 
@@ -12,13 +11,14 @@ const RAYS = 18;
   - dashed point-to-point links: manual handoffs that dissolve as order arrives
   - radial rays with bright tips: the orchestration layer's reach
 */
-export default function NetworkFilaments({ progressRef, dark }) {
+export default function NetworkFilaments({ scene, progressRef, dark }) {
   const fragments = useRef();
   const rays = useRef();
   const tips = useRef();
+  const { nodes, links: fragmentLinks } = scene;
   const fragmentPositions = useMemo(
-    () => new Float32Array(FRAGMENT_LINKS.length * 6),
-    [],
+    () => new Float32Array(fragmentLinks.length * 6),
+    [fragmentLinks.length],
   );
   const rayTargets = useMemo(
     () =>
@@ -35,9 +35,9 @@ export default function NetworkFilaments({ progressRef, dark }) {
     const s = progressRef.current;
     const { noise, links } = sceneState(s);
     const t = clock.elapsedTime;
-    FRAGMENT_LINKS.forEach(([a, b], index) => {
-      fragmentPositions.set(scenePosition(SYSTEM_NODES[a], s, t), index * 6);
-      fragmentPositions.set(scenePosition(SYSTEM_NODES[b], s, t), index * 6 + 3);
+    fragmentLinks.forEach(([a, b], index) => {
+      fragmentPositions.set(scenePosition(nodes[a], s, t), index * 6);
+      fragmentPositions.set(scenePosition(nodes[b], s, t), index * 6 + 3);
     });
     const fragmentLine = fragments.current;
     fragmentLine.geometry.attributes.position.needsUpdate = true;
@@ -58,7 +58,7 @@ export default function NetworkFilaments({ progressRef, dark }) {
   const blending = dark ? AdditiveBlending : NormalBlending;
   return (
     <>
-      <lineSegments ref={fragments} frustumCulled={false}>
+      <lineSegments key={fragmentLinks.length} ref={fragments} frustumCulled={false}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[fragmentPositions, 3]} />
         </bufferGeometry>

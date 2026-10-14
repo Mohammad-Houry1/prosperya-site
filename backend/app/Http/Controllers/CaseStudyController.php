@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\CaseStudy;
-use App\Services\{PublicContent, MarketingPayload, PublicPayload};
+use App\Services\{PublicContent, ContentResponse};
 use Illuminate\Http\Request;
 
 class CaseStudyController
 {
-    public function getCaseStudies(Request $request, PublicContent $content, MarketingPayload $payload, PublicPayload $pagination, ?string $slug = null): array
+    public function getCaseStudies(Request $request, PublicContent $content, ?string $slug = null): array
     {
         $params = $request->validate(['locale' => ['sometimes', 'string', 'max:20'],
             'page' => ['sometimes', 'integer', 'min:1'], 'per_page' => ['sometimes', 'integer', 'min:1'],
@@ -23,12 +23,7 @@ class CaseStudyController
             ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
         if (isset($params['featured'])) $query->where('featured', (bool) $params['featured']);
         if (isset($params['ids'])) $query->whereIn('_id', $params['ids']);
-        if ($slug !== null) return ['data' => $payload->record($query->where('slug', $slug)->firstOrFail(), $locale)];
-        if (!isset($params['page']) && !isset($params['per_page'])) {
-            $rows = $query->orderBy('order')->orderBy('_id')->get();
-            return ['data' => $rows->map(fn ($row) => $payload->record($row, $locale))];
-        }
-        $page = $query->orderBy('order')->orderBy('_id')->paginate(min(50, (int) ($params['per_page'] ?? 50)));
-        return ['data' => $page->getCollection()->map(fn ($row) => $payload->record($row, $locale)), 'meta' => $pagination->pagination($page)];
+        if ($slug !== null) return ['data' => $query->where('slug', $slug)->firstOrFail()];
+        return ContentResponse::collection($query->orderBy('order')->orderBy('_id'), $request);
     }
 }

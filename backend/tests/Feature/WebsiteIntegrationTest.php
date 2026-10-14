@@ -19,9 +19,9 @@ class WebsiteIntegrationTest extends WebsiteTestCase
         ]);
 
         $response = $this->getJson('/api/articles')->assertOk()->assertJsonCount(2, 'data')->assertDontSee('never-public');
-        $this->assertSame([$id, $id], array_column($response->json('data'), 'category_id'));
+        $this->assertSame([$id, $id], array_map(fn ($row) => $row['article_category'][0], $response->json('data')));
         foreach (['id-array', 'snapshot-array'] as $slug) {
-            $this->getJson('/api/articles/'.$slug)->assertOk()->assertJsonPath('data.category_id', $id)->assertDontSee('never-public');
+            $this->getJson('/api/articles/'.$slug)->assertOk()->assertJsonPath('data.article_category.0', $id)->assertDontSee('never-public');
         }
     }
 
@@ -39,14 +39,14 @@ class WebsiteIntegrationTest extends WebsiteTestCase
             'article_description' => ['fr' => '<p>Contenu</p>']]));
 
         $this->getJson('/api/articles?locale=fr&category=finance&per_page=1')->assertOk()
-            ->assertJsonPath('data.0.category_id', $id)->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.article_category', $id)->assertJsonPath('meta.total', 1)
             ->assertJsonPath('meta.per_page', 1)->assertDontSee('body')->assertDontSee('never-public');
         $this->getJson('/api/articles?locale=fr&category_id='.$id)->assertOk()->assertJsonCount(1, 'data');
         $this->getJson('/api/articles/embedded?locale=fr')->assertOk()
-            ->assertJsonPath('data.title', 'Analyse')->assertJsonPath('data.body', '<p>Contenu</p>')
-            ->assertJsonPath('data.category_id', $id)->assertDontSee('never-public');
+            ->assertJsonPath('data.article_title.fr', 'Analyse')->assertJsonPath('data.article_description.fr', '<p>Contenu</p>')
+            ->assertJsonPath('data.article_category', $id)->assertDontSee('never-public');
         $this->getJson('/api/article-categories?locale=fr&per_page=1')->assertOk()
-            ->assertJsonPath('data.0.name', 'Finances')->assertJsonPath('meta.total', 1);
+            ->assertJsonPath('data.0.name.fr', 'Finances')->assertJsonPath('meta.total', 1);
         $this->getJson('/api/articles?category=private')->assertNotFound();
         $this->getJson('/api/articles?category_id='.$hidden)->assertNotFound();
         $this->getJson('/api/articles/missing')->assertNotFound();
@@ -64,7 +64,7 @@ class WebsiteIntegrationTest extends WebsiteTestCase
         ]);
         $this->getJson('/api/article-categories?locale=en')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $categoryId);
         $this->getJson('/api/articles?locale=en&category_id='.$categoryId)->assertOk()->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.seo.title', 'Finance SEO')->assertJsonPath('data.0.cover_image.url', 'https://cms.example.test/storage/finance.jpg')
+            ->assertJsonPath('data.0.meta_title.en', 'Finance SEO')->assertJsonPath('data.0.cover_image.url', '/storage/finance.jpg')
             ->assertDontSee('never-public')->assertDontSee('private');
         $this->getJson('/api/articles?category_id=malformed')->assertUnprocessable();
     }
@@ -79,10 +79,10 @@ class WebsiteIntegrationTest extends WebsiteTestCase
             $this->record(['key' => 'nav.insights', 'value' => ['en' => 'Insights', 'fr' => 'Analyses']]),
             $this->record(['key' => 'secret', 'value' => ['fr' => 'never-public'], 'status_id' => $this->ids['draft']]),
         ]);
-        $this->getJson('/api/corporate-pages/privacy-policy?locale=fr')->assertOk()->assertJsonPath('data.title', 'Confidentialité')
-            ->assertJsonPath('data.sections.0.description', '<p>Texte</p>')->assertJsonPath('data.seo.title', 'Vie privée')->assertDontSee('never-public');
+        $this->getJson('/api/corporate-pages/privacy-policy?locale=fr')->assertOk()->assertJsonPath('data.title.fr', 'Confidentialité')
+            ->assertJsonPath('data.sections.0.description.fr', '<p>Texte</p>')->assertJsonPath('data.meta_title.fr', 'Vie privée')->assertDontSee('never-public');
         $labels = $this->getJson('/api/labels?locale=fr')->assertOk()->assertDontSee('never-public');
-        $this->assertSame('Analyses', $labels->json('data')['nav.insights']);
+        $this->assertSame('Analyses', $labels->json('data.0.value.fr'));
         $this->getJson('/api/corporate-pages/missing')->assertNotFound();
         $this->getJson('/api/labels?locale=de')->assertUnprocessable();
     }
@@ -93,9 +93,9 @@ class WebsiteIntegrationTest extends WebsiteTestCase
             'name' => ['en' => 'Terms of use', 'fr' => 'Conditions d’utilisation'], 'title' => ['en' => '', 'fr' => ''],
             'internal_secret' => 'never-public']));
         foreach (['en' => 'Terms of use', 'fr' => 'Conditions d’utilisation'] as $locale => $name) {
-            $this->getJson('/api/corporate-pages?locale='.$locale)->assertOk()->assertJsonPath('data.0.name', $name)
-                ->assertJsonPath('data.0.title', '')->assertDontSee('never-public');
-            $this->getJson('/api/corporate-pages/terms-of-use?locale='.$locale)->assertOk()->assertJsonPath('data.name', $name);
+            $this->getJson('/api/corporate-pages?locale='.$locale)->assertOk()->assertJsonPath('data.0.name.'.$locale, $name)
+                ->assertJsonPath('data.0.title.'.$locale, '')->assertDontSee('never-public');
+            $this->getJson('/api/corporate-pages/terms-of-use?locale='.$locale)->assertOk()->assertJsonPath('data.name.'.$locale, $name);
         }
     }
 
@@ -123,15 +123,14 @@ class WebsiteIntegrationTest extends WebsiteTestCase
             'sections' => [['title' => ['fr' => 'Chapitre'], 'description' => ['fr' => '<p>Contenu</p>']]],
         ]));
         $this->getJson('/api/corporate-pages/about-prosperya?locale=fr')->assertOk()
-            ->assertJsonPath('data.about_title', 'Titre About')->assertJsonPath('data.content', '<p>Notre histoire</p>')
-            ->assertJsonPath('data.about_focus.0', 'Systèmes')->assertJsonPath('data.about_facts.0.fact_title', 'Équipes')
-            ->assertJsonPath('data.about_principles.0.principle_description', '<p>Bien construit</p>')
-            ->assertJsonPath('data.about_steps.0.step_description', '<p>Comprendre</p>')
-            ->assertJsonPath('data.cover_image.url', 'https://cms.example.test/storage/about.jpg')
-            ->assertJsonCount(1, 'data.about_users')->assertJsonPath('data.about_users.0.id', $leader)
-            ->assertJsonPath('data.about_users.0.bio', '<p>Biographie</p>')->assertJsonPath('data.sections.0.title', 'Chapitre')
+            ->assertJsonPath('data.about_title.fr', 'Titre About')->assertJsonPath('data.content.fr', '<p>Notre histoire</p>')
+            ->assertJsonPath('data.about_focus.0.fr', 'Systèmes')->assertJsonPath('data.about_facts.0.fact_title.fr', 'Équipes')
+            ->assertJsonPath('data.about_principles.0.principle_description.fr', '<p>Bien construit</p>')
+            ->assertJsonPath('data.about_steps.0.step_description.fr', '<p>Comprendre</p>')
+            ->assertJsonPath('data.cover_image.url', '/storage/about.jpg')
+            ->assertJsonPath('data.about_users', [$leader, $hidden])->assertJsonPath('data.sections.0.title.fr', 'Chapitre')
             ->assertDontSee('never-public')->assertDontSee('Private leader');
-        $this->getJson('/api/corporate-pages?locale=fr')->assertOk()->assertJsonMissingPath('data.0.about_users');
+        $this->getJson('/api/corporate-pages?locale=fr')->assertOk()->assertJsonPath('data.0.about_users', [$leader, $hidden]);
     }
 
     public function test_newsletter_is_validated_deduplicated_and_stamped_by_the_key(): void
@@ -213,7 +212,7 @@ class WebsiteIntegrationTest extends WebsiteTestCase
     {
         $this->collection('article_categories')->insertOne($this->record(['name' => 'Finance',
             'translations' => [$this->ids['fr'] => ['name' => 'Finances']]]));
-        $this->getJson('/api/article-categories?locale=fr')->assertOk()->assertJsonPath('data.0.name', 'Finances');
+        $this->getJson('/api/article-categories?locale=fr')->assertOk()->assertJsonPath('data.0.translations.'.$this->ids['fr'].'.name', 'Finances')->assertJsonPath('context.language_id', $this->ids['fr']);
     }
 
     public function test_contact_options_reject_non_string_locales(): void

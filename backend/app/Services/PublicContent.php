@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Translation;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\DB;
 use MongoDB\Laravel\Query\Builder;
 
@@ -77,6 +79,54 @@ final class PublicContent
             'country' => [...($countryId ? [$countryId] : []), '*', null, []],
             'language' => [(string) $this->language($locale)->id, '*', null, []],
         ];
+    }
+
+    /** Published CMS labels (Translations) this site may show in the requested language. */
+    public function labels(string $locale): EloquentBuilder
+    {
+        $filters = $this->filters($locale);
+
+        return Translation::forWebsite()
+            ->where(function ($query) use ($filters) {
+                $query->whereIn('project', $filters['project'])
+                    ->orWhere(function ($dictionary) {
+                        // Tenant-wide CMS labels are public only in this site's namespace.
+                        $dictionary->whereRaw(['source' => ['$type' => 'string']])
+                            ->where('key', 'like', 'prosperya.%')
+                            ->whereIn('project', [null, []]);
+                    });
+            })
+            ->where(function ($query) use ($filters) {
+                $query->whereIn('status', $filters['status'])
+                    ->orWhere(function ($dictionary) {
+                        // Canonical dictionary entries have source/translations and no status.
+                        // Content-style entries still require a granted published status.
+                        $dictionary->whereRaw(['source' => ['$type' => 'string']])
+                            ->whereNull('status')->whereNull('status_id');
+                    });
+            })
+            ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
+            ->where('is_active', '!=', false)
+            ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
+    }
+
+    public function labelText(Translation $row, string $locale): string
+    {
+        if (is_string($row->source)) {
+            $translation = ((array) $row->translations)[$locale] ?? null;
+            // Only an authored value in the requested locale may be displayed.
+            return is_string($translation) ? $translation : '';
+        }
+
+        return $row->text('value', $locale);
+    }
+
+    /** One published label's text, or '' when the CMS has none. */
+    public function label(string $key, string $locale): string
+    {
+        $row = $this->labels($locale)->where('key', $key)->first();
+
+        return $row ? $this->labelText($row, $locale) : '';
     }
 
     /** A text field in the requested language: the translations sidecar, then a locale map, then the plain value. */

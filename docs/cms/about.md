@@ -1,8 +1,8 @@
 # About and corporate page links
 
-`/en|fr/about` reads the published Corporate Page with slug `about-prosperya` through `GET /api/corporate-pages/about-prosperya?locale=...`. It does not request a Static Page. The hero uses the authored `about_title`, then `title`, then the localized CMS `name`. Description, cover image, generic corporate sections, story, facts, focus, principles, steps and selected leadership content remain dynamic.
+`/en|fr/about` reads the published Corporate Page with slug `about-prosperya` through `GET /api/corporate-pages/about-prosperya?locale=...`. It does not request a Static Page. The hero uses the authored `about_title`, then `title`, then the localized CMS `name`. Description, cover image, generic corporate sections, story, facts, focus, principles and steps remain dynamic. Leadership profiles come directly from Users.
 
-The detail payload explicitly allows the existing About fields. Selected `about_users` resolve through the granted User module and the user's public publication, tenant, ownership, project, language and country scopes. Private user fields and embedded relationship snapshots are excluded. Empty sections and missing media do not add placeholder business content.
+The content API returns raw Corporate Page records and the frontend derives its display view. For `about-prosperya`, the controller directly queries `User::forWebsite()` with the site's publication, approval, tenant, ownership, project, language and country restrictions, then calls `get()` and includes the raw records in the response's `users` collection. The frontend displays these profiles without a separate `/api/users` request or dependence on the page's legacy `about_users` selection. The website key must grant the Users module; without that grant, About remains available with an empty users collection. No role slug is assumed. Private user fields and embedded relationship snapshots are excluded. Empty sections and missing media do not add placeholder business content. Users load and retry with the About response.
 
 The platform category remains `good-company`. Home uses its separate `clients` category.
 

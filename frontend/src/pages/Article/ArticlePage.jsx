@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { mapInsight } from "../../repositories/insights.repository.js";
 import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -31,7 +31,7 @@ export default function ArticlePage() {
     queryFn: async ({ signal }) => {
       try {
         const response = await websiteApi.article(slug, locale, signal);
-        return mapInsight(response.data);
+        return mapInsight(contentView(response));
       } catch (error) {
         if (error.status === 404) return null;
         throw error;
@@ -44,7 +44,7 @@ export default function ArticlePage() {
     queryKey: ["insights", locale, 1, ""],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.articles({ locale, page: 1, per_page: 12 }, signal);
-      return { items: response.data.map(mapInsight), meta: response.meta };
+      return { items: contentView(response).map(mapInsight), meta: response.meta };
     },
     staleTime: 0,
   });
@@ -52,7 +52,7 @@ export default function ArticlePage() {
     queryKey: ["insight-categories", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.categories({ locale }, signal);
-      return response.data || [];
+      return contentView(response) || [];
     },
     staleTime: 0,
   });
@@ -60,7 +60,7 @@ export default function ArticlePage() {
   const categoryNames = Object.fromEntries((categoriesData ?? []).map((entry) => [entry.id, entry.name]));
   useDocumentMeta({
     model: "Article",
-    title: item ? `${item.seo?.title || item.title} — Prosperya` : t("pages.article.article-page.prosperya-insights-56ddec"),
+    title: item ? `${item.seo?.title || item.title} — ${t("site.name")}` : t("pages.article.article-page.prosperya-insights-56ddec"),
     description: item?.seo?.description || item?.excerpt,
     canonicalPath: item?.seo?.url || undefined,
     ogImage: item?.metaImage?.src || item?.image?.src,

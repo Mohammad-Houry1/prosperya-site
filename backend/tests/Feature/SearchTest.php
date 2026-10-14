@@ -34,8 +34,8 @@ class SearchTest extends WebsiteTestCase
         $this->collection('case_studies')->insertOne($this->record(['slug' => 'work', 'case_study_title' => ['fr' => 'ERP Projet']]));
         $this->collection('articles')->insertOne($this->record(['slug' => 'article', 'article_title' => ['fr' => 'ERP Article'], 'article_small_description' => ['fr' => '<p>Résumé CMS</p>']]));
         $this->getJson('/api/search?q=ERP&locale=fr')->assertOk()->assertJsonCount(4, 'data')
-            ->assertJsonPath('data.0.title', 'Architecture ERP')->assertJsonPath('data.0.href', '/fr/expertise/architecture')
-            ->assertJsonPath('data.3.href', '/fr/insights/article')->assertJsonPath('data.3.summary', 'Résumé CMS')
+            ->assertJsonPath('data.0.record.expertise_title.fr', 'Architecture ERP')->assertJsonPath('data.0.record.slug', 'architecture')
+            ->assertJsonPath('data.3.record.slug', 'article')->assertJsonPath('data.3.record.article_small_description.fr', '<p>Résumé CMS</p>')
             ->assertJsonPath('meta.total', 4)->assertDontSee('private-search-data')->assertDontSee('ERP secret')->assertDontSee('ERP future')->assertDontSee('ERP other');
     }
 
@@ -49,7 +49,7 @@ class SearchTest extends WebsiteTestCase
             $this->record(['slug' => 'code-wins', 'expertise_title' => ['en' => 'Code sidecar wins'], 'translations' => ['en' => [], $this->ids['en'] => ['expertise_title' => 'Original term']]]),
             $this->record(['slug' => 'map-override', 'expertise_title' => ['en' => 'Original term'], 'translations' => ['en' => ['expertise_title' => ['en' => 'Mapped override']]]]),
         ]);
-        $this->getJson('/api/search?q=a.b&locale=en')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', 'literal');
+        $this->getJson('/api/search?q=a.b&locale=en')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.record.slug', 'literal');
         $this->getJson('/api/search?q=a.b&locale=fr')->assertOk()->assertJsonCount(0, 'data');
         $this->getJson('/api/search?q=Original&locale=en')->assertOk()->assertJsonCount(0, 'data');
         $this->getJson('/api/search?q=Replacement&locale=en')->assertOk()->assertJsonCount(2, 'data');
@@ -61,7 +61,7 @@ class SearchTest extends WebsiteTestCase
         for ($i = 0; $i < 23; $i++) $this->collection('expertise')->insertOne($this->record(['slug' => 'service-'.$i, 'order' => $i, 'expertise_title' => ['en' => 'Search service '.$i]]));
         $this->collection('solutions')->insertOne($this->record(['slug' => 'solution', 'solution_title' => ['en' => 'Search solution']]));
         $this->getJson('/api/search?q=Search&locale=en&page=2&per_page=20')->assertOk()->assertJsonCount(4, 'data')
-            ->assertJsonPath('meta.total', 24)->assertJsonPath('meta.last_page', 2)->assertJsonPath('data.0.slug', 'service-20')->assertJsonPath('data.3.type', 'solutions');
+            ->assertJsonPath('meta.total', 24)->assertJsonPath('meta.last_page', 2)->assertJsonPath('data.0.record.slug', 'service-20')->assertJsonPath('data.3.type', 'solutions');
         $this->getJson('/api/search?q=x&locale=en')->assertUnprocessable();
         $this->getJson('/api/search?q=%20%20&locale=en')->assertUnprocessable();
         $this->getJson('/api/search?q=Search&type=users')->assertUnprocessable();

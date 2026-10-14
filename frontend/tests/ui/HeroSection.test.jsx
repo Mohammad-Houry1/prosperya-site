@@ -26,7 +26,7 @@ async function renderHero(locale, matching = []) {
           path="/:locale"
           element={
             <LocaleProvider>
-              <HeroSection />
+              <HeroSection page={{ hero_audiences: [{ audience_title: 'CMS audience', audience_icon: 'building' }] }} />
             </LocaleProvider>
           }
         />

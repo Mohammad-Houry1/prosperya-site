@@ -93,7 +93,7 @@ class ContentApiTest extends TestCase
             ->assertDontSee('never-public');
         $this->assertEqualsCanonicalizing(['published', 'cms-snapshot'], array_column($result->json('data'), 'slug'));
         $this->assertSame(50, $result->json('meta.per_page'));
-        $this->getJson('/api/articles/published')->assertOk()->assertJsonPath('data.body', 'Body');
+        $this->getJson('/api/articles/published')->assertOk()->assertJsonPath('data.article_description.en', 'Body');
         $this->getJson('/api/articles/draft')->assertNotFound();
         $this->getJson('/api/articles?locale=fr')->assertUnprocessable();
     }

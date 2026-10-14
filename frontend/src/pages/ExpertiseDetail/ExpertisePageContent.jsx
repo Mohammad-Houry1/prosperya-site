@@ -65,7 +65,7 @@ export default function ExpertisePageContent({ page, related = [], locale }) {
           visual={scene ? <div className={styles.sceneFrame} aria-hidden="true" data-reveal="scale" data-animation={page.animationType}>
             <span className={styles.frameLabel}>{t("pages.expertise-detail.expertise-page-content.systems-in-motion-f02084")}</span>
             <div className={styles.sceneVisual}><SignalWave shape={scene} progressRef={progress} strands={42} particles={300} /></div>
-            <span className={styles.frameCaption}>Prosperya <span>/</span> {t("nav.expertise")}</span>
+            <span className={styles.frameCaption}>{t("site.name")} <span>/</span> {t("nav.expertise")}</span>
           </div> : null}
         />
       </div>

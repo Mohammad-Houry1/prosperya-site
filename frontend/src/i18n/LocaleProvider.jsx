@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { normalizeLocale } from "./locale.js";
 import { LocaleContext } from "./LocaleContext.jsx";
-import { websiteApi } from "../services/websiteApi.js";
+import { websiteApi, contentView } from "../services/websiteApi.js";
 import { createTranslator } from "./labels.js";
 export function LocaleProvider({ children }) {
   const { locale: routeLocale } = useParams();
@@ -12,7 +12,7 @@ export function LocaleProvider({ children }) {
     queryKey: ["labels", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.labels({ locale }, signal);
-      return response.data || {};
+      return contentView(response) || {};
     },
     retry: false,
   });

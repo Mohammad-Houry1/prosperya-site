@@ -26,6 +26,7 @@ function renderPage(locale = "en") {
 beforeEach(() => {
   vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "solutions").mockResolvedValue({ data: [] });
+  vi.spyOn(websiteApi, "users").mockResolvedValue({ data: [{ id: "leader", name: "CMS leader", bio: "<p>Public biography</p>" }] });
   vi.spyOn(websiteApi, "corporatePages").mockResolvedValue({ data: pages, meta: { last_page: 1 } });
   vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { ...pages[0],
     updated_at: "2026-10-09T08:02:04.596000Z", description: "<p>CMS introduction</p>", sections: [{ title: "CMS section", description: "<p>CMS body</p>" }], seo: {} } });
@@ -89,7 +90,7 @@ test("About and the corporate route share raw content without exchanging present
   await screen.findByRole("heading", { name: "About heading", level: 1 });
   expect(screen.getByText("Shared introduction")).toBeInTheDocument();
   expect(screen.getByText("Shared section body")).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "CMS leader" })).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "CMS leader" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("link", { name: "Open corporate" }));
   await screen.findByRole("heading", { name: "Corporate heading", level: 1 });
   expect(screen.getByText("Shared section body")).toBeInTheDocument();

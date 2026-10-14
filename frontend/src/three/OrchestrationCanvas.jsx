@@ -8,7 +8,6 @@ import ConnectionLine3D from "./ConnectionLine3D.jsx";
 import DataParticles from "./DataParticles.jsx";
 import OrchestrationCore from "./OrchestrationCore.jsx";
 import SystemNode3D from "./SystemNode3D.jsx";
-import { SYSTEM_NODES } from "./systemScene.data.js";
 
 /*
   progressRef.current: story progress (0 fragmented → 1 orchestrated).
@@ -20,6 +19,7 @@ export default function OrchestrationCanvas({
   progressRef,
   viewRef,
   layoutRef,
+  scene,
   active = true,
 }) {
   const { theme } = useAppTheme();
@@ -35,12 +35,12 @@ export default function OrchestrationCanvas({
       <Suspense fallback={null}>
         <CameraRig viewRef={viewRef} layoutRef={layoutRef}>
           <StarField progressRef={progressRef} dark={dark} />
-          <NetworkFilaments progressRef={progressRef} dark={dark} />
-          <ConnectionLine3D progressRef={progressRef} dark={dark} />
-          <DataParticles progressRef={progressRef} dark={dark} />
+          <NetworkFilaments scene={scene} progressRef={progressRef} dark={dark} />
+          <ConnectionLine3D nodes={scene.nodes} progressRef={progressRef} dark={dark} />
+          <DataParticles nodes={scene.nodes} progressRef={progressRef} dark={dark} />
           <OrchestrationCore progressRef={progressRef} dark={dark} />
-          {SYSTEM_NODES.map((node) => (
-            <SystemNode3D key={node.id} node={node} progressRef={progressRef} />
+          {scene.nodes.map((node, index) => (
+            <SystemNode3D key={node.id} node={node} index={index} progressRef={progressRef} />
           ))}
         </CameraRig>
       </Suspense>

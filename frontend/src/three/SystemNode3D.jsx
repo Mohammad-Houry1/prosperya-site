@@ -1,21 +1,17 @@
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
-import { useLocale } from "../i18n/LocaleContext.jsx";
 import SystemIcon from "../components/system/SystemIcon.jsx";
 import { scenePosition, sceneState } from "./sceneGeometry.js";
-import { SYSTEM_NODES } from "./systemScene.data.js";
 import styles from "./SystemNode3D.module.css";
 
 const LABEL_GAP = 0.5;
 
 // A system: bright endpoint plus a label that sits just outside it, facing away from the core.
-export default function SystemNode3D({ node, progressRef }) {
-  const { t } = useLocale();
+export default function SystemNode3D({ node, index, progressRef }) {
   const group = useRef();
   const label = useRef();
   const chip = useRef();
-  const index = SYSTEM_NODES.indexOf(node);
   useFrame(({ clock }) => {
     const s = progressRef.current;
     const [x, y, z] = scenePosition(node, s, clock.elapsedTime);
@@ -37,7 +33,7 @@ export default function SystemNode3D({ node, progressRef }) {
         <Html center distanceFactor={9} zIndexRange={[4, 0]} style={{ pointerEvents: "none" }}>
           <div ref={chip} className={styles.label} data-linked="false">
             <SystemIcon name={node.icon} />
-            <span>{t(`diagram.systems.${node.id}`)}</span>
+            <span>{node.label}</span>
           </div>
         </Html>
       </group>

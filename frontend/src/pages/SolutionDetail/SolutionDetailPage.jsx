@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import {
   adaptExpertise,
   adaptSolution,
@@ -98,7 +98,7 @@ export default function SolutionDetailPage() {
     queryKey: ["solution", locale, slug],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.solution(slug, locale, signal);
-      return response.data ? adaptSolution(response.data) : null;
+      return contentView(response) ? adaptSolution(contentView(response)) : null;
     },
     enabled: Boolean(slug),
     retry: (count, error) =>
@@ -106,7 +106,7 @@ export default function SolutionDetailPage() {
   });
   useDocumentMeta({
     model: "Solution",
-    title: solution ? `${solution.title} — Prosperya` : "Prosperya — Solutions",
+    title: solution ? `${solution.title} — ${t("site.name")}` : `${t("nav.solutions")} — ${t("site.name")}`,
     description: solution?.description,
   });
   if (solutionIsLoading) return <PageLoader />;

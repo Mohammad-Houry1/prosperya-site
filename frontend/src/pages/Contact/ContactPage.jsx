@@ -12,7 +12,7 @@ import {
   normalizeProjectInquiry,
   validateProjectInquiry,
 } from "../../repositories/projectInquiry.repository.js";
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import styles from "./ContactPage.module.css";
 import Skeleton from "../../components/feedback/Skeleton.jsx";
 import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
@@ -34,14 +34,14 @@ export default function ContactPage() {
   };
   const contactCopy = useQuery({
     queryKey: ["corporate-page", locale, "contact-form"],
-    queryFn: async ({ signal }) => (await websiteApi.corporatePage("contact-form", locale, signal)).data,
+    queryFn: async ({ signal }) => contentView(await websiteApi.corporatePage("contact-form", locale, signal)),
   });
 
   const { data: faqs = [], isPending: faqsIsPending, isError: faqsIsError, refetch: faqsRefetch } = useQuery({
     queryKey: ["faq", locale, "contact"],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.faqs({ locale, category: "contact" }, signal);
-      return response.data || [];
+      return contentView(response) || [];
     },
   });
   const formRef = useRef(null);
@@ -55,8 +55,8 @@ export default function ContactPage() {
   const submission = useMutation({
     mutationFn: async (inquiry) => {
       const response = await websiteApi.contact(inquiry);
-      if (!response.data.accepted) throw new Error("The CMS did not accept the project brief.");
-      return response.data;
+      if (!contentView(response).accepted) throw new Error("The CMS did not accept the project brief.");
+      return contentView(response);
     },
     retry: false,
     gcTime: 0,
@@ -65,13 +65,13 @@ export default function ContactPage() {
     queryKey: ["contact-options", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.contactOptions(locale, signal);
-      return response.data;
+      return contentView(response);
     },
     staleTime: 0,
     enabled: submissionsEnabled,
   });
   useDocumentMeta({
-    title: `${t("pages.contact.contact-page.start-a-project-908ad4")} — Prosperya`,
+    title: `${t("pages.contact.contact-page.start-a-project-908ad4")} — ${t("site.name")}`,
     description: t("pages.contact.contact-page.outline-your-erp-transformation-integration-or-automation-be5fb5"),
   });
   const errorCopy = { required: t("pages.contact.contact-page.this-field-is-required-b64844"), invalid_email: t("pages.contact.contact-page.enter-a-valid-email-address-e89bf5"), invalid_option: t("pages.contact.contact-page.choose-an-option-from-the-list-f37800"), too_long: t("pages.contact.contact-page.the-text-exceeds-the-allowed-length-47d0c5") };

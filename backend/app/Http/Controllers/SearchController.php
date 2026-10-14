@@ -52,15 +52,10 @@ class SearchController
             if ($skip >= $count) { $skip -= $count; continue; }
             if (count($results) >= $perPage) continue;
             $rows = $query->orderBy('order')->orderBy('_id')->skip($skip)->take($perPage - count($results))
-                ->get(['_id', 'slug', 'translations', ...$titles, $summary]);
+                ->get();
             $skip = 0;
             foreach ($rows as $row) {
-                $title = '';
-                foreach ($titles as $field) { $title = trim($row->text($field, $locale)); if ($title !== '') break; }
-                $excerpt = html_entity_decode(strip_tags($row->text($summary, $locale)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                $excerpt = preg_replace('/\s+/u', ' ', $excerpt) ?? '';
-                $results[] = ['id' => (string) $row->id, 'type' => $type, 'slug' => $row->slug, 'title' => $title,
-                    'summary' => mb_strimwidth(trim($excerpt), 0, 220, '…', 'UTF-8'), 'href' => '/'.$locale.'/'.$type.'/'.rawurlencode($row->slug)];
+                $results[] = ['type' => $type, 'record' => $row];
             }
         }
         return ['data' => $results, 'meta' => ['current_page' => $page, 'per_page' => $perPage, 'total' => $total, 'last_page' => max(1, (int) ceil($total / $perPage))]];

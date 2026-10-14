@@ -1,6 +1,6 @@
 import CaseStudyContent from "./CaseStudyContent.jsx";
 import { adaptCaseStudy } from "../../repositories/marketing.repository.js";
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { useParams } from "react-router-dom";
 import Section from "../../components/common/Section.jsx";
 import EmptyState from "../../components/feedback/EmptyState.jsx";
@@ -18,7 +18,7 @@ export default function CaseStudyPage() {
     queryKey: ["case-study", locale, slug],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.caseStudy(slug, locale, signal);
-      return response.data ? adaptCaseStudy(response.data) : null;
+      return contentView(response) ? adaptCaseStudy(contentView(response)) : null;
     },
     enabled: Boolean(slug),
     retry: (count, error) => error?.status !== 404 && error?.status !== 403 && count < 2,
@@ -27,13 +27,13 @@ export default function CaseStudyPage() {
     queryKey: ["case-studies", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.caseStudies({ locale }, signal);
-      return (response.data || []).map(adaptCaseStudy);
+      return (contentView(response) || []).map(adaptCaseStudy);
     },
   });
   const studyIndex = studies.findIndex(row => row.id === study?.id);
   const item = study ? { ...study, next: studies.length > 1 && studyIndex >= 0 ? studies[(studyIndex + 1) % studies.length] : null } : null;
   useDocumentMeta({ model: "CaseStudy",
-    title: item ? `${item.name} — Prosperya` : t("pages.case-study.case-study-page.prosperya-work-1636b5"),
+    title: item ? `${item.name} — ${t("site.name")}` : t("pages.case-study.case-study-page.prosperya-work-1636b5"),
     description: item?.chapeau || item?.detail?.intro || item?.description,
   });
   if (studyIsLoading) return <PageLoader />;

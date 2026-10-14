@@ -83,7 +83,7 @@ $articles = Article::forWebsite()
 - `status_id` holds the status id.
 - Relations use the field names on the CMS model, e.g. Article `article_category`.
 
-Return only public fields, never the whole record.
+Content endpoints return full CMS records; private fields and relationship snapshots are protected during model serialization. Display mapping lives in the frontend. See [the raw content API contract](docs/raw-content-api.md).
 
 **Writes** (form submissions) use the same models. `save()` stamps the tenant and project from the key, and `$content->defaultStatus('contact_forms')` gives the status marked "Default for new records". See `ContactController::store()`.
 

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Approach;
-use App\Services\{PublicContent, MarketingPayload, PublicPayload};
+use App\Services\{PublicContent, ContentResponse};
 use Illuminate\Http\Request;
 
 class ApproachController
 {
-    public function getApproach(Request $request, PublicContent $content, MarketingPayload $payload, PublicPayload $pagination, ?string $slug = null): array
+    public function getApproach(Request $request, PublicContent $content, ?string $slug = null): array
     {
         $params = $request->validate(['locale' => ['sometimes', 'string', 'max:20'],
             'page' => ['sometimes', 'integer', 'min:1'], 'per_page' => ['sometimes', 'integer', 'min:1'],
@@ -23,8 +23,7 @@ class ApproachController
             ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
         if (isset($params['featured'])) $query->where('featured', (bool) $params['featured']);
         if (isset($params['ids'])) $query->whereIn('_id', $params['ids']);
-        if ($slug !== null) return ['data' => $payload->record($query->where('slug', $slug)->firstOrFail(), $locale)];
-        $page = $query->orderBy('order')->orderBy('_id')->paginate(min(50, (int) ($params['per_page'] ?? 50)));
-        return ['data' => $page->getCollection()->map(fn ($row) => $payload->record($row, $locale)), 'meta' => $pagination->pagination($page)];
+        if ($slug !== null) return ['data' => $query->where('slug', $slug)->firstOrFail()];
+        return ContentResponse::collection($query->orderBy('order')->orderBy('_id'), $request);
     }
 }

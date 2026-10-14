@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\PublicContent;
-use App\Services\PublicPayload;
+use App\Services\ContentResponse;
 use Illuminate\Http\Request;
 
 class UserController
 {
-    public function getUsers(Request $request, PublicContent $content, PublicPayload $payload, ?string $slug = null): array
+    public function getUsers(Request $request, PublicContent $content, ?string $slug = null): array
     {
         $params = $request->validate([
             'locale' => ['sometimes', 'string', 'max:20'],
@@ -27,7 +27,8 @@ class UserController
         $query = User::forWebsite()
             ->whereIn('project', $filters['project'])->whereIn('status', $filters['status'])
             ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
-            ->where('is_active', '!=', false)->where('is_approved', '!=', false);
+            ->where('is_active', '!=', false)->where('is_approved', '!=', false)
+            ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()));
 
         if (isset($params['ids'])) {
             $query->whereIn('_id', array_map('strtolower', $params['ids']));
@@ -49,13 +50,9 @@ class UserController
                 ->orWhereIn('role_ids', $roleIds)->orWhereIn('roles', [...$roleIds, ...$roleSlugs]));
         }
 
-        $query->select(['_id', 'slug', 'name', 'position', 'bio', 'avatar', 'translations']);
         if ($slug !== null) {
-            return ['data' => $payload->user($query->where('slug', $slug)->firstOrFail(), $locale)];
+            return ['data' => $query->where('slug', $slug)->firstOrFail()];
         }
-        $page = $query->orderBy('name')->orderBy('_id')->paginate(min(50, (int) ($params['per_page'] ?? 20)));
-
-        return ['data' => $page->getCollection()->map(fn ($row) => $payload->user($row, $locale)),
-            'meta' => $payload->pagination($page)];
+        return ContentResponse::collection($query->orderBy('name')->orderBy('_id'), $request);
     }
 }

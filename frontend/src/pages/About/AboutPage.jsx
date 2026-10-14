@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import ClientCompanies from "../../components/company/ClientCompanies.jsx";
 import Testimonials from "../../components/company/Testimonials.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
@@ -47,7 +47,7 @@ export default function AboutPage() {
   const pageQuery = useQuery({
     queryKey: ["corporate-page", locale, "about-prosperya"],
     queryFn: async ({ signal }) =>
-      (await websiteApi.corporatePage("about-prosperya", locale, signal)).data,
+      contentView(await websiteApi.corporatePage("about-prosperya", locale, signal)),
     retry: false,
   });
   const page = pageQuery.data;
@@ -60,16 +60,15 @@ export default function AboutPage() {
   } = useQuery({
     queryKey: ["company-stories", locale],
     queryFn: async ({ signal }) =>
-      (await websiteApi.testimonials({ locale }, signal)).data || [],
+      contentView(await websiteApi.testimonials({ locale }, signal)) || [],
   });
   const { data: platforms = [] } = useQuery({
     queryKey: ["platforms", locale, "good-company"],
     queryFn: async ({ signal }) =>
-      (await websiteApi.platforms({ locale, category: "good-company" }, signal))
-        .data || [],
+      contentView(await websiteApi.platforms({ locale, category: "good-company" }, signal)) || [],
   });
   useDocumentMeta({
-    title: `${page?.about_title || page?.title || page?.name || t("about.page_title")} — Prosperya`,
+    title: `${page?.about_title || page?.title || page?.name || t("about.page_title")} — ${t("site.name")}`,
     description: page?.description,
   });
 

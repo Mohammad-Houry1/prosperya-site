@@ -21,7 +21,7 @@ final class FrontendHtml
             $head .= '<meta name="'.$name.'" content="'.$escape($value).'">';
         }
         foreach (['og:title' => $seo['ogTitle'], 'og:description' => $seo['ogDescription'], 'og:url' => $seo['canonical'],
-            'og:image' => $seo['ogImage'], 'og:type' => $seo['ogType'], 'og:site_name' => 'Prosperya',
+            'og:image' => $seo['ogImage'], 'og:type' => $seo['ogType'], 'og:site_name' => $seo['siteName'] ?? '',
             'og:locale' => $seo['locale'] === 'fr' ? 'fr_FR' : 'en_GB'] as $name => $value) {
             if ($value) {
                 $head .= '<meta property="'.$name.'" content="'.$escape($value).'">';

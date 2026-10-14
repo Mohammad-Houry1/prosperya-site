@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef } from "react";
-import { FRAGMENT_LINKS, SYSTEM_NODES } from "../../three/systemScene.data.js";
 import {
   clampProgress,
   createField,
@@ -7,7 +6,6 @@ import {
   sceneState,
 } from "../../three/sceneGeometry.js";
 import { projectFallback as project } from "./fallbackProjection.js";
-import { useLocale } from "../../i18n/LocaleContext.jsx";
 import SystemIcon from "./SystemIcon.jsx";
 import styles from "./SystemNetworkFallback.module.css";
 
@@ -20,12 +18,13 @@ const STARS = 170;
 */
 export default function SystemNetworkFallback({
   progressRef,
+  scene,
   active = true,
   reduced = false,
   compact = false,
 }) {
-  const { t } = useLocale();
   const svg = useRef();
+  const { nodes: systems, links: fragmentLinks } = scene;
   const field = useMemo(() => createField(STARS, 5), []);
   const initial = reduced ? 1 : clampProgress(progressRef?.current ?? 0);
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function SystemNetworkFallback({
       const p = reduced ? 1 : clampProgress(progressRef?.current ?? initial);
       const state = sceneState(p);
       if (p !== previous) {
-        points = SYSTEM_NODES.map((node) => project(scenePosition(node, p)));
+        points = systems.map((node) => project(scenePosition(node, p)));
         nodes.forEach((element, index) => {
           element.setAttribute("transform", `translate(${points[index].join(" ")})`);
           const linked = state.links * 1.6 - index * 0.075 > 0.92;
@@ -58,7 +57,7 @@ export default function SystemNetworkFallback({
           element.style.opacity = String(own * 0.7);
         });
         fragments.forEach((element, index) => {
-          const [a, b] = FRAGMENT_LINKS[index];
+          const [a, b] = fragmentLinks[index];
           element.setAttribute("d", `M${points[a].join(" ")} L${points[b].join(" ")}`);
           element.style.opacity = String(state.noise * 0.45);
         });
@@ -88,8 +87,8 @@ export default function SystemNetworkFallback({
     };
     render();
     return () => cancelAnimationFrame(frame);
-  }, [progressRef, active, reduced, initial, field]);
-  const initialPoints = SYSTEM_NODES.map((node) => project(scenePosition(node, initial)));
+  }, [progressRef, active, reduced, initial, field, systems, fragmentLinks]);
+  const initialPoints = systems.map((node) => project(scenePosition(node, initial)));
   return (
     <svg
       ref={svg}
@@ -106,13 +105,13 @@ export default function SystemNetworkFallback({
           r={index % 7 ? 1 : 1.6}
         />
       ))}
-      {FRAGMENT_LINKS.map((_, index) => (
+      {fragmentLinks.map((_, index) => (
         <path key={index} data-fragment className={styles.fragment} />
       ))}
-      {SYSTEM_NODES.map((node) => (
+      {systems.map((node) => (
         <path key={node.id} data-hub className={styles.connection} />
       ))}
-      {SYSTEM_NODES.flatMap((node) => [
+      {systems.flatMap((node) => [
         <circle key={`${node.id}-out`} data-packet r="2.4" className={styles.packet} />,
         <circle key={`${node.id}-in`} data-packet r="1.7" className={styles.packet} />,
       ])}
@@ -125,7 +124,7 @@ export default function SystemNetworkFallback({
           d="M3 5 47 18 21 24 8 46 13 22ZM23 25 47 18 23 40Z"
         />
       </g>
-      {SYSTEM_NODES.map((node, index) => (
+      {systems.map((node, index) => (
         <g
           key={node.id}
           data-node
@@ -147,7 +146,7 @@ export default function SystemNetworkFallback({
                 <SystemIcon name={node.icon} size={14} />
               </g>
               <text x="-27" y="0" dominantBaseline="central">
-                {(t(`diagram.systems.${node.id}`)).toUpperCase()}
+                {node.label.toUpperCase()}
               </text>
             </>
           )}

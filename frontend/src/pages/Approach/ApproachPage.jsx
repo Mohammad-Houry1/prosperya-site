@@ -1,7 +1,7 @@
 import { adaptMethodology } from "../../repositories/marketing.repository.js";
 import CmsRichHtml from "../../components/common/CmsRichHtml.jsx";
 import CmsImage from "../../components/common/CmsImage.jsx";
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { useRef } from "react";
 import { CircleCheck } from "lucide-react";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -73,7 +73,7 @@ export default function ApproachPage() {
         { locale, category: "approach" },
         signal,
       );
-      return response.data || [];
+      return contentView(response) || [];
     },
   });
   const {
@@ -85,7 +85,7 @@ export default function ApproachPage() {
   } = useQuery({
     queryKey: ["corporate-page", "our-approach", locale],
     queryFn: async ({ signal }) =>
-      (await websiteApi.approach("our-approach", locale, signal)).data,
+      contentView(await websiteApi.approach("our-approach", locale, signal)),
     retry: (count, error) =>
       error?.status !== 404 && error?.status !== 403 && count < 2,
   });
@@ -122,7 +122,7 @@ export default function ApproachPage() {
     ]),
   };
   useDocumentMeta({
-    title: `${approach?.approach_title || t("pages.approach.approach-page.our-approach-9bce36")} — Prosperya`,
+    title: `${approach?.approach_title || t("pages.approach.approach-page.our-approach-9bce36")} — ${t("site.name")}`,
     model: "Approach",
     description: approach?.approach_description,
   });

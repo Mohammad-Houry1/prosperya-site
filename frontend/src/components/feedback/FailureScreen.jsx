@@ -10,10 +10,11 @@ export default function FailureScreen({ locale = "en", onRetry }) {
   const t = context?.t ?? createTranslator(locale);
   const fr = locale === "fr";
   const title = t("components.feedback.failure-screen.one-small-hiccup-6c862a");
+  const siteName = t("site.name");
   const heading = useRef(null);
   useEffect(() => {
     heading.current?.focus();
-    document.title = `${title} — Prosperya`;
+    document.title = `${title} — ${siteName}`;
     document.documentElement.lang = fr ? "fr" : "en";
     document.head.querySelectorAll('meta[name="robots"], meta[name="description"], meta[name="keywords"], meta[property^="og:"], meta[name^="twitter:"], link[rel="canonical"], link[rel="alternate"][hreflang], #website-seo, #website-schema').forEach((node) => node.remove());
     const robots = document.createElement("meta");
@@ -21,12 +22,12 @@ export default function FailureScreen({ locale = "en", onRetry }) {
     robots.content = "noindex, follow";
     document.head.append(robots);
     return () => robots.remove();
-  }, [fr, title]);
+  }, [fr, title, siteName]);
 
   return (
     <main className={styles.page}>
       <a className={styles.brand} href={`/${fr ? "fr" : "en"}`} aria-label={t("components.feedback.failure-screen.prosperya-home-233794")}>
-        <span aria-hidden="true" className={styles.brandDot} /> Prosperya
+        <span aria-hidden="true" className={styles.brandDot} /> {siteName}
       </a>
       <div className={styles.content}>
         <ConnectionIllustration />

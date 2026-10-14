@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import PageContainer from "../../components/common/PageContainer.jsx";
 import Eyebrow from "../../components/common/Eyebrow.jsx";
 import PrimaryLink from "../../components/common/PrimaryLink.jsx";
@@ -9,6 +9,7 @@ import { useLocale } from "../../i18n/LocaleContext.jsx";
 import { useGsapContext } from "../../motion/hooks/useGsapContext.js";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import { heroCopy } from "./heroStory.copy.js";
+import { hubScene } from "../../three/systemScene.data.js";
 import styles from "./HomeHero.module.css";
 
 const ORCHESTRATED_VIEW = { tilt: 0, zoom: 0.12, yaw: 0 };
@@ -19,9 +20,14 @@ const ORCHESTRATED_VIEW = { tilt: 0, zoom: 0.12, yaw: 0 };
   to orchestrated (under five seconds), then drifts gently while its systems
   keep pulsing. Reduced motion starts on the finished, still frame.
 */
-export default function HeroSection() {
+export default function HeroSection({ page }) {
   const { locale, t } = useLocale();
   const copy = heroCopy(t);
+  const audiences = (page?.hero_audiences ?? []).filter((row) => row.audience_title);
+  const scene = useMemo(
+    () => hubScene((page?.hub_systems ?? []).map((row) => ({ title: row.system_title, icon: row.system_icon }))),
+    [page],
+  );
   const reduced = useReducedMotion();
   const section = useRef(null);
   const progress = useRef(reduced ? 1 : 0);
@@ -61,21 +67,21 @@ export default function HeroSection() {
               {copy.secondary}
             </PrimaryLink>
           </div>
-          <div className={styles.audiences}>
+          {audiences.length > 0 && <div className={styles.audiences}>
             <span>{copy.audienceLabel}</span>
             <ul>
-              {copy.audiences.map(([icon, label]) => (
-                <li key={label}>
-                  <SystemIcon name={icon} size={15} />
-                  {label}
+              {audiences.map((row, index) => (
+                <li key={index}>
+                  <SystemIcon name={row.audience_icon} size={15} />
+                  {row.audience_title}
                 </li>
               ))}
             </ul>
-          </div>
+          </div>}
         </div>
         <div className={styles.panel}>
           <div className={styles.visual}>
-            <OrchestrationExperience progressRef={progress} viewRef={view} layoutRef={layout} />
+            <OrchestrationExperience progressRef={progress} viewRef={view} layoutRef={layout} scene={scene} />
           </div>
           <div className={styles.status} aria-hidden="true">
             <span data-status="before" className={reduced ? styles.gone : ""}>

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { SYSTEM_NODES } from "../../src/three/systemScene.data.js";
+import { HUB_SLOTS, hubScene } from "../../src/three/systemScene.data.js";
 import {
   scenePosition,
   sceneState,
@@ -12,7 +12,7 @@ test("orchestration labels stay separated throughout the scroll story", () => {
   // SVG fallback labels are 112 × 30 in a 600 × 440 viewBox; include an 8px gutter.
   for (let step = 0; step <= 100; step++) {
     for (const time of [0, 4, 9, 18]) {
-      const points = SYSTEM_NODES.map((node) =>
+      const points = HUB_SLOTS.map((node) =>
         projectFallback(scenePosition(node, step / 100, time)),
       );
       for (let a = 0; a < points.length; a++) {
@@ -20,7 +20,7 @@ test("orchestration labels stay separated throughout the scroll story", () => {
           assert.ok(
             Math.abs(points[a][0] - points[b][0]) >= 120 ||
               Math.abs(points[a][1] - points[b][1]) >= 38,
-            `${SYSTEM_NODES[a].id} and ${SYSTEM_NODES[b].id} overlap at progress ${step / 100}`,
+            `slots ${a} and ${b} overlap at progress ${step / 100}`,
           );
         }
       }
@@ -40,4 +40,15 @@ test("story channels start fragmented and finish orchestrated", () => {
 
 test("background field is deterministic", () => {
   assert.deepEqual(createField(20).chaos, createField(20).chaos);
+});
+
+test("CMS systems spread over the tuned slots and keep only their own links", () => {
+  const systems = (count) => Array.from({ length: count }, (_, i) => ({ title: `S${i}`, icon: "cog" }));
+  const full = hubScene(systems(10));
+  assert.equal(full.nodes.length, HUB_SLOTS.length);
+  assert.equal(full.links.length, 11);
+  const half = hubScene(systems(4));
+  assert.deepEqual(half.nodes.map((node) => node.slot), [90, 0, -90, 180]);
+  assert.ok(half.links.every(([a, b]) => half.nodes[a] && half.nodes[b]));
+  assert.deepEqual(hubScene([{ title: "" }]).nodes, []);
 });

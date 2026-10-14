@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { adaptExpertise, adaptSolution } from "../../repositories/marketing.repository.js";
 import BrandMark from "./BrandMark.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
@@ -52,14 +52,14 @@ export default function SiteFooter() {
     queryKey: ["capabilities", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.expertise({ locale }, signal);
-      return (response.data || []).map(adaptExpertise);
+      return (contentView(response) || []).map(adaptExpertise);
     },
   });
   const { data: solutions = [], isPending: solutionsPending } = useQuery({
     queryKey: ["solutions", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.solutions({ locale }, signal);
-      return (response.data || []).map(adaptSolution);
+      return (contentView(response) || []).map(adaptSolution);
     },
   });
   return (
@@ -89,7 +89,7 @@ export default function SiteFooter() {
         </div>
         <div className={styles.bottom}>
           <span>
-            © {new Date().getFullYear()} Prosperya. <ShellLabel name="footer.rights" width={120} />
+            © {new Date().getFullYear()} <ShellLabel name="site.name" width={72} />. <ShellLabel name="footer.rights" width={120} />
           </span>
           <nav
             aria-label={t("components.layout.site-footer.language-cff648")}

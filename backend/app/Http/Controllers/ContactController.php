@@ -24,15 +24,13 @@ class ContactController
             ->whereIn('country', $filters['country'])->whereIn('language', $filters['language'])
             ->where('is_active', '!=', false)
             ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
-            ->orderBy('name')->get()
-            ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $row->text('name', $locale)])->all();
+            ->orderBy('name')->get();
 
         return ['data' => [
             'captcha' => ['site_key' => config('website.recaptcha.secret') ? config('website.recaptcha.site_key') : ''],
             'project_types' => $options(ProjectType::class),
             'project_stages' => $options(ProjectStage::class),
-            'countries' => $content->enabled('ref_countries')->orderBy('name')->get()
-                ->map(fn ($row) => ['id' => (string) $row->id, 'name' => $content->text($row, 'name', $locale)])->all(),
+            'countries' => $content->enabled('ref_countries')->orderBy('name')->get(),
         ]];
     }
 

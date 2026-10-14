@@ -1,3 +1,6 @@
+import { displayResponse } from '../repositories/cmsContent.js';
+export { contentView } from '../repositories/cmsContent.js';
+
 export class WebsiteApiError extends Error {
   constructor(message, status = 0, errors = {}) {
     super(message);
@@ -30,29 +33,38 @@ async function request(path, { query = {}, data, signal } = {}) {
   return payload;
 }
 
+async function contentRequest(path, options = {}, resolveRelations = true) {
+  const payload = await request(path, options);
+  const context = { locale: options.query?.locale || 'en', ...payload.context };
+  const kind = path.startsWith('contact/options') ? 'contact/options' : path.split('/')[0];
+  return displayResponse(payload, kind, context, (target, ids, current, signal) =>
+    contentRequest(target, { query: { locale: current.locale, ids }, signal }, target === 'testimonials'), options.signal, resolveRelations);
+}
+
 export const websiteApi = {
-  expertise: (query, signal) => request('expertise', { query, signal }),
-  expertiseDetail: (slug, locale, signal) => request(`expertise/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  solutions: (query, signal) => request('solutions', { query, signal }),
-  solution: (slug, locale, signal) => request(`solutions/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  caseStudies: (query, signal) => request('case-studies', { query, signal }),
-  caseStudy: (slug, locale, signal) => request(`case-studies/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  approach: (slug, locale, signal) => request(`approaches/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  page: (slug, locale, signal) => request(`pages/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  articles: (query, signal) => request("articles", { query, signal }),
-  article: (slug, locale, signal) => request(`articles/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  categories: (query, signal) => request("article-categories", { query, signal }),
-  testimonials: (query, signal) => request("testimonials", { query, signal }),
-  platforms: (query, signal) => request("platforms", { query, signal }),
-  users: (query, signal) => request("users", { query, signal }),
-  user: (slug, locale, signal) => request(`users/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  faqs: (query, signal) => request("faqs", { query, signal }),
-  faqCategories: (query, signal) => request("faq-categories", { query, signal }),
-  corporatePages: (query, signal) => request("corporate-pages", { query, signal }),
-  corporateCategories: (query, signal) => request("corporate-page-categories", { query, signal }),
-  corporatePage: (slug, locale, signal) => request(`corporate-pages/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
-  contactOptions: (locale, signal) => request("contact/options", { query: { locale }, signal }),
-  labels: (query, signal) => request("labels", { query, signal }),
+  search: (query, signal) => contentRequest('search', { query, signal }),
+  expertise: (query, signal) => contentRequest('expertise', { query, signal }),
+  expertiseDetail: (slug, locale, signal) => contentRequest(`expertise/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  solutions: (query, signal) => contentRequest('solutions', { query, signal }),
+  solution: (slug, locale, signal) => contentRequest(`solutions/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  caseStudies: (query, signal) => contentRequest('case-studies', { query, signal }),
+  caseStudy: (slug, locale, signal) => contentRequest(`case-studies/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  approach: (slug, locale, signal) => contentRequest(`approaches/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  page: (slug, locale, signal) => contentRequest(`pages/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  articles: (query, signal) => contentRequest("articles", { query, signal }),
+  article: (slug, locale, signal) => contentRequest(`articles/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  categories: (query, signal) => contentRequest("article-categories", { query, signal }),
+  testimonials: (query, signal) => contentRequest("testimonials", { query, signal }),
+  platforms: (query, signal) => contentRequest("platforms", { query, signal }),
+  users: (query, signal) => contentRequest("users", { query, signal }),
+  user: (slug, locale, signal) => contentRequest(`users/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  faqs: (query, signal) => contentRequest("faqs", { query, signal }),
+  faqCategories: (query, signal) => contentRequest("faq-categories", { query, signal }),
+  corporatePages: (query, signal) => contentRequest("corporate-pages", { query, signal }),
+  corporateCategories: (query, signal) => contentRequest("corporate-page-categories", { query, signal }),
+  corporatePage: (slug, locale, signal) => contentRequest(`corporate-pages/${encodeURIComponent(slug)}`, { query: { locale }, signal }),
+  contactOptions: (locale, signal) => contentRequest("contact/options", { query: { locale }, signal }),
+  labels: (query, signal) => contentRequest("labels", { query, signal }),
   contact: (data) => request("contact", { data }),
   newsletter: (data) => request("newsletter", { data }),
   seo: (path, signal, model = "SeoPage") => request("seo", { query: { path, model }, signal }),

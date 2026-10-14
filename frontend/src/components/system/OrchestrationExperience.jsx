@@ -19,6 +19,7 @@ export default function OrchestrationExperience({
   progressRef,
   viewRef,
   layoutRef,
+  scene,
 }) {
   const reduced = useReducedMotion();
   const small = useMediaQuery("(max-width: 980px)");
@@ -42,6 +43,7 @@ export default function OrchestrationExperience({
   const fallback = (
     <SystemNetworkFallback
       progressRef={progressRef}
+      scene={scene}
       active={active}
       reduced={reduced}
       compact={phone}
@@ -56,6 +58,7 @@ export default function OrchestrationExperience({
               progressRef={progressRef}
               viewRef={viewRef}
               layoutRef={layoutRef}
+              scene={scene}
               active={active}
             />
           </Suspense>

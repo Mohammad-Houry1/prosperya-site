@@ -18,7 +18,7 @@ export default function NotFoundPage() {
   });
   const routes = [
     ["expertise", t("pages.not-found.not-found-page.expertise-6e9b7a")],
-    ["solutions", "Solutions"],
+    ["solutions", t("nav.solutions")],
     ["work", t("pages.not-found.not-found-page.work-f8cafc")],
     ["approach", t("pages.not-found.not-found-page.approach-d02268")],
     ["insights", t("pages.not-found.not-found-page.insights-1bdb50")],

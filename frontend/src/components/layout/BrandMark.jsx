@@ -15,7 +15,7 @@ export default function BrandMark() {
           d="M3 5 47 18 21 24 8 46 13 22ZM23 25 47 18 23 40Z"
         />
       </svg>
-      <strong>PROSPERYA</strong>
+      <strong>{t("site.name").toUpperCase()}</strong>
     </Link>
   );
 }

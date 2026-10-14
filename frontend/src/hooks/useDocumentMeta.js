@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { websiteApi } from "../services/websiteApi.js";
+import { LocaleContext } from "../i18n/LocaleContext.jsx";
 
 function samePath(left, right) {
   const normalize = (path) => path.split("/").map((part) => encodeURIComponent(decodeURIComponent(part))).join("/");
@@ -40,6 +41,7 @@ function absoluteUrl(value) {
 // local strings are only a loading/error fallback and are never indexable.
 export function useDocumentMeta({ title, description, ogTitle, ogDescription, ogType = "website", keywords, model = "SeoPage" }) {
   const { pathname } = useLocation();
+  const siteName = useContext(LocaleContext)?.t("site.name") ?? "";
   const [initial] = useState(() => bootstrap(pathname));
   const initialPath = useRef(pathname);
   const navigated = useRef(false);
@@ -85,7 +87,7 @@ export function useDocumentMeta({ title, description, ogTitle, ogDescription, og
       document.head.append(element);
       managed.add(element);
     };
-    const pageTitle = data?.title ?? (title || "Prosperya");
+    const pageTitle = data?.title ?? (title || siteName);
     const pageDescription = data?.description ?? (description || "");
     document.title = pageTitle;
     document.documentElement.lang = locale;
@@ -95,7 +97,7 @@ export function useDocumentMeta({ title, description, ogTitle, ogDescription, og
     tag("property", "og:title", data?.ogTitle ?? (ogTitle || pageTitle));
     tag("property", "og:description", data?.ogDescription ?? (ogDescription || pageDescription));
     tag("property", "og:type", data?.ogType || ogType);
-    tag("property", "og:site_name", "Prosperya");
+    tag("property", "og:site_name", data?.siteName || siteName);
     tag("property", "og:locale", locale === "fr" ? "fr_FR" : "en_GB");
     tag("property", "og:url", absoluteUrl(data?.canonical));
     tag("property", "og:image", absoluteUrl(data?.ogImage));
@@ -117,5 +119,5 @@ export function useDocumentMeta({ title, description, ogTitle, ogDescription, og
       managed.add(schema);
     }
     return () => managed.forEach((element) => element.remove());
-  }, [metadata, isError, isFetching, pathname, title, description, ogTitle, ogDescription, ogType, keywords]);
+  }, [metadata, isError, isFetching, pathname, title, description, ogTitle, ogDescription, ogType, keywords, siteName]);
 }

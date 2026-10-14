@@ -23,7 +23,10 @@ beforeEach(() => {
     if (url.pathname === "/api/expertise" && !emptyContent) {
       const ids = url.searchParams.get("sort") === "latest" ? [5, 4, 3, 2] : [1, 2, 3, 4, 5];
       data = ids.map(id => ({ id: String(id), slug: `skill-${id}`, featured: false,
-        expertise_title: `${locale} Skill ${id}`, expertise_summary: "Authored expertise summary" }));
+        expertise_title: { [locale]: `${locale} Skill ${id}` }, expertise_summary: { [locale]: "Authored expertise summary" } }));
+    }
+    if (url.pathname === "/api/pages/home") {
+      data = { slug: 'home', architecture_title: 'Old architecture section', hero_audiences: [{ audience_title: { [locale]: `${locale} CMS audience` }, audience_icon: 'building' }] };
     }
     if (url.pathname === "/api/articles") {
       if (articleFailure) return { ok: false, status: 503, json: async () => ({ message: "Unavailable" }) };
@@ -33,7 +36,6 @@ beforeEach(() => {
     }
     if (url.pathname === "/api/approaches/our-approach") data = { methodology: [{ methodology_title: `${locale} Discovery` }] };
     if (url.pathname === "/api/platforms" && url.searchParams.get("category") === "clients") data = [{ id: "client", name: `${locale} Client`, logo_image: null }];
-    if (url.pathname === "/api/pages/home") data = { architecture_title: "Old architecture section" };
     if (url.pathname === "/api/seo") data = null;
     return { ok: true, status: 200, json: async () => ({ data, meta: { last_page: 1 } }) };
   }));
@@ -60,7 +62,9 @@ test.each(["en", "fr"])("Home renders newest non-featured expertise and articles
   expect(screen.getByRole("heading", { name: `${locale} Discovery` })).toBeInTheDocument();
   expect(screen.getAllByText(`${locale} Client`).length).toBeGreaterThan(0);
   expect(screen.queryByText("Old architecture section")).not.toBeInTheDocument();
-  expect(calls.some(url => url.pathname === "/api/pages/home" || url.pathname === "/api/case-studies")).toBe(false);
+  expect(calls.some(url => url.pathname === "/api/pages/home")).toBe(true);
+  expect(screen.getByText(`${locale} CMS audience`)).toBeInTheDocument();
+  expect(calls.some(url => url.pathname === "/api/case-studies")).toBe(false);
   const expertiseRequest = calls.find(url => url.pathname === "/api/expertise");
   expect(Object.fromEntries(expertiseRequest.searchParams)).toEqual({ locale, page: "1", per_page: "4", sort: "latest" });
   const articleRequest = calls.find(url => url.pathname === "/api/articles");

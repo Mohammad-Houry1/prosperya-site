@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Page;
 use App\Services\PublicContent;
-use App\Services\PublicPayload;
+use App\Services\ContentResponse;
 use Illuminate\Http\Request;
 
 class PageController
 {
-    public function getPage(Request $request, PublicContent $content, PublicPayload $payload, string $slug): array
+    public function getPage(Request $request, PublicContent $content, string $slug): array
     {
         $params = $request->validate(['locale' => ['sometimes', 'string', 'max:20']]);
         $locale = $content->language($params['locale'] ?? null)->code;
@@ -21,6 +21,6 @@ class PageController
             ->where(fn ($q) => $q->whereNull('published_at')->orWhere('published_at', '<=', now()))
             ->where('slug', $slug)->firstOrFail();
 
-        return ['data' => $payload->page($page, $locale)];
+        return ['data' => $page];
     }
 }

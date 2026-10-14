@@ -16,6 +16,15 @@ class RequireWebsiteAccess
 
         $response = $next($request);
         if ($request->is('api/*')) {
+            if ($request->isMethod('GET') && !$request->is('api/seo') && $response instanceof \Illuminate\Http\JsonResponse && $response->isSuccessful()) {
+                $content = app(\App\Services\PublicContent::class);
+                $language = $content->language($request->input('locale'));
+                $body = $response->getData(true);
+                $body['context'] = ['locale' => $language->code, 'language_id' => (string) $language->id,
+                    'default_locale' => app(WebsiteAccess::class)->grant()['website_settings']['default_locale'],
+                    'cms_url' => config('website.cms_url')];
+                $response->setData($body);
+            }
             // Crawlers may fetch data to render pages; JSON URLs themselves
             // should not become search results.
             $response->headers->set('X-Robots-Tag', 'noindex');

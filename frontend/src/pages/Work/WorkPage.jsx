@@ -1,5 +1,5 @@
 import { adaptCaseStudy } from "../../repositories/marketing.repository.js";
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { useId, useState } from "react";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
@@ -43,14 +43,14 @@ export default function WorkPage() {
     queryKey: ["company-stories", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.testimonials({ locale }, signal);
-      return response.data || [];
+      return contentView(response) || [];
     },
   });
   const { isLoading, isError, refetch, data = [] } = useQuery({
     queryKey: ["case-studies", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.caseStudies({ locale }, signal);
-      return (response.data || []).map(adaptCaseStudy);
+      return (contentView(response) || []).map(adaptCaseStudy);
     },
   });
   const [industry, setIndustry] = useState("all");

@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { mapInsight } from "../../repositories/insights.repository.js";
 import { useEffect, useState } from "react";
 import PageHero from "../../components/common/PageHero.jsx";
@@ -24,7 +24,7 @@ export default function InsightsPage() {
     queryKey: ["insights", locale, page, category === "all" ? "" : category],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.articles({ locale, page: page, per_page: 12, category: (category === "all" ? "" : category) || undefined }, signal);
-      return { items: response.data.map(mapInsight), meta: response.meta };
+      return { items: contentView(response).map(mapInsight), meta: response.meta };
     },
     staleTime: 0,
   });
@@ -32,13 +32,13 @@ export default function InsightsPage() {
     queryKey: ["insight-categories", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.categories({ locale }, signal);
-      return response.data || [];
+      return contentView(response) || [];
     },
     staleTime: 0,
   });
   useEffect(() => { setPage(1); setCategory("all"); }, [locale]);
   useDocumentMeta({
-    title: `${t("pages.insights.insights-page.insights-1bdb50")} — Prosperya`,
+    title: `${t("pages.insights.insights-page.insights-1bdb50")} — ${t("site.name")}`,
     description: t("pages.insights.insights-page.perspectives-on-erp-transformation-netsuite-integration-and-a12c24"),
   });
   if (isLoading || categoriesLoading) return <PageLoader />;

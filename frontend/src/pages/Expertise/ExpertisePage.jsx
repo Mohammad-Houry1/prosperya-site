@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { adaptExpertise } from "../../repositories/marketing.repository.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import Section from "../../components/common/Section.jsx";
@@ -23,11 +23,11 @@ export default function ExpertisePage() {
     queryKey: ["capabilities", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.expertise({ locale }, signal);
-      return (response.data || []).map(adaptExpertise);
+      return (contentView(response) || []).map(adaptExpertise);
     },
   });
   useDocumentMeta({
-    title: `${t("nav.expertise")} — Prosperya`,
+    title: `${t("nav.expertise")} — ${t("site.name")}`,
     description: t("pages.expertise.expertise-page.erp-transformation-netsuite-implementation-integration-automation-audit-51a3ca"),
   });
   if (capabilitiesIsLoading) return <PageLoader />;

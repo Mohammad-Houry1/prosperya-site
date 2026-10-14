@@ -1,4 +1,4 @@
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import { adaptSolution } from "../../repositories/marketing.repository.js";
 import PageHero from "../../components/common/PageHero.jsx";
 import PageContainer from "../../components/common/PageContainer.jsx";
@@ -26,19 +26,20 @@ export default function SolutionsPage() {
     queryKey: ["solutions", locale],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.solutions({ locale }, signal);
-      return (response.data || []).map(adaptSolution);
+      return (contentView(response) || []).map(adaptSolution);
     },
   });
   const architectureQuery = useQuery({
     queryKey: ["page", "solutions", locale],
-    queryFn: async ({ signal }) => (await websiteApi.page("solutions", locale, signal)).data,
+    queryFn: async ({ signal }) => contentView(await websiteApi.page("solutions", locale, signal)),
     retry: false,
   });
   const architecture = architectureQuery.data;
   const columns = [1, 2, 3, 4].map(index => Array.isArray(architecture?.["architecture_column_" + index]) ? architecture["architecture_column_" + index] : []);
+  const columnTitles = [1, 2, 3, 4].map(index => architecture?.["architecture_column_" + index + "_title"] || "");
   const hasArchitecture = architecture?.architecture_title || architecture?.architecture_description || columns.some(column => column.length > 0);
   useDocumentMeta({
-    title: t("nav.solutions") + " — Prosperya",
+    title: `${t("nav.solutions")} — ${t("site.name")}`,
     description: t("pages.solutions.solutions-page.finance-operations-supply-chain-and-data-solutions-69ed3c"),
   });
   if (isLoading) return <PageLoader />;
@@ -99,7 +100,7 @@ export default function SolutionsPage() {
               {architecture.architecture_title && <h2>{architecture.architecture_title}</h2>}
               <CmsRichHtml html={architecture.architecture_description} />
             </div>
-            <LayeredArchitecture columns={columns} />
+            <LayeredArchitecture columns={columns} titles={columnTitles} />
           </div>
         </section>
       )}

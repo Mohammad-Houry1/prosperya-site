@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Platform;
 use App\Models\PlatformCategory;
 use App\Services\PublicContent;
-use App\Services\PublicPayload;
+use App\Services\ContentResponse;
 use Illuminate\Http\Request;
 
 class PlatformController
 {
-    public function getPlatforms(Request $request, PublicContent $content, PublicPayload $payload): array
+    public function getPlatforms(Request $request, PublicContent $content): array
     {
         $params = $request->validate(['locale' => ['sometimes', 'string', 'max:20'],
             'page' => ['sometimes', 'integer', 'min:1'], 'per_page' => ['sometimes', 'integer', 'min:1'],
@@ -38,9 +38,6 @@ class PlatformController
             abort_unless($category, 404, 'No public platform category matches the requested category for this website and language.');
             $query->where('platform_category', (string) $category->id);
         }
-        $page = $query->orderBy('sort_order')->orderBy('_id')->paginate(min(50, (int) ($params['per_page'] ?? 50)));
-
-        return ['data' => $page->getCollection()->map(fn ($row) => $payload->platform($row, $locale)),
-            'meta' => $payload->pagination($page)];
+        return ContentResponse::collection($query->orderBy('sort_order')->orderBy('_id'), $request);
     }
 }

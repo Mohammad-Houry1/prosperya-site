@@ -15,6 +15,7 @@ beforeEach(() => {
   vi.spyOn(websiteApi, "page").mockRejectedValue(new WebsiteApiError("Missing static page", 404));
   vi.spyOn(websiteApi, "corporatePage").mockResolvedValue({ data: { slug: "about-prosperya", title: "CMS About", about_users: [] } });
   vi.spyOn(websiteApi, "caseStudies").mockResolvedValue({ data: [] });
+  vi.spyOn(websiteApi, "users").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "expertise").mockResolvedValue({ data: [] });
   vi.spyOn(websiteApi, "seo").mockResolvedValue({ data: {} });
   vi.spyOn(websiteApi, "testimonials").mockImplementation(async ({ locale }) => ({ data: [{
@@ -49,7 +50,7 @@ test.each([
   }
 });
 
-test("About uses Corporate Page fields, rich sections and selected leaders", async () => {
+test("About uses Corporate Page fields, rich sections and public Users", async () => {
   websiteApi.corporatePage.mockResolvedValue({ data: { slug: "about-prosperya", name: "About Prosperya", title: "Our company",
     description: "<p><strong>Company introduction</strong></p>",
     sections: [{ title: "Corporate chapter", description: "<p><em>Corporate story</em></p>" }],
@@ -61,7 +62,7 @@ test("About uses Corporate Page fields, rich sections and selected leaders", asy
   expect(screen.getByRole("heading", { name: "Corporate chapter" })).toBeInTheDocument();
   expect(screen.getByText("Corporate story").tagName).toBe("EM");
   expect(screen.getByText("Enterprise systems").tagName).toBe("STRONG");
-  expect(screen.getByRole("heading", { name: "Selected leader" })).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "Selected leader" })).toBeInTheDocument();
   expect(screen.getByText("Leader biography")).toBeInTheDocument();
 });
 

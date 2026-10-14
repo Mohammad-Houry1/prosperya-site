@@ -4,7 +4,7 @@ import Section from "../common/Section.jsx";
 import Eyebrow from "../common/Eyebrow.jsx";
 import ErrorState from "../feedback/ErrorState.jsx";
 import { useQuery } from "@tanstack/react-query";
-import { websiteApi } from "../../services/websiteApi.js";
+import { websiteApi, contentView } from "../../services/websiteApi.js";
 import ResponsiveImage from "../common/ResponsiveImage.jsx";
 import { useLocale } from "../../i18n/LocaleContext.jsx";
 import styles from "./CompanyStories.module.css";
@@ -23,7 +23,7 @@ export default function ClientCompanies({ still = false, category = "clients" })
     queryKey: ["platforms", locale, category],
     queryFn: async ({ signal }) => {
       const response = await websiteApi.platforms({ locale, category }, signal);
-      return response.data || [];
+      return contentView(response) || [];
     },
   });
   const [paused, setPaused] = useState(false);
